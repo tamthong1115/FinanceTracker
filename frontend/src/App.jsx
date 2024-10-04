@@ -1,18 +1,29 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import {
+  Routes,
+  BrowserRouter as Router,
+  Route,
+  // Navigate,
+} from "react-router-dom";
+import Layout from "./layouts/Layout";
+
+// pages
+import Home from "./pages/Home/Home";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <h1 className="text-3xl font-bold underline">Tailwindcss!!</h1>
-      </div>
-   </>
-  )
+    <Router>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Layout>
+              <Home />
+            </Layout>
+          }
+        />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
