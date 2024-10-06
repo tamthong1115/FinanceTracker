@@ -5,7 +5,7 @@ const Copyright: React.FC = () => {
 
   return (
     <p className="mt-8 text-base text-gray-400 md:mt-0 md:order-1">
-      &copy; {currentYear} FinanceTracker. Bảo lưu mọi quyền.
+      &copy; {currentYear} FinanceTracker. All rights reserved.
     </p>
   );
 };

@@ -29,34 +29,34 @@ const FooterSection: React.FC<FooterSectionProps> = ({ title, links }) => (
 const FooterLinks: React.FC = () => {
   const sections: FooterSectionProps[] = [
     {
-      title: "Giải pháp",
+      title: "Solutions",
       links: [
-        { text: "Quản lý ngân sách", url: "/budget" },
-        { text: "Đầu tư", url: "/investments" },
-        { text: "Tiết kiệm", url: "/savings" },
+        { text: "Budget Management", url: "/budget" },
+        { text: "Investments", url: "/investments" },
+        { text: "Savings", url: "/savings" },
       ],
     },
     {
-      title: "Hỗ trợ",
+      title: "Support",
       links: [
         { text: "FAQ", url: "/faq" },
-        { text: "Trung tâm trợ giúp", url: "/help" },
-        { text: "Liên hệ", url: "/contact" },
+        { text: "Help Center", url: "/help" },
+        { text: "Contact", url: "/contact" },
       ],
     },
     {
-      title: "Công ty",
+      title: "Company",
       links: [
-        { text: "Về chúng tôi", url: "/about" },
+        { text: "About Us", url: "/about" },
         { text: "Blog", url: "/blog" },
-        { text: "Tuyển dụng", url: "/careers" },
+        { text: "Careers", url: "/careers" },
       ],
     },
     {
-      title: "Pháp lý",
+      title: "Legal",
       links: [
-        { text: "Chính sách bảo mật", url: "/privacy" },
-        { text: "Điều khoản sử dụng", url: "/terms" },
+        { text: "Privacy Policy", url: "/privacy" },
+        { text: "Terms of Use", url: "/terms" },
       ],
     },
   ];
