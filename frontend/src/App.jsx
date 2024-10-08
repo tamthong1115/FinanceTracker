@@ -8,6 +8,8 @@ import Layout from "./layouts/Layout";
 
 // pages
 import Home from "./pages/Home/Home";
+import LoginForm from "./pages/LoginAndRegister/LoginForm";
+import RegisterForm from "./pages/LoginAndRegister/RegisterForm";
 import AboutUs from "./pages/AboutUs/AboutUs";
 
 function App() {
@@ -22,6 +24,21 @@ function App() {
             </Layout>
           }
         />
+
+        <Route
+          path="/login"
+          element={
+            <Layout>
+              <LoginForm />
+            </Layout>
+          }
+        />
+
+        <Route
+          path="/register"
+          element={
+            <Layout>
+              <RegisterForm />
          <Route
           path="/about-us"
           element={
