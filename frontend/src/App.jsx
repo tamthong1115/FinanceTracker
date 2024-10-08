@@ -10,6 +10,7 @@ import Layout from "./layouts/Layout";
 import Home from "./pages/Home/Home";
 import LoginForm from "./pages/LoginAndRegister/LoginForm";
 import RegisterForm from "./pages/LoginAndRegister/RegisterForm";
+import AboutUs from "./pages/AboutUs/AboutUs";
 
 function App() {
   return (
@@ -38,6 +39,11 @@ function App() {
           element={
             <Layout>
               <RegisterForm />
+         <Route
+          path="/about-us"
+          element={
+            <Layout>
+              <AboutUs />
             </Layout>
           }
         />
