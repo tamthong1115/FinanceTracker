@@ -1,6 +1,6 @@
 services:
   postgres:
-    container_name: postgres_container_toys
+    container_name: postgres_container_finance
     image: postgres:17
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
