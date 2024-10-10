@@ -39,7 +39,10 @@ function App() {
           element={
             <Layout>
               <RegisterForm />
-         <Route
+            </Layout>
+          }
+        />
+        <Route
           path="/about-us"
           element={
             <Layout>
