@@ -11,6 +11,7 @@ import Home from "./pages/Home/Home";
 import LoginForm from "./pages/LoginAndRegister/LoginForm";
 import RegisterForm from "./pages/LoginAndRegister/RegisterForm";
 import AboutUs from "./pages/AboutUs/AboutUs";
+import Dashboard from "./pages/Dashboard/Dashboard.tsx";
 
 function App() {
   return (
@@ -50,6 +51,8 @@ function App() {
             </Layout>
           }
         />
+
+          <Route path={"/dashboard"} element={<Dashboard/>} />
       </Routes>
     </Router>
   );
