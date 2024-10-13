@@ -7,10 +7,7 @@ import com.tamthong.finance_tracker_api.model.User;
 import com.tamthong.finance_tracker_api.service.AuthenticationService;
 import com.tamthong.finance_tracker_api.service.JwtService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -32,10 +29,9 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> authenticate(@RequestBody LoginRequestDTO loginRequestDTO) {
-        User user = authenticationService.login(loginRequestDTO);
-
-        String token = jwtService.generateToken(user);
-
-        return ResponseEntity.ok(new JwtResponse(token, jwtService.getExpirationTime()));
+        JwtResponse jwtResponse = authenticationService.login(loginRequestDTO);
+        return ResponseEntity.ok(jwtResponse);
     }
+
+
 }
