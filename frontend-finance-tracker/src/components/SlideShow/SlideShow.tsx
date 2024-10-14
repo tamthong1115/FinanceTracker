@@ -1,13 +1,19 @@
-import  {useState,useEffect} from 'react';
+import  React, {useState,useEffect} from 'react';
 import {Link} from "react-router-dom";
 
-const SlideShow = () => {
-    const backgrounds = [
+
+interface Background {
+    url: string;
+    title: string;
+}
+
+const SlideShow : React.FC = () => {
+    const backgrounds: Background[] = [
         { url: 'img/Finace-tracker-background.webp', title: 'Build Your Financial Plan With Our Specialists' },
         { url: 'img/Finace-tracker-background2.webp', title: 'We\'re Always Here To Give Financial Help!' },
     ];
 
-    const [currentSlide, setCurrentSlide] = useState(0);
+    const [currentSlide, setCurrentSlide] = useState<number>(0);
 
     const goToNextSlide = () => {
         setCurrentSlide((prevSlide) => (prevSlide + 1) % backgrounds.length);
@@ -15,7 +21,7 @@ const SlideShow = () => {
     useEffect(() => {
         const intervalId = setInterval(goToNextSlide, 3000);
         return () => clearInterval(intervalId);
-    })
+    },[])
 
     return (
         <div className="slideshow px-0 mx-0">

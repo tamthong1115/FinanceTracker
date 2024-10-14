@@ -1,7 +1,13 @@
 import React from "react";
 import Slider from "react-slick";
 
-const CommunityData = [
+interface Testimonial {
+  name: string;
+  img: string;
+  review: string;
+}
+
+const CommunityData: Testimonial[] = [
   {
     name: `John Smith`,
     img: `dd6.jpg`,
@@ -35,8 +41,8 @@ const CommunityData = [
   },
 ];
 
-const CommunitySlider = () => {
-  const settings = {
+const CommunitySlider: React.FC = () => {
+  const settings: import("react-slick").Settings = {
     dots: true,
     infinite: true,
     speed: 500,
@@ -44,6 +50,7 @@ const CommunitySlider = () => {
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 3000,
+    pauseOnHover: true,
     responsive: [
       {
         breakpoint: 1024,
@@ -70,39 +77,43 @@ const CommunitySlider = () => {
   };
 
   return (
-    <div className="w-3/4 m-auto mt-20">
-      <Slider {...settings}>
-        {CommunityData.map((testimonial, index) => (
-          <div
-            key={index}
-            className={`p-6 rounded-lg shadow-lg bg-gray-200 mx-auto`}
-          >
-            <div className="flex items-center mb-4">
-              <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white">
-                <img
-                  src="/img/icons8-get-quote-100-colorWhite.png"
-                  className="w-8 h-8"
-                  alt=""
-                />
+      <div className="w-3/4 m-auto mt-20">
+        <Slider {...settings}>
+          {CommunityData.map((testimonial, index) => (
+              <div
+                  key={index}
+                  className={`p-6 rounded-lg shadow-lg bg-gray-200 mx-auto`}
+              >
+                <div className="flex items-center mb-4">
+                  <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white">
+                    <img
+                        src="/img/icons8-get-quote-100-colorWhite.png"
+                        className="w-8 h-8"
+                        alt=""
+                    />
+                  </div>
+                </div>
+
+                <p className="mb-4 text-gray-600">{testimonial.review}</p>
+                <div className="flex items-center">
+                  <img
+                      src={`/img/${testimonial.img}`}
+                      alt={`Profile picture of ${testimonial.name}`}
+                      className="w-12 h-12 rounded-full mr-4"
+                  />
+                  {/*Name*/}
+                  <div>
+                    <h3 className="font-bold text-gray-800">{testimonial.name}</h3>
+                    <p className="text-sm text-gray-500">User</p>
+                  </div>
+
+                </div>
               </div>
-            </div>
-            <p className="mb-4 text-gray-600">{testimonial.review}</p>
-            <div className="flex items-center">
-              <img
-                src={`/img/${testimonial.img}`}
-                alt={`Profile picture of ${testimonial.name}`}
-                className="w-12 h-12 rounded-full mr-4"
-              />
-              <div>
-                <h3 className="font-bold text-gray-800">{testimonial.name}</h3>
-                <p className="text-sm text-gray-500">User</p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </Slider>
-    </div>
+          ))}
+        </Slider>
+      </div>
   );
 };
 
 export default CommunitySlider;
+

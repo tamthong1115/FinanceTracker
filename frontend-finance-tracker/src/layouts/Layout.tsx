@@ -15,7 +15,7 @@ const Layout = ({ children }: LayoutProps) => {
           <Header />
         </div>
       </header>
-      <main className="flex-1 container mx-auto py-10">{children}</main>
+      <main className="flex-1 container py-10">{children}</main>
       <footer className="bg-gray-800 text-white">
         <div className="container mx-auto py-6">
           <Footer />
