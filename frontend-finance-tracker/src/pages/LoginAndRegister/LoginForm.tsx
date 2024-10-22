@@ -19,14 +19,12 @@ const LoginForm = () => {
         formState: {errors}
     } = useForm<LoginType>();
 
-
     const onSubmit = async (data: LoginType) => {
         try {
             setIsLoading(true);
             const response = await axiosInstance.post('/auth/login', data);
-
             toast.success('Login successful!');
-            await login(response.data.token);
+            login(response.data.token, response.data.user);
         } catch (error: any) {
             const errorMessage = error.response?.data?.message || 'Login failed. Please try again.';
             toast.error(errorMessage);

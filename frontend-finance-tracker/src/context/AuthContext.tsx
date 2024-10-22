@@ -1,69 +1,66 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, {createContext, useContext, useState, useEffect} from 'react';
+import {useNavigate, useLocation} from 'react-router-dom';
 import axiosInstance from '../services/api/axiosConfig';
+
+interface User {
+    id: number;
+    username: string;
+    email: string;
+}
 
 interface AuthContextType {
     isAuthenticated: boolean;
-    user: any | null;
-    login: (token: string) => void;
+    user: User | null;
+    login: (token: string, userData: User) => void;
     logout: () => void;
-    setUser: (user: any) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
+    const [isLoading, setIsLoading] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-    const [isLoading, setIsLoading] = useState(true);
-    const [user, setUser] = useState<any | null>(null);
+    const [user, setUser] = useState<User | null>(null);
     const navigate = useNavigate();
-    const location = useLocation();
 
     useEffect(() => {
-        const initializeAuth = async () => {
-            const token = localStorage.getItem('token');
-            if (token) {
-                // Just set authenticated if token exists
-                setIsAuthenticated(true);
-                // Set default axios header
-                axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            }
-            setIsLoading(false);
-        };
+        // Check for existing token and user data in localStorage
+        const token = localStorage.getItem('token');
+        const savedUser = localStorage.getItem('user');
 
-        initializeAuth();
+        if (token && savedUser) {
+            setIsAuthenticated(true);
+            setUser(JSON.parse(savedUser));
+            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        }
     }, []);
 
-    const login = async (token: string) => {
-        try {
-            localStorage.setItem('token', token);
-            // Set token in axios defaults
-            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
-            // Set authenticated without profile check
-            setIsAuthenticated(true);
-
-            // Redirect to intended destination or dashboard
-            const from = location.state?.from?.pathname || '/dashboard';
-            navigate(from, { replace: true });
-
-            /* Comment out profile fetch for now
-            // Get user profile
-            const response = await axiosInstance.get('/auth/profile');
-            setUser(response.data);
-            */
-        } catch (error) {
-            console.error('Login error:', error);
-            handleLogout();
-        }
+    const login = (token: string, userData: User) => {
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(userData));
+        setIsAuthenticated(true);
+        setUser(userData);
+        axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        navigate('/dashboard');
     };
 
     const handleLogout = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('user');
         delete axiosInstance.defaults.headers.common['Authorization'];
         setIsAuthenticated(false);
         setUser(null);
-        navigate('/login', { replace: true });
+        navigate('/login');
+    };
+
+    const logout = async () => {
+        setIsLoading(true);
+        try {
+            await handleLogout();
+            navigate('/login');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     if (isLoading) {
@@ -80,8 +77,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 isAuthenticated,
                 user,
                 login,
-                logout: handleLogout,
-                setUser
+                logout,
             }}
         >
             {children}
