@@ -1,5 +1,6 @@
 import React from 'react';
 import {useForm} from 'react-hook-form';
+import {Transaction, TransactionFormData} from "../../../types/transaction.ts";
 
 interface TransactionFormProps {
     initialData?: Transaction;

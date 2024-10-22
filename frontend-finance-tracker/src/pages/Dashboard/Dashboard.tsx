@@ -6,14 +6,13 @@ import Goals from "../../components/main/Goals/Goals";
 import Reports from "../../components/main/Reports/Reports";
 import {Budget} from "../../components/main/Budget/Budget";
 import Accounts from "../../components/main/Accounts/Accounts";
-
 // import {Setting} from "../../components/main/Setting/Setting";
 
 interface DashboardProps {
     userId: number;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({userId}) => {
+const Dashboard: React.FC<DashboardProps> = () => {
     const [activeItem, setActiveItem] = useState('Tổng quan');
     const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
 
