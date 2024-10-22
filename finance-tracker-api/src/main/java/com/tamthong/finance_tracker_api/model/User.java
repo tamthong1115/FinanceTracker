@@ -44,6 +44,14 @@ public class User implements UserDetails {
         updatedAt = LocalDateTime.now();
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        // Add roles or authorities here, for example:
+        // authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        return authorities;
+    }
+
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
