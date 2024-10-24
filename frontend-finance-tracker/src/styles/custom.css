@@ -31,3 +31,19 @@
     @apply text-gray-400 hover:text-gray-300;
   }
 }
+
+.loading-overlay {
+  @apply absolute inset-0 bg-white bg-opacity-50 flex items-center justify-center;
+}
+
+.form-disabled {
+  @apply opacity-50 pointer-events-none;
+}
+
+.spinner {
+  @apply animate-spin rounded-full h-4 w-4 border-2;
+  border-top-color: currentColor;
+  border-right-color: currentColor;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+}
