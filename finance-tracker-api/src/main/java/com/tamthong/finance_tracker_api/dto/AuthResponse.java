@@ -1,18 +1,13 @@
-package com.tamthong.finance_tracker_api.dto.auth;
+package com.tamthong.finance_tracker_api.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class JwtResponse {
+public class AuthResponse {
     private String token;
-
-    private long expirationTime;
-
-
+    private UserDTO user;
 }
