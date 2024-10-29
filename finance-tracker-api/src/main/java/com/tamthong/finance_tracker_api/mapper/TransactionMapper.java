@@ -5,7 +5,7 @@ import com.tamthong.finance_tracker_api.model.Transaction;
 import com.tamthong.finance_tracker_api.model.User;
 import org.mapstruct.*;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface TransactionMapper {
     @Mapping(target = "userId", source = "user.id")
     TransactionDTO toDTO(Transaction transaction);
