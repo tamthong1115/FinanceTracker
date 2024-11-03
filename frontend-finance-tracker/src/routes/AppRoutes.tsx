@@ -6,6 +6,8 @@ import {ProtectedRoute} from '../components/ProtectedRoute';
 import Layout from "../layouts/Layout.tsx";
 import Home from "../pages/Home/Home.tsx";
 import AboutUs from "../pages/AboutUs/AboutUs.tsx";
+import { Budget } from "../components/main/Budget/Budget.tsx";
+import { Transactions } from "../components/main/Transactions/Transactions.tsx";
 
 const AppRoutes = () => {
     return (
@@ -29,32 +31,35 @@ const AppRoutes = () => {
                 }
             />
 
-            <Route
-                path="/register"
-                element={
-                    <Layout>
-                        <RegisterForm/>
-                    </Layout>
-                }
-            />
-            <Route
-                path="/about-us"
-                element={
-                    <Layout>
-                        <AboutUs/>
-                    </Layout>
-                }
-            />
-            <Route
-                path="/dashboard/*"
-                element={
-                    <ProtectedRoute>
-                        <Dashboard />
-                    </ProtectedRoute>
-                }
-            />
-        </Routes>
-    );
+      <Route
+        path="/register"
+        element={
+          <Layout>
+            <RegisterForm />
+          </Layout>
+        }
+      />
+      <Route
+        path="/about-us"
+        element={
+          <Layout>
+            <AboutUs />
+          </Layout>
+        }
+      />
+      <Route
+        path="/dashboard/*"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      >
+        <Route path="transactions" element={<Transactions />} />
+        <Route path="budget" element={<Budget />} />
+      </Route>
+    </Routes>
+  );
 };
 
 export default AppRoutes;
