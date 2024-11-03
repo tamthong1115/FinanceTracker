@@ -1,28 +1,34 @@
+export type TransactionType = "INCOME" | "EXPENSE";
+export type TransactionStatus = "COMPLETED" | "PENDING" | "CANCELLED";
+export type RecurrentPeriod = "DAILY" | "WEEKLY" | "MONTHLY" | "YEARLY";
+
 export interface Transaction {
   id: number;
   amount: number;
   description: string;
   category: string;
-  type: "INCOME" | "EXPENSE";
+  type: TransactionType;
   date: string;
   paymentMethod: string;
-  status: "COMPLETED" | "PENDING" | "CANCELLED";
+  status: TransactionStatus;
   attachments?: string[];
   notes?: string;
   tags?: string[];
   recurrent?: boolean;
-  recurrentPeriod?: "DAILY" | "WEEKLY" | "MONTHLY" | "YEARLY";
+  recurrentPeriod?: RecurrentPeriod;
+  userId: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface TransactionFormData {
+  type: TransactionType;
+  status: TransactionStatus;
   amount: number;
-  description: string;
-  category: string;
-  type: "INCOME" | "EXPENSE";
   date: string;
   paymentMethod: string;
   notes?: string;
   tags?: string[];
   recurrent?: boolean;
-  recurrentPeriod?: "DAILY" | "WEEKLY" | "MONTHLY" | "YEARLY";
+  recurrentPeriod?: RecurrentPeriod;
 }
