@@ -12,26 +12,26 @@ import SavingsGoals from "../components/main/Goals/SavingsGoals.tsx";
 import Reports from "../components/main/Reports/Reports.tsx";
 
 const AppRoutes = () => {
-    return (
-        <Routes>
-            {/*<Route path="/" element={<Navigate to="/dashboard" replace/>}/>*/}
-            <Route
-                path="/"
-                element={
-                    <Layout>
-                        <Home/>
-                    </Layout>
-                }
-            />
+  return (
+    <Routes>
+      {/*<Route path="/" element={<Navigate to="/dashboard" replace/>}/>*/}
+      <Route
+        path="/"
+        element={
+          <Layout>
+            <Home />
+          </Layout>
+        }
+      />
 
-            <Route
-                path="/login"
-                element={
-                    <Layout>
-                        <LoginForm/>
-                    </Layout>
-                }
-            />
+      <Route
+        path="/login"
+        element={
+          <Layout>
+            <LoginForm />
+          </Layout>
+        }
+      />
 
       <Route
         path="/register"
