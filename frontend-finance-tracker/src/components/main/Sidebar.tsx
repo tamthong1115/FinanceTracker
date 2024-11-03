@@ -1,85 +1,186 @@
-import {useState} from "react";
+import { FC } from "react";
+import { Link, useLocation } from "react-router-dom";
 import {
-    BarChart2,
-    ChevronLeft,
-    ChevronRight,
-    DollarSign,
-    LayoutDashboard,
-    Settings,
-    Tag,
-    Target,
-    Wallet
+  LayoutDashboard,
+  DollarSign,
+  Target,
+  BarChart2,
+  Wallet,
+  Settings,
+  ChevronLeft,
+  ChevronRight,
+  Search,
+  Tag,
 } from "lucide-react";
+import { SidebarProps, NavItem } from "../../types/props";
 
-export const Sidebar = ({activeItem, setActiveItem}) => {
-    const [isExpanded, setIsExpanded] = useState(false);
+export const Sidebar: FC<SidebarProps> = ({
+  activeItem,
+  setActiveItem,
+  isExpanded,
+  setIsExpanded,
+}) => {
+  const location = useLocation();
 
-    const navItems = [
-        {icon: <LayoutDashboard size={24}/>, text: 'Tổng quan', href: '#'},
-        {icon: <DollarSign size={24}/>, text: 'Giao dịch', href: '#'},
-        {icon: <Tag size={24}/>, text: 'Ngân sách', href: '#'},
-        {icon: <Target size={24}/>, text: 'Mục tiêu', href: '#'},
-        {icon: <BarChart2 size={24}/>, text: 'Báo cáo', href: '#'},
-        {icon: <Wallet size={24}/>, text: 'Tài khoản', href: '#'},
-    ];
+  const navItems: NavItem[] = [
+    {
+      icon: <LayoutDashboard size={24} />,
+      text: "Overview",
+      href: "/dashboard",
+      description: "View your financial summary and insights",
+    },
+    {
+      icon: <DollarSign size={24} />,
+      text: "Transactions",
+      href: "/dashboard/transactions",
+      description: "Track your income and expenses",
+    },
+    {
+      icon: <Wallet size={24} />,
+      text: "Accounts",
+      href: "/dashboard/accounts",
+      description: "Manage your bank accounts and wallets",
+    },
+    {
+      icon: <Tag size={24} />,
+      text: "Budget",
+      href: "/dashboard/budget",
+      description: "Set and monitor spending limits",
+    },
+    {
+      icon: <Target size={24} />,
+      text: "Goals",
+      href: "/dashboard/goals",
+      description: "Track your financial goals",
+    },
+    {
+      icon: <BarChart2 size={24} />,
+      text: "Reports",
+      href: "/dashboard/reports",
+      description: "View detailed financial reports",
+    },
+  ];
 
-    return (
-        <nav
-            className={`bg-white shadow-lg fixed h-full z-10 flex flex-col justify-between transition-all duration-300 ${isExpanded ? 'w-64' : 'w-20'}`}>
-            <div>
-                <div className="p-4 flex items-center justify-between">
-                    <img src="/icon.png" alt="Logo" className="w-12 h-12"/>
-                    {isExpanded && <span className="font-bold text-xl">FinanceApp</span>}
-                </div>
-                <ul className="mt-6">
-                    {navItems.map((item, index) => (
-                        <li key={index} className="relative">
-                            <a
-                                href={item.href}
-                                className={`flex items-center py-4 px-6 text-gray-700 hover:bg-gray-100 ${
-                                    activeItem === item.text ? 'bg-blue-100 text-blue-600' : ''
-                                }`}
-                                onClick={() => setActiveItem(item.text)}
-                            >
-                                {item.icon}
-                                {isExpanded && <span className="ml-4">{item.text}</span>}
-                            </a>
-                            {!isExpanded && (
-                                <span
-                                    className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 whitespace-nowrap">
-                  {item.text}
-                </span>
-                            )}
-                        </li>
-                    ))}
-                </ul>
-            </div>
+  const bottomNavItems: NavItem[] = [
+    {
+      icon: <Settings size={24} />,
+      text: "Settings",
+      href: "/dashboard/settings",
+      description: "Customize your preferences",
+    },
+  ];
+
+  const NavItemComponent: FC<{
+    item: NavItem;
+    index: number;
+  }> = ({ item, index }) => (
+    <div className="relative group">
+      <Link
+        to={item.href}
+        className={`flex items-center py-3 px-4 rounded-lg transition-all duration-200
+          ${
+            location.pathname === item.href
+              ? "bg-blue-50 text-blue-600"
+              : "text-gray-600 hover:bg-gray-100"
+          }
+          ${isExpanded ? "" : "justify-center"}`}
+        onClick={() => setActiveItem(item.text)}
+      >
+        <div className={`flex items-center ${isExpanded ? "w-full" : ""}`}>
+          <span className="flex-shrink-0">{item.icon}</span>
+          {isExpanded && (
+            <span className="ml-3 text-sm font-medium">{item.text}</span>
+          )}
+        </div>
+
+        {/* Enhanced Tooltip */}
+        {!isExpanded && (
+          <div className="invisible group-hover:visible absolute left-full top-1/2 transform -translate-y-1/2 ml-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-md whitespace-nowrap z-50">
+            <div className="font-medium">{item.text}</div>
+            <div className="text-xs text-gray-300 mt-1">{item.description}</div>
+            <div
+              className="absolute left-0 top-1/2 transform -translate-x-1 -translate-y-1/2 
+              border-4 border-transparent border-r-gray-900"
+            ></div>
+          </div>
+        )}
+      </Link>
+    </div>
+  );
+
+  return (
+    <nav
+      className={`bg-white shadow-lg fixed h-full z-40 flex flex-col justify-between 
+      transition-all duration-300 ${isExpanded ? "w-64" : "w-20"}`}
+    >
+      {/* Logo and Brand */}
+      <div>
+        <div className="p-4 flex items-center justify-between border-b">
+          <div className="flex items-center">
+            <img src="/icon.png" alt="Logo" className="w-10 h-10" />
+            {isExpanded && (
+              <span className="ml-3 font-bold text-xl text-gray-800">
+                FinanceTracker
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Search Bar - Only when expanded */}
+        {isExpanded && (
+          <div className="px-4 py-3">
             <div className="relative">
-                <a
-                    href="#"
-                    className={`flex items-center py-4 px-6 text-gray-700 hover:bg-gray-100 ${
-                        activeItem === 'Cài đặt' ? 'bg-blue-100 text-blue-600' : ''
-                    }`}
-                    onClick={() => setActiveItem('Cài đặt')}
-                >
-                    <Settings size={24}/>
-                    {isExpanded && <span className="ml-4">Cài đặt</span>}
-                </a>
-                {!isExpanded && (
-                    <span
-                        className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 whitespace-nowrap">
-            Cài đặt
-          </span>
-                )}
+              <input
+                type="text"
+                placeholder="Quick search..."
+                className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 
+                focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              />
+              <Search
+                className="absolute left-3 top-2.5 text-gray-400"
+                size={20}
+              />
             </div>
-            <button
-                className="absolute top-1/2 -right-3 bg-white rounded-full p-1 shadow-md"
-                onClick={() => setIsExpanded(!isExpanded)}
-            >
-                {isExpanded ? <ChevronLeft size={20}/> : <ChevronRight size={20}/>}
-            </button>
-        </nav>
-    );
+          </div>
+        )}
+
+        {/* Main Navigation Items */}
+        <div className="px-2 py-2 space-y-1">
+          {navItems.map((item, index) => (
+            <NavItemComponent key={index} item={item} index={index} />
+          ))}
+        </div>
+      </div>
+
+      {/* Bottom Navigation Items */}
+      <div className="border-t">
+        <div className="px-2 py-2 space-y-1">
+          {bottomNavItems.map((item, index) => (
+            <NavItemComponent
+              key={`bottom-${index}`}
+              item={item}
+              index={navItems.length + index}
+            />
+          ))}
+        </div>
+
+        {/* Toggle Button */}
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="absolute -right-3 top-1/2 transform -translate-y-1/2 
+          bg-white rounded-full p-1.5 border shadow-md hover:shadow-lg 
+          transition-shadow duration-200"
+          title={isExpanded ? "Collapse sidebar" : "Expand sidebar"}
+        >
+          {isExpanded ? (
+            <ChevronLeft size={16} className="text-gray-600" />
+          ) : (
+            <ChevronRight size={16} className="text-gray-600" />
+          )}
+        </button>
+      </div>
+    </nav>
+  );
 };
 
 export default Sidebar;
