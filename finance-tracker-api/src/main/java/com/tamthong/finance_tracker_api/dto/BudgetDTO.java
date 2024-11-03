@@ -1,9 +1,8 @@
 package com.tamthong.finance_tracker_api.dto;
 
 import lombok.Data;
-
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 public class BudgetDTO {
@@ -13,7 +12,7 @@ public class BudgetDTO {
     private BigDecimal limit;
     private BigDecimal spent;
     private String period;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
-    private LocalDateTime lastUpdated;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private LocalDate lastUpdated;
 }
