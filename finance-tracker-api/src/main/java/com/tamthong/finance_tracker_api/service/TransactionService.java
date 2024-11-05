@@ -21,6 +21,7 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final TransactionMapper transactionMapper;
     private final UserService userService;
+    private final BudgetService budgetService;
 
     @Transactional(readOnly = true)
     public List<TransactionDTO> getAllTransactionsByUser() {
@@ -56,6 +57,7 @@ public class TransactionService {
             }
 
             Transaction savedTransaction = transactionRepository.save(transaction);
+            updateBudgeWithTransaction(savedTransaction);
             return transactionMapper.toDTO(savedTransaction);
         } catch (Exception e) {
             e.printStackTrace();
@@ -91,5 +93,12 @@ public class TransactionService {
         }
 
         return transaction;
+    }
+    
+    private void updateBudgeWithTransaction(Transaction transaction){
+        budgetService.findByCategoryId(transaction.getCategory().getId()).ifPresent(budget -> {
+            budget.setAmount(budget.getAmount().add(transaction.getAmount()));
+            budgetService.save(budget);
+        });
     }
 }
