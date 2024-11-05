@@ -38,4 +38,9 @@ public class Category {
     private Instant createdAt;
 
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "user_id")
+    private User user;
+
 }

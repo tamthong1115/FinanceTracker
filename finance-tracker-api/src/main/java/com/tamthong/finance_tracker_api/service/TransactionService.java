@@ -1,9 +1,9 @@
 package com.tamthong.finance_tracker_api.service;
 
+import com.tamthong.finance_tracker_api.dto.CreateBudgetDTO;
 import com.tamthong.finance_tracker_api.dto.TransactionDTO;
 import com.tamthong.finance_tracker_api.exception.ResourceNotFoundException;
-import com.tamthong.finance_tracker_api.model.Transaction;
-import com.tamthong.finance_tracker_api.model.User;
+import com.tamthong.finance_tracker_api.model.*;
 import com.tamthong.finance_tracker_api.repository.TransactionRepository;
 import com.tamthong.finance_tracker_api.mapper.TransactionMapper;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,9 @@ public class TransactionService {
     private final TransactionMapper transactionMapper;
     private final UserService userService;
     private final BudgetService budgetService;
-
+    private final CategoryService categoryService;
+    private final AccountService accountService;
+    
     @Transactional(readOnly = true)
     public List<TransactionDTO> getAllTransactionsByUser() {
         Long userId = userService.getCurrentUserId();
@@ -46,9 +48,18 @@ public class TransactionService {
             Transaction transaction = transactionMapper.toEntity(transactionDTO);
             transaction.setUser(currentUser);
 
+            Category category = categoryService.findById(transactionDTO.getCategoryId())
+                    .orElseThrow(() -> new IllegalArgumentException("Category not found"));
+            transaction.setCategory(category);
+
+            Account account = accountService.findById(transactionDTO.getAccountId())
+                    .orElseThrow(() -> new IllegalArgumentException("Account not found"));
+            transaction.setAccount(account);
+
             if (transaction.getDate() == null) {
                 transaction.setDate(LocalDate.now());
             }
+
             if (transaction.getType() == null) {
                 throw new IllegalArgumentException("Transaction type is required");
             }
@@ -64,6 +75,7 @@ public class TransactionService {
             throw new RuntimeException("Error creating transaction: " + e.getMessage());
         }
     }
+           
 
     @Transactional
     public TransactionDTO updateTransaction(Long id, TransactionDTO transactionDTO) {
@@ -96,9 +108,19 @@ public class TransactionService {
     }
     
     private void updateBudgeWithTransaction(Transaction transaction){
-        budgetService.findByCategoryId(transaction.getCategory().getId()).ifPresent(budget -> {
-            budget.setAmount(budget.getAmount().add(transaction.getAmount()));
-            budgetService.save(budget);
-        });
+        if(transaction.getType().equals(TransactionType.INCOME)){
+            return;
+        }
+
+
+        budgetService.findByCategoryId(transaction.getCategory().getId())
+                .filter(budget -> !budgetService.isBudgetExpired(budget))
+                .ifPresent(budget -> {
+                    if (budget.getAmount().compareTo(transaction.getAmount()) < 0) {
+                        throw new IllegalArgumentException("Budget is not enough");
+                    }
+
+                    budget.setAmount(budget.getAmount().subtract(transaction.getAmount()));
+                });
     }
 }

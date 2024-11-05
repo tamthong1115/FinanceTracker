@@ -1,5 +1,6 @@
 package com.tamthong.finance_tracker_api.controller;
 
+import com.tamthong.finance_tracker_api.dto.CreateBudgetDTO;
 import com.tamthong.finance_tracker_api.model.Budget;
 import com.tamthong.finance_tracker_api.service.BudgetService;
 import org.springframework.http.ResponseEntity;
@@ -30,25 +31,11 @@ public class BudgetController {
     }
 
     @PostMapping
-    public Budget createBudget(@RequestBody Budget budget) {
-        return budgetService.save(budget);
+    public Budget createBudget(@RequestBody CreateBudgetDTO budget) {
+        return budgetService.createBudget(budget);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Budget> updateBudget(@PathVariable Integer id, @RequestBody Budget budgetDetails) {
-        Optional<Budget> budget = budgetService.findById(id);
-        if (budget.isPresent()) {
-            Budget updatedBudget = budget.get();
-            updatedBudget.setAmount(budgetDetails.getAmount());
-            updatedBudget.setStartDate(budgetDetails.getStartDate());
-            updatedBudget.setEndDate(budgetDetails.getEndDate());
-            updatedBudget.setCategory(budgetDetails.getCategory());
-            return ResponseEntity.ok(budgetService.save(updatedBudget));
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
+   
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBudget(@PathVariable Integer id) {
         if (budgetService.findById(id).isPresent()) {

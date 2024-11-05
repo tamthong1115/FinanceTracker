@@ -27,6 +27,11 @@ public class Transaction {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id", nullable = false)
+    private Account account;
+
     @Column(nullable = false)
     private BigDecimal amount;
 
@@ -61,8 +66,6 @@ public class Transaction {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @Column(name = "transaction_date", nullable = false)
-    private Instant transactionDate;
 
     @PrePersist
     protected void onCreate() {
