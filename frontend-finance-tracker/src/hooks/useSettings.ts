@@ -9,8 +9,28 @@ import {
   Preferences,
 } from "../types/settings";
 
+const defaultSettings: UserSettings = {
+  profile: {
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+  },
+  notifications: {
+    emailNotifications: true,
+    budgetAlerts: true,
+    transactionNotifications: true,
+  },
+  preferences: {
+    currency: "VND",
+    fiscalMonthStartDay: 1,
+    dateFormat: "DD/MM/YYYY",
+    darkMode: false,
+  },
+};
+
 export const useSettings = () => {
-  const [settings, setSettings] = useState<UserSettings | null>(null);
+  const [settings, setSettings] = useState<UserSettings>(defaultSettings);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -19,12 +39,17 @@ export const useSettings = () => {
       setLoading(true);
       setError(null);
       const response = await settingsApi.getCurrentSettings();
-      setSettings(response.data);
+
+      // Merge with default settings to ensure all properties exist
+      setSettings({
+        ...defaultSettings,
+        ...response.data,
+      });
     } catch (err: any) {
       const errorMessage =
         err.response?.data?.message || "Failed to fetch settings";
       setError(errorMessage);
-      throw err; // Allow component to handle the error
+      // Don't reset settings on error, keep default values
     } finally {
       setLoading(false);
     }
@@ -35,7 +60,10 @@ export const useSettings = () => {
       setLoading(true);
       setError(null);
       const response = await settingsApi.updateProfile(data);
-      setSettings(response.data);
+      setSettings((prev) => ({
+        ...prev,
+        profile: response.data.profile,
+      }));
       return response.data;
     } catch (err: any) {
       const errorMessage =
@@ -67,11 +95,14 @@ export const useSettings = () => {
       setLoading(true);
       setError(null);
       const response = await settingsApi.updateNotifications(data);
-      setSettings(response.data);
+      setSettings((prev) => ({
+        ...prev,
+        notifications: response.data.notifications,
+      }));
       return response.data;
     } catch (err: any) {
       const errorMessage =
-        err.response?.data?.message || "Failed to update notification settings";
+        err.response?.data?.message || "Failed to update notifications";
       setError(errorMessage);
       throw err;
     } finally {
@@ -84,7 +115,10 @@ export const useSettings = () => {
       setLoading(true);
       setError(null);
       const response = await settingsApi.updatePreferences(data);
-      setSettings(response.data);
+      setSettings((prev) => ({
+        ...prev,
+        preferences: response.data.preferences,
+      }));
       return response.data;
     } catch (err: any) {
       const errorMessage =

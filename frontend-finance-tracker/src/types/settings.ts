@@ -5,11 +5,6 @@ export interface UserProfile {
   address: string;
 }
 
-export interface SecuritySettings {
-  currentPassword: string;
-  newPassword: string;
-}
-
 export interface NotificationSettings {
   emailNotifications: boolean;
   budgetAlerts: boolean;
@@ -31,13 +26,7 @@ export interface UserSettings {
   preferences: Preferences;
 }
 
-// Request types
-export interface UpdateProfileRequest {
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-}
+export interface UpdateProfileRequest extends UserProfile {}
 
 export interface UpdatePasswordRequest {
   currentPassword: string;

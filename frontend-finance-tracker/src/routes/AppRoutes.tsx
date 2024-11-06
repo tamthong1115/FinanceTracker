@@ -10,7 +10,7 @@ import { Budget } from "../components/main/Budget/Budget.tsx";
 import { Transactions } from "../components/main/Transactions/Transactions.tsx";
 import SavingsGoals from "../components/main/Goals/SavingsGoals.tsx";
 import Reports from "../components/main/Reports/Reports.tsx";
-import Settings from '../components/main/Setting/Setting.tsx';
+import Settings from '../components/main/Setting/Settings.tsx';
 
 const AppRoutes = () => {
   return (
