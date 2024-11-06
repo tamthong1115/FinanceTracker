@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -182,12 +181,12 @@ const Header = () => {
               </a>
             </li>
             <li className="max-lg:border-b max-lg:py-3">
-              <a
-                href="javascript:void(0)"
+              <Link
+                to="/about-us"
                 className="hover:text-[#007bff] text-gray-600 text-[15px] font-bold block"
               >
                 About
-              </a>
+              </Link>
             </li>
             <li className="max-lg:border-b max-lg:py-3">
               <a
@@ -222,7 +221,6 @@ const Header = () => {
           </button>
         </div>
       </div>
-
     </header>
   );
 };
