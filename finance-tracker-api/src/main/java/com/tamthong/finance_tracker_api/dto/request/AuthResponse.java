@@ -1,4 +1,6 @@
-package com.tamthong.finance_tracker_api.dto;
+package com.tamthong.finance_tracker_api.dto.request;
+
+import com.tamthong.finance_tracker_api.dto.UserDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

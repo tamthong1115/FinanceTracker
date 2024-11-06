@@ -1,9 +1,9 @@
 package com.tamthong.finance_tracker_api.controller;
 
 
-import com.tamthong.finance_tracker_api.dto.AuthResponse;
-import com.tamthong.finance_tracker_api.dto.LoginRequest;
-import com.tamthong.finance_tracker_api.dto.RegisterRequest;
+import com.tamthong.finance_tracker_api.dto.request.AuthResponse;
+import com.tamthong.finance_tracker_api.dto.request.LoginRequest;
+import com.tamthong.finance_tracker_api.dto.request.RegisterRequest;
 import com.tamthong.finance_tracker_api.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

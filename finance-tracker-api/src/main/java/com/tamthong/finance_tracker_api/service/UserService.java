@@ -1,8 +1,8 @@
 package com.tamthong.finance_tracker_api.service;
 
-import com.tamthong.finance_tracker_api.dto.AuthResponse;
-import com.tamthong.finance_tracker_api.dto.LoginRequest;
-import com.tamthong.finance_tracker_api.dto.RegisterRequest;
+import com.tamthong.finance_tracker_api.dto.request.AuthResponse;
+import com.tamthong.finance_tracker_api.dto.request.LoginRequest;
+import com.tamthong.finance_tracker_api.dto.request.RegisterRequest;
 import com.tamthong.finance_tracker_api.exception.UserAlreadyExistsException;
 import com.tamthong.finance_tracker_api.mapper.UserMapper;
 import com.tamthong.finance_tracker_api.model.User;
