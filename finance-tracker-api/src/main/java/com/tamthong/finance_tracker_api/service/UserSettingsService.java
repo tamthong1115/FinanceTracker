@@ -1,84 +1,119 @@
 package com.tamthong.finance_tracker_api.service;
 
 import com.tamthong.finance_tracker_api.dto.UserSettingsDTO;
-import com.tamthong.finance_tracker_api.dto.NotificationSettingsDTO;
-import com.tamthong.finance_tracker_api.dto.PreferencesDTO;
-import com.tamthong.finance_tracker_api.mapper.UserSettingsMapper;
+import com.tamthong.finance_tracker_api.dto.request.UserSettingsRequests.NotificationSettingsRequest;
+import com.tamthong.finance_tracker_api.dto.request.UserSettingsRequests.PreferencesRequest;
+import com.tamthong.finance_tracker_api.dto.request.UserSettingsRequests.UpdatePasswordRequest;
+import com.tamthong.finance_tracker_api.dto.request.UserSettingsRequests.UpdateProfileRequest;
+import com.tamthong.finance_tracker_api.model.User;
 import com.tamthong.finance_tracker_api.model.UserSettings;
 import com.tamthong.finance_tracker_api.repository.UserSettingsRepository;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserSettingsService {
     private final UserSettingsRepository settingsRepository;
-    private final UserSettingsMapper settingsMapper;
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
-    @Transactional
     public UserSettingsDTO getCurrentUserSettings() {
-        Long userId = userService.getCurrentUserId();
-        UserSettings settings = settingsRepository.findByUserId(userId)
-                .orElseGet(() -> createDefaultSettings(userId));
-        return settingsMapper.toDTO(settings);
+        User currentUser = userService.getCurrentUser();
+        UserSettings settings = settingsRepository.findByUserId(currentUser.getId())
+                .orElseGet(() -> createDefaultSettings(currentUser));
+        return mapToDTO(settings);
     }
 
-    @Transactional
-    public UserSettingsDTO updateUserSettings(UserSettingsDTO settingsDTO) {
-        Long userId = userService.getCurrentUserId();
-        UserSettings settings = settingsRepository.findByUserId(userId)
-                .orElseGet(() -> createDefaultSettings(userId));
+    public UserSettingsDTO updateProfile(UpdateProfileRequest request) {
+        User currentUser = userService.getCurrentUser();
+        UserSettings settings = settingsRepository.findByUserId(currentUser.getId())
+                .orElseGet(() -> createDefaultSettings(currentUser));
 
-        UserSettings updatedSettings = settingsMapper.toEntity(settingsDTO);
-        updatedSettings.setId(settings.getId());
-        updatedSettings.setUser(settings.getUser());
+        settings.setName(request.getName());
+        settings.setPhone(request.getPhone());
+        settings.setAddress(request.getAddress());
 
-        UserSettings savedSettings = settingsRepository.save(updatedSettings);
-        return settingsMapper.toDTO(savedSettings);
+        currentUser.setUsername(request.getName());
+        UserSettings savedSettings = settingsRepository.save(settings);
+        return mapToDTO(savedSettings);
     }
 
-    @Transactional
-    public UserSettingsDTO updateNotificationSettings(NotificationSettingsDTO notificationSettings) {
-        Long userId = userService.getCurrentUserId();
-        UserSettings settings = settingsRepository.findByUserId(userId)
-                .orElseGet(() -> createDefaultSettings(userId));
+    public void updatePassword(UpdatePasswordRequest request) {
+        User currentUser = userService.getCurrentUser();
 
-        settings.setEmailNotifications(notificationSettings.getEmailNotifications());
-        settings.setBudgetAlerts(notificationSettings.getBudgetAlerts());
-        settings.setTransactionNotifications(notificationSettings.getTransactionNotifications());
+        // Verify current password
+        if (!passwordEncoder.matches(request.getCurrentPassword(), currentUser.getPassword())) {
+            throw new BadCredentialsException("Current password is incorrect");
+        }
+
+        // Update password
+        currentUser.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userService.save(currentUser);
+    }
+
+    public UserSettingsDTO updateNotificationSettings(NotificationSettingsRequest request) {
+        User currentUser = userService.getCurrentUser();
+        UserSettings settings = settingsRepository.findByUserId(currentUser.getId())
+                .orElseGet(() -> createDefaultSettings(currentUser));
+
+        settings.setEmailNotifications(request.getEmailNotifications());
+        settings.setBudgetAlerts(request.getBudgetAlerts());
+        settings.setTransactionNotifications(request.getTransactionNotifications());
 
         UserSettings savedSettings = settingsRepository.save(settings);
-        return settingsMapper.toDTO(savedSettings);
+        return mapToDTO(savedSettings);
     }
 
-    @Transactional
-    public UserSettingsDTO updatePreferences(PreferencesDTO preferences) {
-        Long userId = userService.getCurrentUserId();
-        UserSettings settings = settingsRepository.findByUserId(userId)
-                .orElseGet(() -> createDefaultSettings(userId));
+    public UserSettingsDTO updatePreferences(PreferencesRequest request) {
+        User currentUser = userService.getCurrentUser();
+        UserSettings settings = settingsRepository.findByUserId(currentUser.getId())
+                .orElseGet(() -> createDefaultSettings(currentUser));
 
-        settings.setCurrency(preferences.getCurrency());
-        settings.setFiscalMonthStartDay(preferences.getFiscalMonthStartDay());
-        settings.setDateFormat(preferences.getDateFormat());
-        settings.setDarkMode(preferences.getDarkMode());
+        settings.setCurrency(request.getCurrency());
+        settings.setFiscalMonthStartDay(request.getFiscalMonthStartDay());
+        settings.setDateFormat(request.getDateFormat());
+        settings.setDarkMode(request.getDarkMode());
 
         UserSettings savedSettings = settingsRepository.save(settings);
-        return settingsMapper.toDTO(savedSettings);
+        return mapToDTO(savedSettings);
     }
 
-    @Transactional
-    private UserSettings createDefaultSettings(Long userId) {
-        UserSettings settings = new UserSettings();
-        settings.setUser(userService.getCurrentUser());
-        settings.setCurrency("VND");
-        settings.setFiscalMonthStartDay(1);
-        settings.setDateFormat("DD/MM/YYYY");
-        settings.setDarkMode(false);
-        settings.setEmailNotifications(true);
-        settings.setBudgetAlerts(true);
-        settings.setTransactionNotifications(true);
+    private UserSettings createDefaultSettings(User user) {
+        UserSettings settings = UserSettings.builder()
+                .user(user)
+                .emailNotifications(true)
+                .budgetAlerts(true)
+                .transactionNotifications(true)
+                .currency("VND")
+                .fiscalMonthStartDay(1)
+                .dateFormat("DD/MM/YYYY")
+                .darkMode(false)
+                .build();
+
         return settingsRepository.save(settings);
+    }
+
+    private UserSettingsDTO mapToDTO(UserSettings settings) {
+        return UserSettingsDTO.builder()
+                .id(settings.getId())
+                .userId(settings.getUser().getId())
+                .name(settings.getName())
+                .email(settings.getUser().getEmail())
+                .phone(settings.getPhone())
+                .address(settings.getAddress())
+                .emailNotifications(settings.getEmailNotifications())
+                .budgetAlerts(settings.getBudgetAlerts())
+                .transactionNotifications(settings.getTransactionNotifications())
+                .currency(settings.getCurrency())
+                .fiscalMonthStartDay(settings.getFiscalMonthStartDay())
+                .dateFormat(settings.getDateFormat())
+                .darkMode(settings.getDarkMode())
+                .build();
     }
 }
