@@ -11,9 +11,9 @@ const Header = () => {
   return (
     <header className="flex border-b bg-white font-sans min-h-[70px] tracking-wide relative z-50">
       <div className="flex flex-wrap items-center justify-between px-10 py-3 gap-4 w-full">
-        <a href="javascript:void(0)">
+        <Link to="/">
           <img src="icon.png" alt="logo" className="w-14" />
-        </a>
+        </Link>
 
         <div
           className={`${
