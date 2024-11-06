@@ -1,15 +1,11 @@
 package com.tamthong.finance_tracker_api.service;
 
 import com.tamthong.finance_tracker_api.dto.UserSettingsDTO;
-import com.tamthong.finance_tracker_api.dto.request.UserSettingsRequests.NotificationSettingsRequest;
-import com.tamthong.finance_tracker_api.dto.request.UserSettingsRequests.PreferencesRequest;
-import com.tamthong.finance_tracker_api.dto.request.UserSettingsRequests.UpdatePasswordRequest;
-import com.tamthong.finance_tracker_api.dto.request.UserSettingsRequests.UpdateProfileRequest;
+import com.tamthong.finance_tracker_api.dto.request.UserSettingsRequests.*;
 import com.tamthong.finance_tracker_api.model.User;
 import com.tamthong.finance_tracker_api.model.UserSettings;
 import com.tamthong.finance_tracker_api.repository.UserSettingsRepository;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -40,6 +36,8 @@ public class UserSettingsService {
         settings.setAddress(request.getAddress());
 
         currentUser.setUsername(request.getName());
+        userService.save(currentUser); // Save user changes
+
         UserSettings savedSettings = settingsRepository.save(settings);
         return mapToDTO(savedSettings);
     }
@@ -47,12 +45,10 @@ public class UserSettingsService {
     public void updatePassword(UpdatePasswordRequest request) {
         User currentUser = userService.getCurrentUser();
 
-        // Verify current password
         if (!passwordEncoder.matches(request.getCurrentPassword(), currentUser.getPassword())) {
             throw new BadCredentialsException("Current password is incorrect");
         }
 
-        // Update password
         currentUser.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userService.save(currentUser);
     }
@@ -87,6 +83,7 @@ public class UserSettingsService {
     private UserSettings createDefaultSettings(User user) {
         UserSettings settings = UserSettings.builder()
                 .user(user)
+                .name(user.getUsername())
                 .emailNotifications(true)
                 .budgetAlerts(true)
                 .transactionNotifications(true)
@@ -103,17 +100,23 @@ public class UserSettingsService {
         return UserSettingsDTO.builder()
                 .id(settings.getId())
                 .userId(settings.getUser().getId())
-                .name(settings.getName())
-                .email(settings.getUser().getEmail())
-                .phone(settings.getPhone())
-                .address(settings.getAddress())
-                .emailNotifications(settings.getEmailNotifications())
-                .budgetAlerts(settings.getBudgetAlerts())
-                .transactionNotifications(settings.getTransactionNotifications())
-                .currency(settings.getCurrency())
-                .fiscalMonthStartDay(settings.getFiscalMonthStartDay())
-                .dateFormat(settings.getDateFormat())
-                .darkMode(settings.getDarkMode())
+                .profile(UserSettingsDTO.ProfileDTO.builder()
+                    .name(settings.getName())
+                    .email(settings.getUser().getEmail())
+                    .phone(settings.getPhone())
+                    .address(settings.getAddress())
+                    .build())
+                .notifications(UserSettingsDTO.NotificationSettingsDTO.builder()
+                    .emailNotifications(settings.getEmailNotifications())
+                    .budgetAlerts(settings.getBudgetAlerts())
+                    .transactionNotifications(settings.getTransactionNotifications())
+                    .build())
+                .preferences(UserSettingsDTO.PreferencesDTO.builder()
+                    .currency(settings.getCurrency())
+                    .fiscalMonthStartDay(settings.getFiscalMonthStartDay())
+                    .dateFormat(settings.getDateFormat())
+                    .darkMode(settings.getDarkMode())
+                    .build())
                 .build();
     }
 }

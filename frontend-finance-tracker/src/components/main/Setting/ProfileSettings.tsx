@@ -3,14 +3,21 @@ import { Loader2, Save } from "lucide-react";
 import { UserProfile } from "../../../types/settings";
 
 interface ProfileSettingsProps {
-  profile: UserProfile;
+  profile?: UserProfile;
   onUpdate: (data: UserProfile) => Promise<void>;
   isSaving: boolean;
   onChange: (field: keyof UserProfile, value: string) => void;
 }
 
+const defaultProfile: UserProfile = {
+  name: "",
+  email: "",
+  phone: "",
+  address: "",
+};
+
 const ProfileSettings: React.FC<ProfileSettingsProps> = ({
-  profile,
+  profile = defaultProfile,
   onUpdate,
   isSaving,
   onChange,
@@ -18,6 +25,12 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     await onUpdate(profile);
+  };
+
+  // Use profile prop if available, otherwise use default values
+  const currentProfile = {
+    ...defaultProfile,
+    ...profile,
   };
 
   return (
@@ -30,7 +43,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({
           </label>
           <input
             type="text"
-            value={profile.name}
+            value={currentProfile.name || ""}
             onChange={(e) => onChange("name", e.target.value)}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           />
@@ -41,7 +54,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({
           </label>
           <input
             type="email"
-            value={profile.email}
+            value={currentProfile.email || ""}
             onChange={(e) => onChange("email", e.target.value)}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           />
@@ -52,7 +65,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({
           </label>
           <input
             type="tel"
-            value={profile.phone}
+            value={currentProfile.phone || ""}
             onChange={(e) => onChange("phone", e.target.value)}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           />
@@ -63,7 +76,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({
           </label>
           <input
             type="text"
-            value={profile.address}
+            value={currentProfile.address || ""}
             onChange={(e) => onChange("address", e.target.value)}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           />

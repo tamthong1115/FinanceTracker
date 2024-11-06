@@ -1,10 +1,10 @@
+// src/components/main/Setting/Settings.tsx
 import React, { useState, useEffect } from "react";
 import { Card } from "../../ui/card";
 import { Loader2 } from "lucide-react";
 import { useSettings } from "../../../hooks/useSettings";
 import { toast } from "react-toastify";
 import {
-  UserSettings,
   UserProfile,
   NotificationSettings as NotificationSettingsType,
   Preferences,
@@ -17,33 +17,11 @@ import SecuritySettings from "./SecuritySettings";
 import NotificationSettings from "./NotificationSettings";
 import PreferencesSettings from "./PreferencesSettings";
 
-const defaultSettings: UserSettings = {
-  profile: {
-    name: "",
-    email: "",
-    phone: "",
-    address: "",
-  },
-  notifications: {
-    emailNotifications: true,
-    budgetAlerts: true,
-    transactionNotifications: true,
-  },
-  preferences: {
-    currency: "VND",
-    fiscalMonthStartDay: 1,
-    dateFormat: "DD/MM/YYYY",
-  },
-};
-
 const Settings: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("profile");
   const [isSaving, setIsSaving] = useState<boolean>(false);
-  const [localSettings, setLocalSettings] =
-    useState<UserSettings>(defaultSettings);
 
   const {
-    settings,
     loading,
     error,
     fetchSettings,
@@ -51,6 +29,12 @@ const Settings: React.FC = () => {
     updatePassword,
     updateNotifications,
     updatePreferences,
+    handleProfileChange,
+    handleNotificationsChange,
+    handlePreferencesChange,
+    currentProfile,
+    currentNotifications,
+    currentPreferences,
   } = useSettings();
 
   useEffect(() => {
@@ -65,23 +49,13 @@ const Settings: React.FC = () => {
     loadSettings();
   }, [fetchSettings]);
 
-  useEffect(() => {
-    if (settings) {
-      setLocalSettings(settings);
-    }
-  }, [settings]);
-
   const handleProfileUpdate = async (profileData: UserProfile) => {
     try {
       setIsSaving(true);
       await updateProfile(profileData);
-      setLocalSettings((prev) => ({
-        ...prev,
-        profile: profileData,
-      }));
-      toast.success("Cập nhật thông tin thành công");
+      toast.success("Profile updated successfully");
     } catch (err) {
-      toast.error("Không thể cập nhật thông tin");
+      toast.error("Failed to update profile");
     } finally {
       setIsSaving(false);
     }
@@ -91,9 +65,9 @@ const Settings: React.FC = () => {
     try {
       setIsSaving(true);
       await updatePassword(data);
-      toast.success("Cập nhật mật khẩu thành công");
+      toast.success("Password updated successfully");
     } catch (err) {
-      toast.error("Không thể cập nhật mật khẩu");
+      toast.error("Failed to update password");
     } finally {
       setIsSaving(false);
     }
@@ -103,13 +77,9 @@ const Settings: React.FC = () => {
     try {
       setIsSaving(true);
       await updateNotifications(data);
-      setLocalSettings((prev) => ({
-        ...prev,
-        notifications: data,
-      }));
-      toast.success("Cập nhật thông báo thành công");
+      toast.success("Notifications updated successfully");
     } catch (err) {
-      toast.error("Không thể cập nhật thông báo");
+      toast.error("Failed to update notifications");
     } finally {
       setIsSaving(false);
     }
@@ -119,55 +89,15 @@ const Settings: React.FC = () => {
     try {
       setIsSaving(true);
       await updatePreferences(data);
-      setLocalSettings((prev) => ({
-        ...prev,
-        preferences: data,
-      }));
-      toast.success("Cập nhật tùy chọn thành công");
+      toast.success("Preferences updated successfully");
     } catch (err) {
-      toast.error("Không thể cập nhật tùy chọn");
+      toast.error("Failed to update preferences");
     } finally {
       setIsSaving(false);
     }
   };
 
-  const handleProfileChange = (field: keyof UserProfile, value: string) => {
-    setLocalSettings((prev) => ({
-      ...prev,
-      profile: {
-        ...prev.profile,
-        [field]: value,
-      },
-    }));
-  };
-
-  const handleNotificationsChange = (
-    field: keyof NotificationSettingsType,
-    value: boolean
-  ) => {
-    setLocalSettings((prev) => ({
-      ...prev,
-      notifications: {
-        ...prev.notifications,
-        [field]: value,
-      },
-    }));
-  };
-
-  const handlePreferencesChange = (
-    field: keyof Preferences,
-    value: string | number
-  ) => {
-    setLocalSettings((prev) => ({
-      ...prev,
-      preferences: {
-        ...prev.preferences,
-        [field]: value,
-      },
-    }));
-  };
-
-  if (loading && !settings) {
+  if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
@@ -178,18 +108,16 @@ const Settings: React.FC = () => {
   if (error) {
     return (
       <div className="p-6">
-        <Card className="p-6 bg-red-50">
-          <div className="text-red-600">
-            <h3 className="text-lg font-semibold mb-2">Lỗi tải cài đặt</h3>
-            <p>{error}</p>
-            <button
-              onClick={() => fetchSettings()}
-              className="mt-4 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
-            >
-              Thử lại
-            </button>
-          </div>
-        </Card>
+        <div className="text-red-600 bg-red-50 p-4 rounded-lg">
+          <h3 className="font-semibold">Error loading settings</h3>
+          <p>{error}</p>
+          <button
+            onClick={() => fetchSettings()}
+            className="mt-2 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+          >
+            Try Again
+          </button>
+        </div>
       </div>
     );
   }
@@ -203,12 +131,12 @@ const Settings: React.FC = () => {
 
         <div className="flex-1">
           <Card className="p-6">
-            {activeTab === "profile" && settings && (
+            {activeTab === "profile" && (
               <ProfileSettings
-                profile={localSettings.profile}
+                profile={currentProfile()}
                 onUpdate={handleProfileUpdate}
-                isSaving={isSaving}
                 onChange={handleProfileChange}
+                isSaving={isSaving}
               />
             )}
 
@@ -219,21 +147,21 @@ const Settings: React.FC = () => {
               />
             )}
 
-            {activeTab === "notifications" && settings && (
+            {activeTab === "notifications" && (
               <NotificationSettings
-                notifications={localSettings.notifications}
+                notifications={currentNotifications()}
                 onUpdate={handleNotificationsUpdate}
-                isSaving={isSaving}
                 onChange={handleNotificationsChange}
+                isSaving={isSaving}
               />
             )}
 
-            {activeTab === "preferences" && settings && (
+            {activeTab === "preferences" && (
               <PreferencesSettings
-                preferences={localSettings.preferences}
+                preferences={currentPreferences()}
                 onUpdate={handlePreferencesUpdate}
-                isSaving={isSaving}
                 onChange={handlePreferencesChange}
+                isSaving={isSaving}
               />
             )}
           </Card>

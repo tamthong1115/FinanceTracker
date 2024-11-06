@@ -1,56 +1,124 @@
 import axiosInstance from "./api/axiosConfig";
 import {
-  UserSettings,
-  UpdateProfileRequest,
-  UpdatePasswordRequest,
+  UserSettingsResponse,
+  UserProfile,
   NotificationSettings,
   Preferences,
+  DEFAULT_SETTINGS,
+  UpdatePasswordRequest,
 } from "../types/settings";
 
 const BASE_URL = "/settings";
 
 export const settingsApi = {
-  getCurrentSettings: () => axiosInstance.get<UserSettings>(`${BASE_URL}`),
+  getCurrentSettings: async (): Promise<UserSettingsResponse> => {
+    try {
+      const response = await axiosInstance.get<UserSettingsResponse>(BASE_URL);
+      console.log("Fetched settings:", response.data);
+      return {
+        ...DEFAULT_SETTINGS,
+        ...response.data,
+      };
+    } catch (error) {
+      console.error("Error fetching settings:", error);
+      throw error;
+    }
+  },
 
-  updateProfile: (data: UpdateProfileRequest) =>
-    axiosInstance.put<UserSettings>(`${BASE_URL}/profile`, data),
+  updateProfile: async (
+    data: UserProfile,
+    currentSettings: UserSettingsResponse
+  ): Promise<UserSettingsResponse> => {
+    try {
+      const updateData = {
+        ...currentSettings,
+        ...data,
+      };
+      const response = await axiosInstance.put<UserSettingsResponse>(
+        `${BASE_URL}/profile`,
+        updateData
+      );
+      console.log("Updated profile:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      throw error;
+    }
+  },
 
-  updatePassword: (data: UpdatePasswordRequest) =>
-    axiosInstance.put(`${BASE_URL}/password`, data),
+  updatePassword: async (data: UpdatePasswordRequest): Promise<void> => {
+    try {
+      await axiosInstance.put(`${BASE_URL}/password`, data);
+    } catch (error) {
+      console.error("Error updating password:", error);
+      throw error;
+    }
+  },
 
-  updateNotifications: (data: NotificationSettings) =>
-    axiosInstance.put<UserSettings>(`${BASE_URL}/notifications`, data),
+  updateNotifications: async (
+    data: NotificationSettings,
+    currentSettings: UserSettingsResponse
+  ): Promise<UserSettingsResponse> => {
+    try {
+      const updateData = {
+        ...currentSettings,
+        ...data,
+      };
+      const response = await axiosInstance.put<UserSettingsResponse>(
+        `${BASE_URL}/notifications`,
+        updateData
+      );
+      console.log("Updated notifications:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error updating notifications:", error);
+      throw error;
+    }
+  },
 
-  updatePreferences: (data: Preferences) =>
-    axiosInstance.put<UserSettings>(`${BASE_URL}/preferences`, data),
+  updatePreferences: async (
+    data: Preferences,
+    currentSettings: UserSettingsResponse
+  ): Promise<UserSettingsResponse> => {
+    try {
+      const updateData = {
+        ...currentSettings,
+        ...data,
+      };
+      const response = await axiosInstance.put<UserSettingsResponse>(
+        `${BASE_URL}/preferences`,
+        updateData
+      );
+      console.log("Updated preferences:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error updating preferences:", error);
+      throw error;
+    }
+  },
+
+  // Utility functions
+  extractProfile: (settings: UserSettingsResponse): UserProfile => ({
+    name: settings.name,
+    email: settings.email,
+    phone: settings.phone,
+    address: settings.address,
+  }),
+
+  extractNotifications: (
+    settings: UserSettingsResponse
+  ): NotificationSettings => ({
+    emailNotifications: settings.emailNotifications,
+    budgetAlerts: settings.budgetAlerts,
+    transactionNotifications: settings.transactionNotifications,
+  }),
+
+  extractPreferences: (settings: UserSettingsResponse): Preferences => ({
+    currency: settings.currency || "VND",
+    fiscalMonthStartDay: settings.fiscalMonthStartDay || 1,
+    dateFormat: settings.dateFormat || "DD/MM/YYYY",
+    darkMode: settings.darkMode,
+  }),
 };
 
-// Utility functions for formatting
-export const formatCurrency = (amount: number, currency: string = "VND") => {
-  const formatter = new Intl.NumberFormat("vi-VN", {
-    style: "currency",
-    currency: currency,
-  });
-  return formatter.format(amount);
-};
-
-export const formatDate = (
-  date: Date | string,
-  format: string = "DD/MM/YYYY"
-) => {
-  const d = new Date(date);
-  const day = d.getDate().toString().padStart(2, "0");
-  const month = (d.getMonth() + 1).toString().padStart(2, "0");
-  const year = d.getFullYear();
-
-  switch (format) {
-    case "DD/MM/YYYY":
-      return `${day}/${month}/${year}`;
-    case "MM/DD/YYYY":
-      return `${month}/${day}/${year}`;
-    case "YYYY-MM-DD":
-      return `${year}-${month}-${day}`;
-    default:
-      return d.toLocaleDateString();
-  }
-};
+export default settingsApi;

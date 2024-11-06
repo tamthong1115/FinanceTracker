@@ -3,14 +3,20 @@ import { Loader2, Save } from "lucide-react";
 import { NotificationSettings as NotificationSettingsType } from "../../../types/settings";
 
 interface NotificationSettingsProps {
-  notifications: NotificationSettingsType;
+  notifications?: NotificationSettingsType;
   onUpdate: (data: NotificationSettingsType) => Promise<void>;
   isSaving: boolean;
   onChange: (field: keyof NotificationSettingsType, value: boolean) => void;
 }
 
+const defaultNotifications: NotificationSettingsType = {
+  emailNotifications: true,
+  budgetAlerts: true,
+  transactionNotifications: true,
+};
+
 const NotificationSettings: React.FC<NotificationSettingsProps> = ({
-  notifications,
+  notifications = defaultNotifications,
   onUpdate,
   isSaving,
   onChange,
@@ -18,6 +24,12 @@ const NotificationSettings: React.FC<NotificationSettingsProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     await onUpdate(notifications);
+  };
+
+  // Use notifications prop if available, otherwise use default values
+  const currentNotifications = {
+    ...defaultNotifications,
+    ...notifications,
   };
 
   return (
@@ -33,7 +45,7 @@ const NotificationSettings: React.FC<NotificationSettingsProps> = ({
           <label className="relative inline-flex items-center cursor-pointer">
             <input
               type="checkbox"
-              checked={notifications.emailNotifications}
+              checked={currentNotifications.emailNotifications}
               onChange={(e) => onChange("emailNotifications", e.target.checked)}
               className="sr-only peer"
             />
@@ -51,7 +63,7 @@ const NotificationSettings: React.FC<NotificationSettingsProps> = ({
           <label className="relative inline-flex items-center cursor-pointer">
             <input
               type="checkbox"
-              checked={notifications.budgetAlerts}
+              checked={currentNotifications.budgetAlerts}
               onChange={(e) => onChange("budgetAlerts", e.target.checked)}
               className="sr-only peer"
             />
@@ -69,7 +81,7 @@ const NotificationSettings: React.FC<NotificationSettingsProps> = ({
           <label className="relative inline-flex items-center cursor-pointer">
             <input
               type="checkbox"
-              checked={notifications.transactionNotifications}
+              checked={currentNotifications.transactionNotifications}
               onChange={(e) =>
                 onChange("transactionNotifications", e.target.checked)
               }

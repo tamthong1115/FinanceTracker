@@ -1,35 +1,18 @@
+// src/hooks/useSettings.ts
 import { useState, useCallback } from "react";
-import { toast } from "react-toastify";
 import { settingsApi } from "../services/settingsService";
 import {
-  UserSettings,
-  UpdateProfileRequest,
-  UpdatePasswordRequest,
+  UserSettingsResponse,
+  DEFAULT_SETTINGS,
+  UserProfile,
   NotificationSettings,
   Preferences,
+  UpdatePasswordRequest,
 } from "../types/settings";
 
-const defaultSettings: UserSettings = {
-  profile: {
-    name: "",
-    email: "",
-    phone: "",
-    address: "",
-  },
-  notifications: {
-    emailNotifications: true,
-    budgetAlerts: true,
-    transactionNotifications: true,
-  },
-  preferences: {
-    currency: "VND",
-    fiscalMonthStartDay: 1,
-    dateFormat: "DD/MM/YYYY",
-  },
-};
-
 export const useSettings = () => {
-  const [settings, setSettings] = useState<UserSettings>(defaultSettings);
+  const [settings, setSettings] =
+    useState<UserSettingsResponse>(DEFAULT_SETTINGS);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,13 +20,9 @@ export const useSettings = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await settingsApi.getCurrentSettings();
-
-      // Merge with default settings to ensure all properties exist
-      setSettings({
-        ...defaultSettings,
-        ...response.data,
-      });
+      const data = await settingsApi.getCurrentSettings();
+      console.log("Fetched settings in hook:", data);
+      setSettings(data);
     } catch (err: any) {
       const errorMessage =
         err.response?.data?.message || "Failed to fetch settings";
@@ -54,20 +33,17 @@ export const useSettings = () => {
     }
   }, []);
 
-  const updateProfile = async (data: UpdateProfileRequest) => {
+  const updateProfile = async (profileData: UserProfile) => {
     try {
       setLoading(true);
-      setError(null);
-      const response = await settingsApi.updateProfile(data);
-      setSettings((prev) => ({
-        ...prev,
-        profile: response.data.profile,
-      }));
-      return response.data;
-    } catch (err: any) {
-      const errorMessage =
-        err.response?.data?.message || "Failed to update profile";
-      setError(errorMessage);
+      const updatedSettings = await settingsApi.updateProfile(
+        profileData,
+        settings
+      );
+      console.log("Updated settings after profile update:", updatedSettings);
+      setSettings(updatedSettings);
+      return settingsApi.extractProfile(updatedSettings);
+    } catch (err) {
       throw err;
     } finally {
       setLoading(false);
@@ -77,56 +53,73 @@ export const useSettings = () => {
   const updatePassword = async (data: UpdatePasswordRequest) => {
     try {
       setLoading(true);
-      setError(null);
       await settingsApi.updatePassword(data);
-    } catch (err: any) {
-      const errorMessage =
-        err.response?.data?.message || "Failed to update password";
-      setError(errorMessage);
+    } catch (err) {
       throw err;
     } finally {
       setLoading(false);
     }
   };
 
-  const updateNotifications = async (data: NotificationSettings) => {
+  const updateNotifications = async (notificationData: NotificationSettings) => {
     try {
       setLoading(true);
-      setError(null);
-      const response = await settingsApi.updateNotifications(data);
-      setSettings((prev) => ({
-        ...prev,
-        notifications: response.data.notifications,
-      }));
-      return response.data;
-    } catch (err: any) {
-      const errorMessage =
-        err.response?.data?.message || "Failed to update notifications";
-      setError(errorMessage);
+      const updatedSettings = await settingsApi.updateNotifications(
+        notificationData,
+        settings
+      );
+      console.log(
+        "Updated settings after notifications update:",
+        updatedSettings
+      );
+      setSettings(updatedSettings);
+      return settingsApi.extractNotifications(updatedSettings);
+    } catch (err) {
       throw err;
     } finally {
       setLoading(false);
     }
   };
 
-  const updatePreferences = async (data: Preferences) => {
+  const updatePreferences = async (preferencesData: Preferences) => {
     try {
       setLoading(true);
-      setError(null);
-      const response = await settingsApi.updatePreferences(data);
-      setSettings((prev) => ({
-        ...prev,
-        preferences: response.data.preferences,
-      }));
-      return response.data;
-    } catch (err: any) {
-      const errorMessage =
-        err.response?.data?.message || "Failed to update preferences";
-      setError(errorMessage);
+      const updatedSettings = await settingsApi.updatePreferences(
+        preferencesData,
+        settings
+      );
+      console.log("Updated settings after preferences update:", updatedSettings);
+      setSettings(updatedSettings);
+      return settingsApi.extractPreferences(updatedSettings);
+    } catch (err) {
       throw err;
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleProfileChange = (field: keyof UserProfile, value: string) => {
+    setSettings((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleNotificationsChange = (
+    field: keyof NotificationSettings,
+    value: boolean
+  ) => {
+    setSettings((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handlePreferencesChange = (field: keyof Preferences, value: any) => {
+    setSettings((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
   return {
@@ -138,5 +131,13 @@ export const useSettings = () => {
     updatePassword,
     updateNotifications,
     updatePreferences,
+    // Change handlers
+    handleProfileChange,
+    handleNotificationsChange,
+    handlePreferencesChange,
+    // Data getters
+    currentProfile: () => settingsApi.extractProfile(settings),
+    currentNotifications: () => settingsApi.extractNotifications(settings),
+    currentPreferences: () => settingsApi.extractPreferences(settings),
   };
 };
