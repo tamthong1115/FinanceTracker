@@ -1,6 +1,7 @@
 package com.tamthong.finance_tracker_api.controller;
 
 import com.tamthong.finance_tracker_api.dto.CreateBudgetDTO;
+import com.tamthong.finance_tracker_api.dto.ResponseBudgetDTO;
 import com.tamthong.finance_tracker_api.model.Budget;
 import com.tamthong.finance_tracker_api.service.BudgetService;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +21,13 @@ public class BudgetController {
     }
 
     @GetMapping
-    public List<Budget> getAllBudgets() {
+    public List<ResponseBudgetDTO> getAllBudgets() {
         return budgetService.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Budget> getBudgetById(@PathVariable Integer id) {
-        Optional<Budget> budget = budgetService.findById(id);
+    public ResponseEntity<ResponseBudgetDTO> getBudget(@PathVariable Integer id) {
+        Optional<ResponseBudgetDTO> budget = budgetService.findById(id);
         return budget.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 

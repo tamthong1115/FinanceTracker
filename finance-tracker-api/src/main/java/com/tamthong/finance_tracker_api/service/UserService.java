@@ -47,6 +47,7 @@ public class UserService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build();
+        
 
         User savedUser = userRepository.save(user);
 

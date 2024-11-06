@@ -116,11 +116,11 @@ public class TransactionService {
         budgetService.findByCategoryId(transaction.getCategory().getId())
                 .filter(budget -> !budgetService.isBudgetExpired(budget))
                 .ifPresent(budget -> {
-                    if (budget.getAmount().compareTo(transaction.getAmount()) < 0) {
-                        throw new IllegalArgumentException("Budget is not enough");
+                    if (budget.getSpent().add(transaction.getAmount()).compareTo(budget.getAmount()) > 0) {
+                        throw new IllegalArgumentException("Budget limit exceeded");
                     }
-
-                    budget.setAmount(budget.getAmount().subtract(transaction.getAmount()));
+                    
+                    budget.setSpent(budget.getSpent().add(transaction.getAmount()));
                 });
     }
 }

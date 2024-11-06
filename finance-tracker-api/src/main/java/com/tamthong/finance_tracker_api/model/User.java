@@ -48,6 +48,8 @@ public class User implements UserDetails {
 
     @PrePersist
     protected void onCreate() {
+        role = "ROLE_USER";
+        currency = "USD";
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
     }

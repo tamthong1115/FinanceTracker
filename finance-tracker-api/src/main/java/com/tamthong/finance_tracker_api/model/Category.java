@@ -1,5 +1,8 @@
 package com.tamthong.finance_tracker_api.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,10 +18,11 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "categories")
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Category {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "categories_id_gen")
-    @SequenceGenerator(name = "categories_id_gen", sequenceName = "categories_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
     
@@ -28,9 +32,10 @@ public class Category {
     @Column(name = "type", nullable = false, length = 50)
     private String type;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "parent_id")
+    @JsonBackReference
     private Category parent;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
@@ -38,7 +43,7 @@ public class Category {
     private Instant createdAt;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id")
     private User user;

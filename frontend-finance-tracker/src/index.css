@@ -297,3 +297,9 @@
 .modal-content {
   @apply bg-white rounded-lg p-6 max-w-md w-full max-h-[90vh] overflow-y-auto;
 }
+
+
+.tab-active {
+  border-bottom: 2px solid white;
+}
+
