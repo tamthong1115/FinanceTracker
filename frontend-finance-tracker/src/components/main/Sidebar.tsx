@@ -37,12 +37,6 @@ export const Sidebar: FC<SidebarProps> = ({
     },
     {
       icon: <Wallet size={24} />,
-      text: "Accounts",
-      href: "/dashboard/accounts",
-      description: "Manage your bank accounts and wallets",
-    },
-    {
-      icon: <Tag size={24} />,
       text: "Budget",
       href: "/dashboard/budget",
       description: "Set and monitor spending limits",
@@ -51,7 +45,7 @@ export const Sidebar: FC<SidebarProps> = ({
       icon: <Target size={24} />,
       text: "Goals",
       href: "/dashboard/goals",
-      description: "Track your financial goals",
+      description: "Track your savings goals",
     },
     {
       icon: <BarChart2 size={24} />,

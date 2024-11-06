@@ -68,4 +68,34 @@ public class UserService {
 
         return new AuthResponse(token, userMapper.toDTO(user));
     }
+
+    @Transactional
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public User updateProfile(User user, String newUsername, String newEmail) {
+        // Check if email is being changed and if new email already exists
+        if (!user.getEmail().equals(newEmail) && userRepository.existsByEmail(newEmail)) {
+            throw new UserAlreadyExistsException("Email already exists");
+        }
+
+        user.setUsername(newUsername);
+        user.setEmail(newEmail);
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public User updatePassword(User user, String newPassword) {
+        user.setPassword(passwordEncoder.encode(newPassword));
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public void deleteUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        userRepository.delete(user);
+    }
 }
