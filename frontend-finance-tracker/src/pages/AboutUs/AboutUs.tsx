@@ -78,7 +78,7 @@ const AboutUs = () => {
       <h3>Ngọc Đặng</h3>
       <p>Contributor</p>
       <div className="social-links">
-        <a href="mailto:pavla@example.com">✉</a>
+        <a href="mailto:ndang2319@gmail.com">✉</a>
       </div>
     </div>
     <div className="team-card">
