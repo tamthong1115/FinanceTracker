@@ -38,6 +38,7 @@ public class Budget {
     private BigDecimal limit;
 
     @Column(name = "spent_amount", nullable = false)
+    @Builder.Default
     private BigDecimal spent = BigDecimal.ZERO;
 
     @NotNull(message = "Period is required")

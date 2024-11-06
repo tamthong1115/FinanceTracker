@@ -1,6 +1,5 @@
 package com.tamthong.finance_tracker_api.dto;
 
-import com.tamthong.finance_tracker_api.model.TransactionStatus;
 import com.tamthong.finance_tracker_api.model.TransactionType;
 import lombok.Data;
 

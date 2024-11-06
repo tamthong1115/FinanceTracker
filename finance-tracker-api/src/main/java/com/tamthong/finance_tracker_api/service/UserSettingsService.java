@@ -6,6 +6,9 @@ import com.tamthong.finance_tracker_api.model.User;
 import com.tamthong.finance_tracker_api.model.UserSettings;
 import com.tamthong.finance_tracker_api.repository.UserSettingsRepository;
 import lombok.RequiredArgsConstructor;
+
+import java.time.LocalDateTime;
+
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -100,23 +103,25 @@ public class UserSettingsService {
         return UserSettingsDTO.builder()
                 .id(settings.getId())
                 .userId(settings.getUser().getId())
-                .profile(UserSettingsDTO.ProfileDTO.builder()
-                    .name(settings.getName())
-                    .email(settings.getUser().getEmail())
-                    .phone(settings.getPhone())
-                    .address(settings.getAddress())
-                    .build())
-                .notifications(UserSettingsDTO.NotificationSettingsDTO.builder()
-                    .emailNotifications(settings.getEmailNotifications())
-                    .budgetAlerts(settings.getBudgetAlerts())
-                    .transactionNotifications(settings.getTransactionNotifications())
-                    .build())
-                .preferences(UserSettingsDTO.PreferencesDTO.builder()
-                    .currency(settings.getCurrency())
-                    .fiscalMonthStartDay(settings.getFiscalMonthStartDay())
-                    .dateFormat(settings.getDateFormat())
-                    .darkMode(settings.getDarkMode())
-                    .build())
+
+                .name(settings.getName())
+                .email(settings.getUser().getEmail())
+                .phone(settings.getPhone())
+                .address(settings.getAddress())
+
+                .emailNotifications(settings.getEmailNotifications())
+                .budgetAlerts(settings.getBudgetAlerts())
+                .transactionNotifications(settings.getTransactionNotifications())
+
+                .currency(settings.getCurrency())
+                .fiscalMonthStartDay(settings.getFiscalMonthStartDay())
+                .dateFormat(settings.getDateFormat())
+                .darkMode(settings.getDarkMode())
+
+                .createdAt(settings.getCreatedAt().toString())
+                .updatedAt(settings.getUpdatedAt() != null ? settings.getUpdatedAt().toString()
+                        : LocalDateTime.now().toString())
+
                 .build();
     }
 }

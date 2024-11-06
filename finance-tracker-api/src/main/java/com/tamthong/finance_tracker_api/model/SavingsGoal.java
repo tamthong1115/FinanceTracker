@@ -32,6 +32,7 @@ public class SavingsGoal {
     private BigDecimal targetAmount;
 
     @Column(name = "current_amount", nullable = false)
+    @Builder.Default
     private BigDecimal currentAmount = BigDecimal.ZERO;
 
     @Column(nullable = false)

@@ -35,25 +35,32 @@ public class UserSettings {
 
     // Notification settings
     @Column(name = "email_notifications")
+    @Builder.Default
     private Boolean emailNotifications = true;
 
     @Column(name = "budget_alerts")
+    @Builder.Default
     private Boolean budgetAlerts = true;
 
     @Column(name = "transaction_notifications")
+    @Builder.Default
     private Boolean transactionNotifications = true;
 
     // Preferences
     @Column(name = "currency")
+    @Builder.Default
     private String currency = "VND";
 
     @Column(name = "fiscal_month_start_day")
+    @Builder.Default
     private Integer fiscalMonthStartDay = 1;
 
     @Column(name = "date_format")
+    @Builder.Default
     private String dateFormat = "DD/MM/YYYY";
 
     @Column(name = "dark_mode")
+    @Builder.Default
     private Boolean darkMode = false;
 
     @Column(name = "created_at", updatable = false)
