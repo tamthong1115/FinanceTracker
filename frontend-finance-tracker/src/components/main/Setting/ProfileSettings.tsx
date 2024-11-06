@@ -6,7 +6,7 @@ interface ProfileSettingsProps {
   profile: UserProfile;
   onUpdate: (data: UserProfile) => Promise<void>;
   isSaving: boolean;
-  onChange: (field: string, value: string) => void;
+  onChange: (field: keyof UserProfile, value: string) => void;
 }
 
 const ProfileSettings: React.FC<ProfileSettingsProps> = ({

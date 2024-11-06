@@ -15,7 +15,6 @@ export interface Preferences {
   currency: string;
   fiscalMonthStartDay: number;
   dateFormat: string;
-  darkMode: boolean;
 }
 
 export interface UserSettings {
@@ -26,18 +25,32 @@ export interface UserSettings {
   preferences: Preferences;
 }
 
-export interface UpdateProfileRequest extends UserProfile {}
+export interface UpdateProfileRequest {
+  name: string;
+  phone: string;
+  address: string;
+}
 
 export interface UpdatePasswordRequest {
   currentPassword: string;
   newPassword: string;
 }
 
-export interface UpdateSettingsRequest {
-  type: "profile" | "password" | "notifications" | "preferences";
-  data:
-    | UpdateProfileRequest
-    | UpdatePasswordRequest
-    | NotificationSettings
-    | Preferences;
-}
+// Constants
+export const CURRENCY_OPTIONS = [
+  { value: "VND", label: "VND - Việt Nam Đồng" },
+  { value: "USD", label: "USD - US Dollar" },
+  { value: "EUR", label: "EUR - Euro" },
+  { value: "JPY", label: "JPY - Japanese Yen" },
+];
+
+export const DATE_FORMAT_OPTIONS = [
+  { value: "DD/MM/YYYY", label: "DD/MM/YYYY" },
+  { value: "MM/DD/YYYY", label: "MM/DD/YYYY" },
+  { value: "YYYY-MM-DD", label: "YYYY-MM-DD" },
+];
+
+export const FISCAL_MONTH_START_OPTIONS = Array.from({ length: 28 }, (_, i) => ({
+  value: i + 1,
+  label: `Ngày ${i + 1}`,
+}));

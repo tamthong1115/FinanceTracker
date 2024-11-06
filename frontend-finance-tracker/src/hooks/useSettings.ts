@@ -25,13 +25,12 @@ const defaultSettings: UserSettings = {
     currency: "VND",
     fiscalMonthStartDay: 1,
     dateFormat: "DD/MM/YYYY",
-    darkMode: false,
   },
 };
 
 export const useSettings = () => {
   const [settings, setSettings] = useState<UserSettings>(defaultSettings);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const fetchSettings = useCallback(async () => {
@@ -49,7 +48,7 @@ export const useSettings = () => {
       const errorMessage =
         err.response?.data?.message || "Failed to fetch settings";
       setError(errorMessage);
-      // Don't reset settings on error, keep default values
+      throw err;
     } finally {
       setLoading(false);
     }

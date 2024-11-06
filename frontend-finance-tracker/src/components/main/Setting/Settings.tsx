@@ -3,21 +3,19 @@ import { Card } from "../../ui/card";
 import { Loader2 } from "lucide-react";
 import { useSettings } from "../../../hooks/useSettings";
 import { toast } from "react-toastify";
+import {
+  UserSettings,
+  UserProfile,
+  NotificationSettings as NotificationSettingsType,
+  Preferences,
+  UpdatePasswordRequest,
+} from "../../../types/settings";
 
-// Import child components
 import SettingTabs from "./SettingTabs";
 import ProfileSettings from "./ProfileSettings";
 import SecuritySettings from "./SecuritySettings";
 import NotificationSettings from "./NotificationSettings";
 import PreferencesSettings from "./PreferencesSettings";
-
-// Import types
-import {
-  UserProfile,
-  NotificationSettings as NotificationSettingsType,
-  Preferences,
-  UserSettings,
-} from "../../../types/settings";
 
 const defaultSettings: UserSettings = {
   profile: {
@@ -35,13 +33,12 @@ const defaultSettings: UserSettings = {
     currency: "VND",
     fiscalMonthStartDay: 1,
     dateFormat: "DD/MM/YYYY",
-    darkMode: false,
   },
 };
 
-const Settings = () => {
-  const [activeTab, setActiveTab] = useState("profile");
-  const [isSaving, setIsSaving] = useState(false);
+const Settings: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<string>("profile");
+  const [isSaving, setIsSaving] = useState<boolean>(false);
   const [localSettings, setLocalSettings] =
     useState<UserSettings>(defaultSettings);
 
@@ -82,22 +79,19 @@ const Settings = () => {
         ...prev,
         profile: profileData,
       }));
-      toast.success("Thông tin cá nhân đã được cập nhật");
+      toast.success("Cập nhật thông tin thành công");
     } catch (err) {
-      toast.error("Không thể cập nhật thông tin cá nhân");
+      toast.error("Không thể cập nhật thông tin");
     } finally {
       setIsSaving(false);
     }
   };
 
-  const handleSecurityUpdate = async (data: {
-    currentPassword: string;
-    newPassword: string;
-  }) => {
+  const handleSecurityUpdate = async (data: UpdatePasswordRequest) => {
     try {
       setIsSaving(true);
       await updatePassword(data);
-      toast.success("Mật khẩu đã được cập nhật");
+      toast.success("Cập nhật mật khẩu thành công");
     } catch (err) {
       toast.error("Không thể cập nhật mật khẩu");
     } finally {
@@ -113,9 +107,9 @@ const Settings = () => {
         ...prev,
         notifications: data,
       }));
-      toast.success("Cài đặt thông báo đã được cập nhật");
+      toast.success("Cập nhật thông báo thành công");
     } catch (err) {
-      toast.error("Không thể cập nhật cài đặt thông báo");
+      toast.error("Không thể cập nhật thông báo");
     } finally {
       setIsSaving(false);
     }
@@ -129,12 +123,48 @@ const Settings = () => {
         ...prev,
         preferences: data,
       }));
-      toast.success("Tùy chọn đã được cập nhật");
+      toast.success("Cập nhật tùy chọn thành công");
     } catch (err) {
       toast.error("Không thể cập nhật tùy chọn");
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const handleProfileChange = (field: keyof UserProfile, value: string) => {
+    setLocalSettings((prev) => ({
+      ...prev,
+      profile: {
+        ...prev.profile,
+        [field]: value,
+      },
+    }));
+  };
+
+  const handleNotificationsChange = (
+    field: keyof NotificationSettingsType,
+    value: boolean
+  ) => {
+    setLocalSettings((prev) => ({
+      ...prev,
+      notifications: {
+        ...prev.notifications,
+        [field]: value,
+      },
+    }));
+  };
+
+  const handlePreferencesChange = (
+    field: keyof Preferences,
+    value: string | number
+  ) => {
+    setLocalSettings((prev) => ({
+      ...prev,
+      preferences: {
+        ...prev.preferences,
+        [field]: value,
+      },
+    }));
   };
 
   if (loading && !settings) {
@@ -148,7 +178,7 @@ const Settings = () => {
   if (error) {
     return (
       <div className="p-6">
-        <Card className="p-6 bg-red-50 border-red-100">
+        <Card className="p-6 bg-red-50">
           <div className="text-red-600">
             <h3 className="text-lg font-semibold mb-2">Lỗi tải cài đặt</h3>
             <p>{error}</p>
@@ -173,20 +203,12 @@ const Settings = () => {
 
         <div className="flex-1">
           <Card className="p-6">
-            {activeTab === "profile" && (
+            {activeTab === "profile" && settings && (
               <ProfileSettings
                 profile={localSettings.profile}
                 onUpdate={handleProfileUpdate}
                 isSaving={isSaving}
-                onChange={(field, value) => {
-                  setLocalSettings((prev) => ({
-                    ...prev,
-                    profile: {
-                      ...prev.profile,
-                      [field]: value,
-                    },
-                  }));
-                }}
+                onChange={handleProfileChange}
               />
             )}
 
@@ -197,37 +219,21 @@ const Settings = () => {
               />
             )}
 
-            {activeTab === "notifications" && (
+            {activeTab === "notifications" && settings && (
               <NotificationSettings
                 notifications={localSettings.notifications}
                 onUpdate={handleNotificationsUpdate}
                 isSaving={isSaving}
-                onChange={(field, value) => {
-                  setLocalSettings((prev) => ({
-                    ...prev,
-                    notifications: {
-                      ...prev.notifications,
-                      [field]: value,
-                    },
-                  }));
-                }}
+                onChange={handleNotificationsChange}
               />
             )}
 
-            {activeTab === "preferences" && (
+            {activeTab === "preferences" && settings && (
               <PreferencesSettings
                 preferences={localSettings.preferences}
                 onUpdate={handlePreferencesUpdate}
                 isSaving={isSaving}
-                onChange={(field, value) => {
-                  setLocalSettings((prev) => ({
-                    ...prev,
-                    preferences: {
-                      ...prev.preferences,
-                      [field]: value,
-                    },
-                  }));
-                }}
+                onChange={handlePreferencesChange}
               />
             )}
           </Card>

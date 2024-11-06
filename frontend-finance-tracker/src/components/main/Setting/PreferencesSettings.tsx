@@ -1,6 +1,6 @@
 import React from "react";
 import { Loader2, Save } from "lucide-react";
-import { Preferences } from "../../../types/settings";
+import { Preferences, CURRENCY_OPTIONS, DATE_FORMAT_OPTIONS, FISCAL_MONTH_START_OPTIONS } from "../../../types/settings";
 
 interface PreferencesSettingsProps {
   preferences: Preferences;
@@ -23,7 +23,9 @@ const PreferencesSettings: React.FC<PreferencesSettingsProps> = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <h3 className="text-lg font-semibold">Tùy chọn</h3>
+      
       <div className="space-y-4">
+        {/* Currency Selection */}
         <div>
           <label className="block text-sm font-medium text-gray-700">
             Đơn vị tiền tệ
@@ -31,34 +33,35 @@ const PreferencesSettings: React.FC<PreferencesSettingsProps> = ({
           <select
             value={preferences.currency}
             onChange={(e) => onChange("currency", e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           >
-            <option value="VND">VND - Việt Nam Đồng</option>
-            <option value="USD">USD - US Dollar</option>
-            <option value="EUR">EUR - Euro</option>
-            <option value="JPY">JPY - Japanese Yen</option>
+            {CURRENCY_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
           </select>
         </div>
 
+        {/* Fiscal Month Start Day */}
         <div>
           <label className="block text-sm font-medium text-gray-700">
             Ngày bắt đầu tháng tài chính
           </label>
           <select
             value={preferences.fiscalMonthStartDay}
-            onChange={(e) =>
-              onChange("fiscalMonthStartDay", parseInt(e.target.value))
-            }
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            onChange={(e) => onChange("fiscalMonthStartDay", parseInt(e.target.value))}
+            className="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           >
-            {[1, 5, 10, 15, 20, 25, 28].map((day) => (
-              <option key={day} value={day}>
-                Ngày {day}
+            {FISCAL_MONTH_START_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
               </option>
             ))}
           </select>
         </div>
 
+        {/* Date Format */}
         <div>
           <label className="block text-sm font-medium text-gray-700">
             Định dạng ngày
@@ -66,28 +69,14 @@ const PreferencesSettings: React.FC<PreferencesSettingsProps> = ({
           <select
             value={preferences.dateFormat}
             onChange={(e) => onChange("dateFormat", e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           >
-            <option value="DD/MM/YYYY">DD/MM/YYYY</option>
-            <option value="MM/DD/YYYY">MM/DD/YYYY</option>
-            <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+            {DATE_FORMAT_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
           </select>
-        </div>
-
-        <div className="flex items-center justify-between py-3">
-          <div>
-            <h4 className="font-medium">Chế độ tối</h4>
-            <p className="text-sm text-gray-500">Bật/tắt giao diện tối</p>
-          </div>
-          <label className="relative inline-flex items-center cursor-pointer">
-            <input
-              type="checkbox"
-              checked={preferences.darkMode}
-              onChange={(e) => onChange("darkMode", e.target.checked)}
-              className="sr-only peer"
-            />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-          </label>
         </div>
       </div>
 
@@ -95,7 +84,7 @@ const PreferencesSettings: React.FC<PreferencesSettingsProps> = ({
         <button
           type="submit"
           disabled={isSaving}
-          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+          className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
         >
           {isSaving ? (
             <>
