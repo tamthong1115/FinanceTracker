@@ -4,8 +4,8 @@ import { Sidebar } from "../../components/main/Sidebar";
 import { Transactions } from "../../components/main/Transactions/Transactions.tsx";
 import Goals from "../../components/main/Goals/Goals";
 import Reports from "../../components/main/Reports/Reports";
-import { Budget } from "../../components/main/Budget/Budget";
 import Accounts from "../../components/main/Accounts/Accounts";
+import {Link} from "react-router-dom";
 // import {Setting} from "../../components/main/Setting/Setting";
 
 const Dashboard: React.FC = () => {
@@ -17,7 +17,7 @@ const Dashboard: React.FC = () => {
       case "Giao dịch":
         return <Transactions />;
       case "Ngân sách":
-        return <Budget />;
+        return <Link to={"/budget"}></Link>
       case "Mục tiêu":
         return <Goals />;
       case "Báo cáo":

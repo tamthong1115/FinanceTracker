@@ -25,4 +25,9 @@ public class AuthService {
             throw new RuntimeException("Invalid email/password combination");
         }
     }
+
+    @Transactional
+    public boolean validateToken(String token) {
+        return userService.validateToken(token);
+    }
 }

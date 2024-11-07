@@ -69,4 +69,9 @@ public class UserService {
 
         return new AuthResponse(token, userMapper.toDTO(user));
     }
+
+    @Transactional(readOnly = true)
+    public boolean validateToken(String token) {
+        return jwtService.validateToken(token);
+    }
 }

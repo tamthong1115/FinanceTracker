@@ -1,12 +1,10 @@
-import axios from "axios";
+import axiosInstance  from "./axiosConfig.ts";
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL as string;
-
-const client = axios.create({
-  baseURL: BASE_URL,
-});
-
-export const login = async (email: string, password: string) => {
-  const { data } = await client.post("/auth/login", { email, password });
-  return data;
-};
+export const validateToken = async () => {
+    try {
+        const response = await axiosInstance.get("/auth/validate-token");
+        return response.data;
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}

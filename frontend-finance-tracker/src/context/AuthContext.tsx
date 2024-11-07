@@ -1,6 +1,8 @@
 import React, {createContext, useContext, useState, useEffect} from 'react';
-import {useNavigate, useLocation} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import axiosInstance from '../services/api/axiosConfig';
+import {validateToken} from "../services/api/AuthAPI.ts";
+import {useQuery} from "react-query";
 
 interface User {
     id: number;
@@ -19,26 +21,37 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
     const [isLoading, setIsLoading] = useState(false);
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [user, setUser] = useState<User | null>(null);
     const navigate = useNavigate();
 
+    const { isError } = useQuery('validateToken', validateToken, {
+        retry: false,
+        refetchOnWindowFocus: false,
+        enabled: false,
+        onError: () => {
+            handleLogout();
+            navigate('/login');
+        },
+    });
+
     useEffect(() => {
         // Check for existing token and user data in localStorage
-        const token = localStorage.getItem('token');
-        const savedUser = localStorage.getItem('user');
-
-        if (token && savedUser) {
-            setIsAuthenticated(true);
-            setUser(JSON.parse(savedUser));
-            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        }
+        // const token = localStorage.getItem('token');
+        // const savedUser = localStorage.getItem('user');
+        //
+        // console.log(`token: ${token}\nsavedUser: ${savedUser}`);
+        // if (token && savedUser) {
+        //     setIsAuthenticated(true);
+        //     setUser(JSON.parse(savedUser));
+        //     axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        // }
+        // setIsLoading(false);
     }, []);
 
     const login = (token: string, userData: User) => {
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(userData));
-        setIsAuthenticated(true);
+        // setIsAuthenticated(true);
         setUser(userData);
         axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         navigate('/dashboard');
@@ -74,7 +87,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}
     return (
         <AuthContext.Provider
             value={{
-                isAuthenticated,
+                isAuthenticated : !isError,
                 user,
                 login,
                 logout,

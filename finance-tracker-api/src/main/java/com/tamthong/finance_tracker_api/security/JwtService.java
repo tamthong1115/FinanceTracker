@@ -34,6 +34,15 @@ public class JwtService {
         return (email.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 
+    public boolean validateToken(String token) {
+        try {
+            Claims claims = extractAllClaims(token);
+            return !isTokenExpired(token) && claims != null;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     private String generateToken(Map<String, Object> extraClaims, String email) {
         return Jwts
                 .builder()

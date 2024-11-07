@@ -3,11 +3,20 @@ import { ToastContainer } from "react-toastify";
 import { BrowserRouter } from "react-router-dom";
 import AppRoutes from "./routes/AppRoutes";
 import "react-toastify/dist/ReactToastify.css";
+import {QueryClient, QueryClientProvider} from "react-query";
 
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            retry: 0, // the number retry to request if it failed
+        },
+    },
+});
 function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
+        <QueryClientProvider client={queryClient}>
+        <AuthProvider>
         <AppRoutes />
         <ToastContainer
           position="top-right"
@@ -22,6 +31,7 @@ function App() {
           theme="colored"
         />
       </AuthProvider>
+        </QueryClientProvider>
     </BrowserRouter>
   );
 }
