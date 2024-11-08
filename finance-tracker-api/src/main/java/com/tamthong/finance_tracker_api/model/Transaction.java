@@ -5,8 +5,11 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -24,14 +27,17 @@ public class Transaction {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id", nullable = false)
+    private Account account;
+
     @Column(nullable = false)
     private BigDecimal amount;
 
     @Column(nullable = false)
     private String description;
-
-    @Column(nullable = false)
-    private String category;
+    
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -54,6 +60,12 @@ public class Transaction {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+
 
     @PrePersist
     protected void onCreate() {

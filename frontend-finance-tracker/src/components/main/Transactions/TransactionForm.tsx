@@ -1,6 +1,9 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { useForm } from "react-hook-form";
 import { Transaction, TransactionFormData } from "../../../types/transaction.ts";
+import {Category, getAllCategories} from "../../../services/api/CategoryAPI.ts";
+import {Account} from "../../../types/account.ts";
+import {getAccounts} from "../../../services/api/AccountAPI.ts";
 
 interface TransactionFormProps {
   initialData?: Transaction;
@@ -25,7 +28,34 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
     },
   });
 
+  const [categories, setCategories] = useState<Category[]>([]);
+    const [accounts, setAccounts] = useState<Account[]>([]);
   const transactionType = watch("type");
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await getAllCategories();
+        setCategories(data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    const fetchAccounts = async () => {
+      try {
+        const data = await getAccounts();
+        setAccounts(data);
+      } catch (error) {
+        console.error("Error fetching accounts:", error);
+      }
+    };
+
+    fetchCategories();
+    fetchAccounts();
+
+  }, []);
+
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -37,38 +67,38 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
           </label>
           <div className="grid grid-cols-2 gap-4">
             <label
-              className={`
+                className={`
               flex items-center justify-center p-2 rounded-md cursor-pointer
               ${
-                transactionType === "INCOME"
-                  ? "bg-green-100 text-green-800 ring-2 ring-green-500"
-                  : "bg-gray-100 text-gray-800"
-              }
+                    transactionType === "INCOME"
+                        ? "bg-green-100 text-green-800 ring-2 ring-green-500"
+                        : "bg-gray-100 text-gray-800"
+                }
             `}
             >
               <input
-                type="radio"
-                {...register("type")}
-                value="INCOME"
-                className="sr-only"
+                  type="radio"
+                  {...register("type")}
+                  value="INCOME"
+                  className="sr-only"
               />
               <span>Income</span>
             </label>
             <label
-              className={`
+                className={`
               flex items-center justify-center p-2 rounded-md cursor-pointer
               ${
-                transactionType === "EXPENSE"
-                  ? "bg-red-100 text-red-800 ring-2 ring-red-500"
-                  : "bg-gray-100 text-gray-800"
-              }
+                    transactionType === "EXPENSE"
+                        ? "bg-red-100 text-red-800 ring-2 ring-red-500"
+                        : "bg-gray-100 text-gray-800"
+                }
             `}
             >
               <input
-                type="radio"
-                {...register("type")}
-                value="EXPENSE"
-                className="sr-only"
+                  type="radio"
+                  {...register("type")}
+                  value="EXPENSE"
+                  className="sr-only"
               />
               <span>Expense</span>
             </label>
@@ -85,19 +115,19 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
               ₫
             </span>
             <input
-              type="number"
-              step="0.01"
-              {...register("amount", { required: "Amount is required", min: 0 })}
-              className={`
+                type="number"
+                step="0.01"
+                {...register("amount", {required: "Amount is required", min: 0})}
+                className={`
                 pl-8 w-full rounded-md border ${
-                  errors.amount ? "border-red-500" : "border-gray-300"
+                    errors.amount ? "border-red-500" : "border-gray-300"
                 }
                 focus:ring-2 focus:ring-indigo-500 focus:border-transparent
               `}
             />
           </div>
           {errors.amount && (
-            <p className="mt-1 text-sm text-red-600">{errors.amount.message}</p>
+              <p className="mt-1 text-sm text-red-600">{errors.amount.message}</p>
           )}
         </div>
 
@@ -107,19 +137,19 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
             Description
           </label>
           <input
-            type="text"
-            {...register("description", { required: "Description is required" })}
-            className={`
+              type="text"
+              {...register("description", {required: "Description is required"})}
+              className={`
               w-full rounded-md border ${
-                errors.description ? "border-red-500" : "border-gray-300"
+                  errors.description ? "border-red-500" : "border-gray-300"
               }
               focus:ring-2 focus:ring-indigo-500 focus:border-transparent
             `}
           />
           {errors.description && (
-            <p className="mt-1 text-sm text-red-600">
-              {errors.description.message}
-            </p>
+              <p className="mt-1 text-sm text-red-600">
+                {errors.description.message}
+              </p>
           )}
         </div>
 
@@ -129,30 +159,25 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
             Category
           </label>
           <select
-            {...register("category", { required: "Category is required" })}
-            className={`
+              {...register("categoryId", {required: "Category is required"})}
+              className={`
               w-full rounded-md border ${
-                errors.category ? "border-red-500" : "border-gray-300"
+                  errors.categoryId ? "border-red-500" : "border-gray-300"
               }
               focus:ring-2 focus:ring-indigo-500 focus:border-transparent
             `}
           >
             <option value="">Select category</option>
-            <option value="Food & Dining">Food & Dining</option>
-            <option value="Shopping">Shopping</option>
-            <option value="Housing">Housing</option>
-            <option value="Transportation">Transportation</option>
-            <option value="Utilities">Utilities</option>
-            <option value="Healthcare">Healthcare</option>
-            <option value="Entertainment">Entertainment</option>
-            <option value="Education">Education</option>
-            <option value="Income">Income</option>
-            <option value="Other">Other</option>
+            {categories.map((category: Category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+            ))}
           </select>
-          {errors.category && (
-            <p className="mt-1 text-sm text-red-600">
-              {errors.category.message}
-            </p>
+          {errors.categoryId && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.categoryId.message}
+              </p>
           )}
         </div>
 
@@ -162,17 +187,17 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
             Date
           </label>
           <input
-            type="date"
-            {...register("date", { required: "Date is required" })}
-            className={`
+              type="date"
+              {...register("date", {required: "Date is required"})}
+              className={`
               w-full rounded-md border ${
-                errors.date ? "border-red-500" : "border-gray-300"
+                  errors.date ? "border-red-500" : "border-gray-300"
               }
               focus:ring-2 focus:ring-indigo-500 focus:border-transparent
             `}
           />
           {errors.date && (
-            <p className="mt-1 text-sm text-red-600">{errors.date.message}</p>
+              <p className="mt-1 text-sm text-red-600">{errors.date.message}</p>
           )}
         </div>
 
@@ -182,12 +207,12 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
             Payment Method
           </label>
           <select
-            {...register("paymentMethod", {
-              required: "Payment method is required",
-            })}
-            className={`
+              {...register("paymentMethod", {
+                required: "Payment method is required",
+              })}
+              className={`
               w-full rounded-md border ${
-                errors.paymentMethod ? "border-red-500" : "border-gray-300"
+                  errors.paymentMethod ? "border-red-500" : "border-gray-300"
               }
               focus:ring-2 focus:ring-indigo-500 focus:border-transparent
             `}
@@ -201,9 +226,37 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
             <option value="Other">Other</option>
           </select>
           {errors.paymentMethod && (
-            <p className="mt-1 text-sm text-red-600">
-              {errors.paymentMethod.message}
-            </p>
+              <p className="mt-1 text-sm text-red-600">
+                {errors.paymentMethod.message}
+              </p>
+          )}
+        </div>
+
+        {/* Account */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Account
+          </label>
+          <select
+              {...register("accountId", {required: "Account is required"})}
+              className={`
+              w-full rounded-md border ${
+                  errors.accountId ? "border-red-500" : "border-gray-300"
+              }
+              focus:ring-2 focus:ring-indigo-500 focus:border-transparent
+            `}
+          >
+            <option value="">Select account</option>
+            {accounts.map((account: Account) => (
+                <option key={account.id} value={account.id}>
+                  {account.name}
+                </option>
+            ))}
+          </select>
+          {errors.accountId && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.accountId.message}
+              </p>
           )}
         </div>
 
@@ -213,9 +266,9 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
             Notes
           </label>
           <textarea
-            {...register("notes")}
-            rows={3}
-            className="w-full rounded-md border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              {...register("notes")}
+              rows={3}
+              className="w-full rounded-md border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
           />
         </div>
       </div>
@@ -223,32 +276,32 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
       {/* Submit Button */}
       <div className="flex justify-end">
         <button
-          type="submit"
-          disabled={isLoading}
-          className={`
+            type="submit"
+            disabled={isLoading}
+            className={`
             px-4 py-2 rounded-md text-white
             ${
-              isLoading
-                ? "bg-indigo-400 cursor-not-allowed"
-                : "bg-indigo-600 hover:bg-indigo-700"
+                isLoading
+                    ? "bg-indigo-400 cursor-not-allowed"
+                    : "bg-indigo-600 hover:bg-indigo-700"
             }
             transition-colors duration-200
           `}
         >
           {isLoading ? (
-            <span className="flex items-center">
+              <span className="flex items-center">
               <svg
-                className="animate-spin -ml-1 mr-2 h-5 w-5"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
+                  className="animate-spin -ml-1 mr-2 h-5 w-5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
               >
                 <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
                   strokeWidth="4"
                 ></circle>
                 <path

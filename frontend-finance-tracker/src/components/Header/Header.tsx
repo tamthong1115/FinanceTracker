@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import {useAuth} from "../../context/AuthContext.tsx";
 
 
 const Header = () => {
@@ -9,12 +10,14 @@ const Header = () => {
     setMenuOpen(!menuOpen);
   };
 
+  const { isAuthenticated } = useAuth();
+
   return (
     <header className="flex border-b bg-white font-sans min-h-[70px] tracking-wide relative z-50">
       <div className="flex flex-wrap items-center justify-between px-10 py-3 gap-4 w-full">
-        <a href="javascript:void(0)">
+        <Link to={"/home"}>
           <img src="icon.png" alt="logo" className="w-14" />
-        </a>
+        </Link>
 
         <div
           className={`${
@@ -201,10 +204,18 @@ const Header = () => {
         </div>
 
         <div className="flex items-center space-x-8 max-lg:ml-auto">
-          {/* login and register */}
-          <Link to="/login" className="btn">
-            Login
-          </Link>
+
+          {isAuthenticated ? (
+              <Link to="/dashboard" className="btn">
+                Your Dashboard
+              </Link>
+          ) : (
+              <Link to="/login" className="btn">
+                Login
+              </Link>
+          )}
+
+
 
           <button onClick={handleToggleMenu} className={"lg:hidden"}>
             <svg

@@ -9,4 +9,5 @@ import org.springframework.stereotype.Component;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
     public UserDTO toDTO(User user);
+    
 }

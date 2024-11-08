@@ -47,6 +47,7 @@ public class UserService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build();
+        
 
         User savedUser = userRepository.save(user);
 
@@ -67,5 +68,15 @@ public class UserService {
         String token = jwtService.generateToken(user.getEmail());
 
         return new AuthResponse(token, userMapper.toDTO(user));
+    }
+
+    @Transactional(readOnly = true)
+    public boolean validateToken(String token) {
+        return jwtService.validateToken(token);
+    }
+
+    public User findUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 }

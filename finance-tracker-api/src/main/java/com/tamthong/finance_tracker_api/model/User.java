@@ -40,8 +40,16 @@ public class User implements UserDetails {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "role", nullable = false, length = 100)
+    private String role;
+
+    @Column(name = "currency", nullable = false, length = 10)
+    private String currency = "USD";
+
     @PrePersist
     protected void onCreate() {
+        role = "ROLE_USER";
+        currency = "USD";
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
     }
@@ -49,8 +57,7 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        // Add roles or authorities here, for example:
-        // authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        authorities.add(new SimpleGrantedAuthority(role));
         return authorities;
     }
 

@@ -17,7 +17,8 @@ export interface Transaction {
 export interface TransactionFormData {
   amount: number;
   description: string;
-  category: string;
+  categoryId: number;
+  accountId: number;
   type: "INCOME" | "EXPENSE";
   date: string;
   paymentMethod: string;

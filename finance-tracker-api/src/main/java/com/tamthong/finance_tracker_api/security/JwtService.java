@@ -34,6 +34,15 @@ public class JwtService {
         return (email.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 
+    public boolean validateToken(String token) {
+        try {
+            Claims claims = extractAllClaims(token);
+            return !isTokenExpired(token) && claims != null;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     private String generateToken(Map<String, Object> extraClaims, String email) {
         return Jwts
                 .builder()
@@ -70,5 +79,9 @@ public class JwtService {
     private Key getSigningKey() {
         byte[] keyBytes = secretKey.getBytes();
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public String extractTokenFromHeader(String header) {
+        return header.substring(7);
     }
 }
