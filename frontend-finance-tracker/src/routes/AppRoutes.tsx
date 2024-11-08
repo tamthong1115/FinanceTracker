@@ -50,9 +50,9 @@ const AppRoutes = () => {
       <Route
         path="/budget"
         element={
-          <Layout>
+          <ProtectedRoute>
             <Budget />
-          </Layout>
+          </ProtectedRoute>
         }
       />
 
@@ -60,7 +60,7 @@ const AppRoutes = () => {
         path="/dashboard/*"
         element={
           <ProtectedRoute>
-            <Dashboard />
+            <Dashboard children={undefined} />
           </ProtectedRoute>
         }
       />

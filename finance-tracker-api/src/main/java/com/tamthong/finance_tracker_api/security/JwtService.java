@@ -80,4 +80,8 @@ public class JwtService {
         byte[] keyBytes = secretKey.getBytes();
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
+    public String extractTokenFromHeader(String header) {
+        return header.substring(7);
+    }
 }

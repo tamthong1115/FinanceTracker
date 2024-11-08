@@ -5,7 +5,7 @@ import { Transactions } from "../../components/main/Transactions/Transactions.ts
 import Goals from "../../components/main/Goals/Goals";
 import Reports from "../../components/main/Reports/Reports";
 import Accounts from "../../components/main/Accounts/Accounts";
-import {Link} from "react-router-dom";
+import Budget from "../Budget/Budget.tsx";
 // import {Setting} from "../../components/main/Setting/Setting";
 
 const Dashboard: React.FC = () => {
@@ -17,8 +17,8 @@ const Dashboard: React.FC = () => {
       case "Giao dịch":
         return <Transactions />;
       case "Ngân sách":
-        return <Link to={"/budget"}></Link>
-      case "Mục tiêu":
+            return <Budget/>;
+        case "Mục tiêu":
         return <Goals />;
       case "Báo cáo":
         return <Reports />;

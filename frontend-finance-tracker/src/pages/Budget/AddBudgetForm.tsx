@@ -9,7 +9,8 @@ const style = {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 400,
+    width: 450,
+    height: 500,
     bgcolor: "background.paper",
     border: "2px solid #000",
     boxShadow: 24,
@@ -69,11 +70,12 @@ const AddBudgetForm: React.FC<AddBudgetFormProps> = ({open, handleClose}) => {
     return (
         <Modal open={open} onClose={handleClose}>
             <Box sx={style}>
-                <form onSubmit={handleSubmit} className="bg-gray-800 rounded-md p-4">
+                <form onSubmit={handleSubmit} className="bg-gradient-to-r from-amber-200 to-violet-300 rounded-md p-4 w-full h-full">
+                    <h1 className={`font-bold font-sm text-center w-full text-2xl mb-4`}>Create new budget</h1>
                     <div className="flex items-center justify-between mb-4">
-                        <label htmlFor="category" className="text-lg font-medium">Select category:</label>
+                        <label htmlFor="category" className="text-lg font-medium w-1/2">Select category:</label>
                         <select id="category" value={category} onChange={handleCategoryChange}
-                                className="bg-gray-700 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                className="rounded-lg w-1/2 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">Select a category</option>
                           {categories.map((cat) => (
                               <option key={cat.id} value={cat.name}>{cat.name}</option>
@@ -81,23 +83,23 @@ const AddBudgetForm: React.FC<AddBudgetFormProps> = ({open, handleClose}) => {
                     </div>
 
                     <div className="flex items-center justify-between mb-4">
-                        <label htmlFor="amount" className="text-lg font-medium">Amount (VND):</label>
+                        <label htmlFor="amount" className="text-lg font-medium w-1/2">Amount (VND):</label>
                         <input
                             type="number"
                             id="amount"
                             value={amount}
                             onChange={handleAmountChange}
-                            className="bg-gray-700 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className=" rounded-md w-1/2 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
                   <div className="flex items-center justify-between mb-4">
-                    <label htmlFor="date" className="text-lg font-medium">Date:</label>
+                    <label htmlFor="date" className="text-lg font-medium w-1/2">Date:</label>
                     <input
                         type="date"
                         id="date"
                         value={date.toISOString().split('T')[0]}
                         onChange={handleDateChange}
-                        className="bg-gray-700 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-1/2 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                   <div className="flex items-center mb-4">
@@ -111,7 +113,7 @@ const AddBudgetForm: React.FC<AddBudgetFormProps> = ({open, handleClose}) => {
                         <label htmlFor="repeat" className="text-lg font-medium">Repeat this budget</label>
 
                     </div>
-                    <button type="submit" className="bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-600">Add
+                    <button type="submit" className="bg-gradient-to-b from-cyan-200 to-red-300 w-3/4 ml-10 mt-10 text-gray-900 rounded-md px-4 py-2 transition duration-500 hover:scale-110 hover:text-white hover:bg-gradient-to-r hover:from-gray-700 hover:to-emerald-700 ">Add
                         Budget
                     </button>
                 </form>

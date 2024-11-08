@@ -16,8 +16,7 @@ import java.time.Instant;
 @Table(name = "accounts")
 public class Account {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "accounts_id_gen")
-    @SequenceGenerator(name = "accounts_id_gen", sequenceName = "accounts_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
@@ -33,8 +32,8 @@ public class Account {
     @Column(name = "balance", nullable = false, precision = 15, scale = 2)
     private BigDecimal balance;
 
-    @Column(name = "account_type", nullable = false, length = 50)
-    private String accountType;
+    @Column(name = "type", nullable = false, length = 50)
+    private String type;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")

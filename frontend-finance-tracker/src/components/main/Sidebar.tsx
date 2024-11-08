@@ -1,4 +1,4 @@
-import {useState} from "react";
+import React, {useState} from "react";
 import {
     BarChart2,
     ChevronLeft,
@@ -11,7 +11,16 @@ import {
     Wallet
 } from "lucide-react";
 
-export const Sidebar = ({activeItem, setActiveItem}) => {
+
+type SidebarProps = {
+    activeItem: string;
+    setActiveItem: (item: string) => void;
+    isExpanded: boolean;
+    setIsExpanded: (isExpanded: boolean) => void;
+
+}
+
+export const Sidebar : React.FC<SidebarProps> = ({activeItem, setActiveItem}) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
     const navItems = [

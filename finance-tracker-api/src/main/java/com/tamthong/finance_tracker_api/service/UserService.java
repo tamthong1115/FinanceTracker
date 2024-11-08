@@ -74,4 +74,9 @@ public class UserService {
     public boolean validateToken(String token) {
         return jwtService.validateToken(token);
     }
+
+    public User findUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
 }

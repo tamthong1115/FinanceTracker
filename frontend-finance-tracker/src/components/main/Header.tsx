@@ -4,19 +4,35 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import SearchBar from './SearchBar';
 import ProfileModal from './ProfileModal';
+import {useMutation, useQueryClient} from "react-query";
+import {signOut} from "../../services/api/AuthAPI.ts";
 
 export const Header = ({ isSidebarExpanded }) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
+
 
     const handleLogout = () => {
         if (window.confirm('Are you sure you want to logout?')) {
             logout();
+            mutation.mutate();
+
             navigate('/login');
         }
     };
+
+    const mutation = useMutation(signOut , {
+        onSuccess: async () => {
+            await queryClient.invalidateQueries('validateToken');
+            navigate('/login');
+        },
+    });
+
+
+
 
     return (
         <>

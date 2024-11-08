@@ -31,4 +31,10 @@ public class AuthController {
         boolean isValid = authService.validateToken(token);
         return ResponseEntity.ok(isValid);
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout() {
+        authService.logout();
+        return ResponseEntity.noContent().build();
+    }
 }
