@@ -7,6 +7,7 @@ import Layout from "../layouts/Layout.tsx";
 import Home from "../pages/Home/Home.tsx";
 import AboutUs from "../pages/AboutUs/AboutUs.tsx";
 import Budget from "../pages/Budget/Budget.tsx";
+import DashboardTest from "../pages/Dashboard/DashboardTest.tsx";
 
 const AppRoutes = () => {
   return (
@@ -55,7 +56,6 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
-
       <Route
         path="/dashboard/*"
         element={
