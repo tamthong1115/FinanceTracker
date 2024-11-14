@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import {useState} from "react";
 import {
     BarChart2,
     ChevronLeft,
@@ -20,7 +20,7 @@ type SidebarProps = {
 
 }
 
-export const Sidebar : React.FC<SidebarProps> = ({activeItem, setActiveItem}) => {
+export const Sidebar : React.FC<SidebarProps> = ({activeItem, setActiveItem }) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
     const navItems = [

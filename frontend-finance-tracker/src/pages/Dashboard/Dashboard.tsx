@@ -6,6 +6,7 @@ import Goals from "../../components/main/Goals/Goals";
 import Reports from "../../components/main/Reports/Reports";
 import Accounts from "../../components/main/Accounts/Accounts";
 import Budget from "../Budget/Budget.tsx";
+import DashboardTest from "./DashboardTest.tsx";
 // import {Setting} from "../../components/main/Setting/Setting";
 
 const Dashboard: React.FC = () => {
@@ -31,7 +32,7 @@ const Dashboard: React.FC = () => {
         return (
           <div>
             <h2 className="text-2xl font-bold mb-4">Tổng quan</h2>
-            {/* Thêm nội dung tổng quan ở đây */}
+              <DashboardTest  />
           </div>
         );
     }
