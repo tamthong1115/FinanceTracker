@@ -14,7 +14,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.stereotype.Service;
+import com.tamthong.finance_tracker_api.model.User;
+import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -22,6 +24,24 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final UserMapper userMapper;
+
+    public List<User> findAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public User setRole(Long id, String role) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        user.setRole(role);
+        return userRepository.save(user);
+    }
+
+    public void deleteUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new ResourceNotFoundException("User not found");
+        }
+        userRepository.deleteById(id);
+    }
 
     public Long getCurrentUserId() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();

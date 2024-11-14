@@ -21,5 +21,5 @@ public class TransactionDTO {
     private LocalDate date;
     private String paymentMethod;
     private String notes;
-    // private TransactionStatus status;
+    private TransactionStatus status;
 }
