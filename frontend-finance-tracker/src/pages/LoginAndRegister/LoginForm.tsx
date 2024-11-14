@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { LoginType } from "../../types/auth";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../../config/AuthContext";
-import axiosInstance from "../../services/api/axiosConfig";
+import axiosInstance from "../../config/axiosConfig";
 import { toast } from "react-toastify";
 import { Eye, EyeOff } from "lucide-react";
 import LoadingSpinner from "../../components/LoadingSpinner";

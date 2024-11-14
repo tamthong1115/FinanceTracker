@@ -1,4 +1,4 @@
-import axiosInstance from "./api/axiosConfig";
+import axiosInstance from "../config/axiosConfig";
 import {
   UserSettingsResponse,
   UserProfile,

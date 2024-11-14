@@ -8,7 +8,7 @@ import {
 } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import axiosInstance from "../services/api/axiosConfig";
+import axiosInstance from "./axiosConfig";
 import { AuthContextType, User } from "../types/auth";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);

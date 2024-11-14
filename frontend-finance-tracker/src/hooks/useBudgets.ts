@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { toast } from "react-toastify";
-import axiosInstance from "../services/api/axiosConfig";
+import axiosInstance from "../config/axiosConfig";
 import { Budget, BudgetFormData } from "../types/budget";
 
 export const useBudgets = () => {
@@ -46,10 +46,7 @@ export const useBudgets = () => {
   const updateBudget = async (id: number, data: BudgetFormData) => {
     try {
       setLoading(true);
-      const response = await axiosInstance.put<Budget>(
-        `/budgets/${id}`,
-        data
-      );
+      const response = await axiosInstance.put<Budget>(`/budgets/${id}`, data);
       setBudgets((prev) =>
         prev.map((budget) => (budget.id === id ? response.data : budget))
       );

@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { toast } from "react-toastify";
-import axiosInstance from "../services/api/axiosConfig";
+import axiosInstance from "../config/axiosConfig";
 
 interface Goal {
   id: number;

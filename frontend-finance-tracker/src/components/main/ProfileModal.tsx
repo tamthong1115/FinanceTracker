@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../../config/AuthContext";
 import { toast } from "react-toastify";
 import { X } from "lucide-react";
-import axiosInstance from "../../services/api/axiosConfig";
+import axiosInstance from "../../config/axiosConfig";
 
 interface ProfileModalProps {
   isOpen: boolean;
