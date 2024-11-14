@@ -1,7 +1,7 @@
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider } from "./config/AuthContext";
 import { ToastContainer } from "react-toastify";
 import { BrowserRouter } from "react-router-dom";
-import AppRoutes from "./routes/AppRoutes";
+import AppRoutes from "./config/AppRoutes";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {

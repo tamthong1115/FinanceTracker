@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 import { Bell, LogOut, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../config/AuthContext";
 import SearchBar from "./SearchBar";
 import ProfileModal from "./ProfileModal";
 import { HeaderProps } from "../../types/props";
