@@ -8,7 +8,7 @@ import {
   UpdatePasswordRequest,
 } from "../types/settings";
 
-const BASE_URL = "/settings";
+const BASE_URL = "/api/settings";
 
 export const settingsApi = {
   getCurrentSettings: async (): Promise<UserSettingsResponse> => {

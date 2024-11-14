@@ -1,6 +1,6 @@
-// src/hooks/useSettings.ts
 import { useState, useCallback } from "react";
 import { settingsApi } from "../services/settingsService";
+import axiosInstance from "../config/axiosConfig";
 import {
   UserSettingsResponse,
   DEFAULT_SETTINGS,
@@ -9,6 +9,8 @@ import {
   Preferences,
   UpdatePasswordRequest,
 } from "../types/settings";
+
+const BASE_URL = "/api/settings";
 
 export const useSettings = () => {
   const [settings, setSettings] =
@@ -20,7 +22,7 @@ export const useSettings = () => {
     try {
       setLoading(true);
       setError(null);
-      const data = await settingsApi.getCurrentSettings();
+      const { data } = await axiosInstance.get<UserSettingsResponse>(`${BASE_URL}/current`);
       console.log("Fetched settings in hook:", data);
       setSettings(data);
     } catch (err: any) {
@@ -36,13 +38,13 @@ export const useSettings = () => {
   const updateProfile = async (profileData: UserProfile) => {
     try {
       setLoading(true);
-      const updatedSettings = await settingsApi.updateProfile(
-        profileData,
-        settings
+      const { data: updatedSettings } = await axiosInstance.put<UserSettingsResponse>(
+        `${BASE_URL}/profile`,
+        profileData
       );
       console.log("Updated settings after profile update:", updatedSettings);
       setSettings(updatedSettings);
-      return settingsApi.extractProfile(updatedSettings);
+      return updatedSettings.profile;
     } catch (err) {
       throw err;
     } finally {
@@ -53,7 +55,7 @@ export const useSettings = () => {
   const updatePassword = async (data: UpdatePasswordRequest) => {
     try {
       setLoading(true);
-      await settingsApi.updatePassword(data);
+      await axiosInstance.put(`${BASE_URL}/password`, data);
     } catch (err) {
       throw err;
     } finally {
@@ -64,16 +66,16 @@ export const useSettings = () => {
   const updateNotifications = async (notificationData: NotificationSettings) => {
     try {
       setLoading(true);
-      const updatedSettings = await settingsApi.updateNotifications(
-        notificationData,
-        settings
+      const { data: updatedSettings } = await axiosInstance.put<UserSettingsResponse>(
+        `${BASE_URL}/notifications`,
+        notificationData
       );
       console.log(
         "Updated settings after notifications update:",
         updatedSettings
       );
       setSettings(updatedSettings);
-      return settingsApi.extractNotifications(updatedSettings);
+      return updatedSettings.notifications;
     } catch (err) {
       throw err;
     } finally {
@@ -84,13 +86,13 @@ export const useSettings = () => {
   const updatePreferences = async (preferencesData: Preferences) => {
     try {
       setLoading(true);
-      const updatedSettings = await settingsApi.updatePreferences(
-        preferencesData,
-        settings
+      const { data: updatedSettings } = await axiosInstance.put<UserSettingsResponse>(
+        `${BASE_URL}/preferences`,
+        preferencesData
       );
       console.log("Updated settings after preferences update:", updatedSettings);
       setSettings(updatedSettings);
-      return settingsApi.extractPreferences(updatedSettings);
+      return updatedSettings.preferences;
     } catch (err) {
       throw err;
     } finally {
@@ -101,7 +103,10 @@ export const useSettings = () => {
   const handleProfileChange = (field: keyof UserProfile, value: string) => {
     setSettings((prev) => ({
       ...prev,
-      [field]: value,
+      profile: {
+        ...prev.profile,
+        [field]: value,
+      },
     }));
   };
 
@@ -111,14 +116,20 @@ export const useSettings = () => {
   ) => {
     setSettings((prev) => ({
       ...prev,
-      [field]: value,
+      notifications: {
+        ...prev.notifications,
+        [field]: value,
+      },
     }));
   };
 
   const handlePreferencesChange = (field: keyof Preferences, value: any) => {
     setSettings((prev) => ({
       ...prev,
-      [field]: value,
+      preferences: {
+        ...prev.preferences,
+        [field]: value,
+      },
     }));
   };
 
@@ -136,8 +147,8 @@ export const useSettings = () => {
     handleNotificationsChange,
     handlePreferencesChange,
     // Data getters
-    currentProfile: () => settingsApi.extractProfile(settings),
-    currentNotifications: () => settingsApi.extractNotifications(settings),
-    currentPreferences: () => settingsApi.extractPreferences(settings),
+    currentProfile: () => settings.profile,
+    currentNotifications: () => settings.notifications,
+    currentPreferences: () => settings.preferences,
   };
 };

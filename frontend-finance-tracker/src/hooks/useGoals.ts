@@ -11,6 +11,8 @@ interface Goal {
   color: string;
 }
 
+const BASE_URL = "/api/goals";
+
 export const useGoals = () => {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [loading, setLoading] = useState(false);
@@ -20,7 +22,7 @@ export const useGoals = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axiosInstance.get<Goal[]>("/goals");
+      const response = await axiosInstance.get<Goal[]>(BASE_URL);
       setGoals(response.data);
     } catch (err: any) {
       const errorMessage =
@@ -35,7 +37,7 @@ export const useGoals = () => {
   const createGoal = async (data: Omit<Goal, "id" | "currentAmount">) => {
     try {
       setLoading(true);
-      const response = await axiosInstance.post<Goal>("/goals", data);
+      const response = await axiosInstance.post<Goal>(BASE_URL, data);
       setGoals((prev) => [...prev, response.data]);
       toast.success("Goal created successfully");
       return response.data;
@@ -52,7 +54,7 @@ export const useGoals = () => {
   const updateGoal = async (id: number, data: Partial<Goal>) => {
     try {
       setLoading(true);
-      const response = await axiosInstance.put<Goal>(`/goals/${id}`, data);
+      const response = await axiosInstance.put<Goal>(`${BASE_URL}/${id}`, data);
       setGoals((prev) =>
         prev.map((goal) => (goal.id === id ? response.data : goal))
       );
@@ -71,7 +73,7 @@ export const useGoals = () => {
   const deleteGoal = async (id: number) => {
     try {
       setLoading(true);
-      await axiosInstance.delete(`/goals/${id}`);
+      await axiosInstance.delete(`${BASE_URL}/${id}`);
       setGoals((prev) => prev.filter((goal) => goal.id !== id));
       toast.success("Goal deleted successfully");
     } catch (err: any) {

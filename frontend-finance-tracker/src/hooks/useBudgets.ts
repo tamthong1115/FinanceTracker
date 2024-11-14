@@ -3,6 +3,8 @@ import { toast } from "react-toastify";
 import axiosInstance from "../config/axiosConfig";
 import { Budget, BudgetFormData } from "../types/budget";
 
+const BASE_URL = "/api/budgets";
+
 export const useBudgets = () => {
   const [budgets, setBudgets] = useState<Budget[]>([]);
   const [loading, setLoading] = useState(false);
@@ -12,7 +14,7 @@ export const useBudgets = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axiosInstance.get<Budget[]>("/budgets");
+      const response = await axiosInstance.get<Budget[]>(BASE_URL);
       setBudgets(response.data);
     } catch (err: any) {
       const errorMessage =
@@ -29,7 +31,7 @@ export const useBudgets = () => {
   const createBudget = async (data: BudgetFormData) => {
     try {
       setLoading(true);
-      const response = await axiosInstance.post<Budget>("/budgets", data);
+      const response = await axiosInstance.post<Budget>(BASE_URL, data);
       setBudgets((prev) => [...prev, response.data]);
       toast.success("Budget created successfully");
       return response.data;
@@ -46,7 +48,7 @@ export const useBudgets = () => {
   const updateBudget = async (id: number, data: BudgetFormData) => {
     try {
       setLoading(true);
-      const response = await axiosInstance.put<Budget>(`/budgets/${id}`, data);
+      const response = await axiosInstance.put<Budget>(`${BASE_URL}/${id}`, data);
       setBudgets((prev) =>
         prev.map((budget) => (budget.id === id ? response.data : budget))
       );
@@ -65,7 +67,7 @@ export const useBudgets = () => {
   const deleteBudget = async (id: number) => {
     try {
       setLoading(true);
-      await axiosInstance.delete(`/budgets/${id}`);
+      await axiosInstance.delete(`${BASE_URL}/${id}`);
       setBudgets((prev) => prev.filter((budget) => budget.id !== id));
       toast.success("Budget deleted successfully");
     } catch (err: any) {

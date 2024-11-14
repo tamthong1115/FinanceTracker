@@ -3,6 +3,8 @@ import { toast } from "react-toastify";
 import axiosInstance from "../config/axiosConfig";
 import { Transaction, TransactionFormData } from "../types/transaction";
 
+const BASE_URL = "/api/transactions";
+
 export const useTransactions = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(false);
@@ -12,7 +14,7 @@ export const useTransactions = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axiosInstance.get<Transaction[]>("/transactions");
+      const response = await axiosInstance.get<Transaction[]>(BASE_URL);
       setTransactions(response.data);
     } catch (err) {
       setError("Failed to fetch transactions");
@@ -25,10 +27,7 @@ export const useTransactions = () => {
   const createTransaction = async (data: TransactionFormData) => {
     try {
       setLoading(true);
-      const response = await axiosInstance.post<Transaction>(
-        "/transactions",
-        data
-      );
+      const response = await axiosInstance.post<Transaction>(BASE_URL, data);
       setTransactions((prev) => [...prev, response.data]);
       toast.success("Transaction created successfully");
       return response.data;
@@ -44,7 +43,7 @@ export const useTransactions = () => {
     try {
       setLoading(true);
       const response = await axiosInstance.put<Transaction>(
-        `/transactions/${id}`,
+        `${BASE_URL}/${id}`,
         data
       );
       setTransactions((prev) =>
@@ -65,7 +64,7 @@ export const useTransactions = () => {
   const deleteTransaction = async (id: number) => {
     try {
       setLoading(true);
-      await axiosInstance.delete(`/transactions/${id}`);
+      await axiosInstance.delete(`${BASE_URL}/${id}`);
       setTransactions((prev) =>
         prev.filter((transaction) => transaction.id !== id)
       );
