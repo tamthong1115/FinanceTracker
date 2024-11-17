@@ -1,11 +1,20 @@
-import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Sidebar } from "../../components/main/Sidebar";
 import { Header } from "../../components/main/Header";
 
 const Dashboard = () => {
-  const [activeItem, setActiveItem] = useState("Overview");
+  const [activeItem, setActiveItem] = useState("Dashboard");
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+   useEffect(() => {
+     // Redirect to dashboard overview if at /dashboard
+     if (location.pathname === "/dashboard") {
+       setActiveItem("Dashboard");
+     }
+   }, [location.pathname]);
 
   return (
     <div className="flex h-screen bg-gray-100">

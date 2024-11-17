@@ -11,6 +11,7 @@ import { Transactions } from "../components/main/Transactions/Transactions.tsx";
 import SavingsGoals from "../components/main/Goals/SavingsGoals.tsx";
 import Reports from "../components/main/Reports/Reports.tsx";
 import Settings from '../components/main/Setting/Settings.tsx';
+import DashboardOverview from '../components/main/Dashboard/DashboardOverview.tsx';
 
 const AppRoutes = () => {
   return (
@@ -58,6 +59,7 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       >
+        <Route index element={<DashboardOverview />} />
         <Route path="transactions" element={<Transactions />} />
         <Route path="budget" element={<Budget />} />
         <Route path="goals" element={<SavingsGoals />} />
