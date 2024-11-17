@@ -1,5 +1,3 @@
-import ContactForm from "../../components/ContactForm/ContactForm";
-
 const AboutUs = () => {
   return (
     <div>
@@ -73,29 +71,26 @@ const AboutUs = () => {
       </div>
     </div>
 
-    <div className="team-card">
-      <img src="/img/dd5.jpg" alt="Ngọc Đặng" />
-      <h3>Ngọc Đặng</h3>
-      <p>Contributor</p>
-      <div className="social-links">
-        <a href="mailto:ndang2319@gmail.com">✉</a>
+          <div className="team-card">
+            <img src="/img/dd5.jpg" alt="Ngọc Đặng" />
+            <h3>Ngọc Đặng</h3>
+            <p>Contributor</p>
+            <div className="social-links">
+              <a href="mailto:ndang2319@gmail.com">✉</a>
+            </div>
+          </div>
+          <div className="team-card">
+            <img src="/img/dd6.jpg" alt="Vũ Hoàng" />
+            <h3>Vũ Hoàng</h3>
+            <p>Contributor</p>
+            <div className="social-links">
+              <a href="mailto:pavla@example.com">✉</a>
+            </div>
+          </div>
+          <div className="green-circle right-0"></div>
+        </div>
       </div>
     </div>
-    <div className="team-card">
-      <img src="/img/dd6.jpg" alt="Vũ Hoàng" />
-      <h3>Vũ Hoàng</h3>
-      <p>Contributor</p>
-      <div className="social-links">
-        <a href="mailto:pavla@example.com">✉</a>
-      </div>
-    </div>
-    <div className="green-circle right-0"></div>
-    </div>
-      
-  </div>
-  <ContactForm />
-</div>
-
   );
 };
 

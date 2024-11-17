@@ -12,6 +12,7 @@ import SavingsGoals from "../components/main/Goals/SavingsGoals.tsx";
 import Reports from "../components/main/Reports/Reports.tsx";
 import Settings from '../components/main/Setting/Settings.tsx';
 import DashboardOverview from '../components/main/Dashboard/DashboardOverview.tsx';
+import ContactForm from '../components/ContactForm/ContactForm.tsx';
 
 const AppRoutes = () => {
   return (
@@ -48,6 +49,14 @@ const AppRoutes = () => {
         element={
           <Layout>
             <AboutUs />
+          </Layout>
+        }
+      />
+      <Route
+        path="/contact"
+        element={
+          <Layout>
+            <ContactForm />
           </Layout>
         }
       />
