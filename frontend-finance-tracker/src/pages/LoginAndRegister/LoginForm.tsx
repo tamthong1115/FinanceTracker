@@ -8,6 +8,8 @@ import { toast } from "react-toastify";
 import { Eye, EyeOff } from "lucide-react";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
+const BASE_URL = "/api/auth";
+
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -22,7 +24,7 @@ const LoginForm = () => {
   const onSubmit = async (data: LoginType) => {
     try {
       setIsLoading(true);
-      const response = await axiosInstance.post("/auth/login", data);
+      const response = await axiosInstance.post(`${BASE_URL}/login`, data);
       toast.success("Login successful!");
       login(response.data.token, response.data.user);
     } catch (error: any) {

@@ -7,6 +7,8 @@ import { toast } from "react-toastify";
 import { Eye, EyeOff } from "lucide-react";
 import LoadingSpinner from "../../components/LoadingSpinner.tsx";
 
+const BASE_URL = "/api/auth";
+
 const RegisterForm: FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -33,7 +35,7 @@ const RegisterForm: FC = () => {
         position: "top-right",
       });
 
-      await axiosInstance.post("/auth/register", data);
+      await axiosInstance.post(`${BASE_URL}/register`, data);
 
       // Update loading toast to success
       toast.update(loadingToastId, {

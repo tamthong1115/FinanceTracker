@@ -37,7 +37,7 @@ axiosInstance.interceptors.response.use(
                     break;
                 case 404:
                     // Don't show error for profile endpoint
-                    if (!error.config.url.includes('/auth/profile')) {
+                    if (!error.config.url.includes('api/auth/profile')) {
                         toast.error('Resource not found');
                     }
                     break;
