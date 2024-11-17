@@ -2,8 +2,6 @@ import { FC, useState } from "react";
 import { Bell, LogOut, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../config/AuthContext";
-import SearchBar from "./SearchBar";
-import ProfileModal from "./ProfileModal";
 import { HeaderProps } from "../../types/props";
 
 export const Header: FC<HeaderProps> = ({ isSidebarExpanded }) => {
@@ -27,7 +25,6 @@ export const Header: FC<HeaderProps> = ({ isSidebarExpanded }) => {
             }`}
     >
       <div className="w-1/4"></div>
-      <SearchBar />
       <div className="w-1/4 flex items-center justify-end space-x-4">
         <button className="p-2 rounded-full hover:bg-gray-200 transition-colors duration-200">
           <Bell size={24} className="text-gray-600" />

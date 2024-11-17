@@ -10,7 +10,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Search,
-  Tag,
 } from "lucide-react";
 import { SidebarProps, NavItem } from "../../types/props";
 
