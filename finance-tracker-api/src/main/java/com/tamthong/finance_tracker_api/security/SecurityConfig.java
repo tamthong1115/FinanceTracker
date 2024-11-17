@@ -23,19 +23,21 @@ public class SecurityConfig {
         private final JwtAuthenticationFilter jwtAuthFilter;
         private final AuthenticationProvider authenticationProvider;
 
+        private static final String[] WHITE_LIST_URL = {
+                        "/api/auth/**",
+                        "/api/test/public",
+                        "/error",
+                        "/v3/api-docs/**",
+                        "/swagger-ui/**"
+        };
+
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
                 http
-                                .csrf(csrf -> csrf.disable())
                                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                                .csrf(csrf -> csrf.disable())
                                 .authorizeHttpRequests(auth -> auth
-                                                .requestMatchers(
-                                                                "/api/auth/**",
-                                                                "/api/test/public",
-                                                                "/v3/api-docs/**",
-                                                                "/swagger-ui/**")
-                                                .permitAll()
-                                                .requestMatchers("/error").permitAll()
+                                                .requestMatchers(WHITE_LIST_URL).permitAll()
                                                 .anyRequest().authenticated())
                                 .sessionManagement(session -> session
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -49,7 +51,7 @@ public class SecurityConfig {
         public CorsConfigurationSource corsConfigurationSource() {
                 CorsConfiguration configuration = new CorsConfiguration();
                 configuration.setAllowedOrigins(List.of("http://localhost:5173"));
-                configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
                 configuration.setAllowedHeaders(Arrays.asList(
                                 "Authorization",
                                 "Content-Type",
