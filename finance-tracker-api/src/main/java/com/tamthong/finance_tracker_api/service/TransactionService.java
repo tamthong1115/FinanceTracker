@@ -3,6 +3,7 @@ package com.tamthong.finance_tracker_api.service;
 import com.tamthong.finance_tracker_api.dto.TransactionDTO;
 import com.tamthong.finance_tracker_api.exception.ResourceNotFoundException;
 import com.tamthong.finance_tracker_api.model.Transaction;
+import com.tamthong.finance_tracker_api.model.TransactionStatus;
 import com.tamthong.finance_tracker_api.model.User;
 import com.tamthong.finance_tracker_api.repository.TransactionRepository;
 import com.tamthong.finance_tracker_api.mapper.TransactionMapper;
@@ -10,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,14 +45,12 @@ public class TransactionService {
             Transaction transaction = transactionMapper.toEntity(transactionDTO);
             transaction.setUser(currentUser);
 
+            // Set default values if not provided
             if (transaction.getDate() == null) {
                 transaction.setDate(LocalDate.now());
             }
-            if (transaction.getType() == null) {
-                throw new IllegalArgumentException("Transaction type is required");
-            }
-            if (transaction.getAmount() == null || transaction.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
-                throw new IllegalArgumentException("Invalid amount");
+            if (transaction.getStatus() == null) {
+                transaction.setStatus(TransactionStatus.COMPLETED);
             }
 
             Transaction savedTransaction = transactionRepository.save(transaction);
@@ -70,6 +68,14 @@ public class TransactionService {
         Transaction updatedTransaction = transactionMapper.toEntity(transactionDTO);
         updatedTransaction.setId(id);
         updatedTransaction.setUser(existingTransaction.getUser());
+
+        // Preserve existing values if not provided in update
+        if (updatedTransaction.getStatus() == null) {
+            updatedTransaction.setStatus(existingTransaction.getStatus());
+        }
+        if (updatedTransaction.getDate() == null) {
+            updatedTransaction.setDate(existingTransaction.getDate());
+        }
 
         Transaction savedTransaction = transactionRepository.save(updatedTransaction);
         return transactionMapper.toDTO(savedTransaction);

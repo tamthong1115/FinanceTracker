@@ -23,10 +23,12 @@ export interface Transaction {
 
 export interface TransactionFormData {
   type: TransactionType;
-  status: TransactionStatus;
   amount: number;
+  description: string;
+  category: string;
   date: string;
   paymentMethod: string;
+  status?: TransactionStatus;
   notes?: string;
   tags?: string[];
   recurrent?: boolean;

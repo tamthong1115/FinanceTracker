@@ -1,23 +1,23 @@
-import React from "react";
-import { useState } from "react";
-
-interface TransactionFiltersProps {
-  onFilterChange: (filters: FilterCriteria) => void;
-  disabled?: boolean;
-}
+import React, { useState } from "react";
+import { TransactionType } from "../../../types/transaction";
 
 export interface FilterCriteria {
   startDate?: string;
   endDate?: string;
-  type?: string;
+  type?: TransactionType;
   category?: string;
   minAmount?: number;
   maxAmount?: number;
 }
 
+interface TransactionFiltersProps {
+  onFilterChange: (filters: Partial<FilterCriteria>) => void;
+  disabled?: boolean;
+}
+
 export const TransactionFilters: React.FC<TransactionFiltersProps> = ({
   onFilterChange,
-  disabled,
+  disabled = false,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -27,22 +27,39 @@ export const TransactionFilters: React.FC<TransactionFiltersProps> = ({
     const { name, value } = event.target;
     let filterValue: string | number | undefined = value;
 
+    // Convert amount values to numbers
     if (name.includes("Amount") && value) {
       filterValue = parseFloat(value);
     }
 
+    // Only update if value is not empty
     onFilterChange({
-      [name]: filterValue || undefined,
-    } as FilterCriteria);
+      [name]: value ? filterValue : undefined,
+    });
   };
+
+  const categories = [
+    "Food & Dining",
+    "Shopping",
+    "Housing",
+    "Transportation",
+    "Utilities",
+    "Healthcare",
+    "Entertainment",
+    "Education",
+    "Income",
+    "Other",
+  ];
 
   return (
     <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 mb-6">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-medium text-gray-900">Filters</h3>
         <button
+          type="button"
           onClick={() => setIsExpanded(!isExpanded)}
           className="text-sm text-indigo-600 hover:text-indigo-800"
+          disabled={disabled}
         >
           {isExpanded ? "Show Less" : "Show More"}
         </button>
@@ -103,14 +120,12 @@ export const TransactionFilters: React.FC<TransactionFiltersProps> = ({
                 disabled={disabled}
                 className="w-full rounded-md border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               >
-                <option value="">All</option>
-                <option value="Food & Dining">Food & Dining</option>
-                <option value="Shopping">Shopping</option>
-                <option value="Housing">Housing</option>
-                <option value="Transportation">Transportation</option>
-                <option value="Utilities">Utilities</option>
-                <option value="Healthcare">Healthcare</option>
-                <option value="Entertainment">Entertainment</option>
+                <option value="">All Categories</option>
+                {categories.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -145,3 +160,5 @@ export const TransactionFilters: React.FC<TransactionFiltersProps> = ({
     </div>
   );
 };
+
+export default TransactionFilters;

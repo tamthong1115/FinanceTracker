@@ -4,6 +4,7 @@ import { Transaction, TransactionFormData } from "../../../types/transaction";
 import { TransactionList } from "./TransactionList";
 import { TransactionForm } from "./TransactionForm";
 import { FilterCriteria, TransactionFilters } from "./TransactionFilters";
+import { toast } from "react-toastify";
 
 export const Transactions: React.FC = () => {
   const {
@@ -17,8 +18,9 @@ export const Transactions: React.FC = () => {
   } = useTransactions();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedTransaction, setSelectedTransaction] =
-    useState<Transaction | null>(null);
+  const [selectedTransaction, setSelectedTransaction] = useState<
+    Transaction | undefined
+  >(undefined);
   const [filteredTransactions, setFilteredTransactions] = useState<
     Transaction[]
   >([]);
@@ -35,14 +37,22 @@ export const Transactions: React.FC = () => {
     try {
       if (selectedTransaction) {
         await updateTransaction(selectedTransaction.id, data);
+        toast.success("Transaction updated successfully");
       } else {
         await createTransaction(data);
+        toast.success("Transaction created successfully");
       }
-      setIsModalOpen(false);
-      setSelectedTransaction(null);
+      handleCloseModal();
+      fetchTransactions(); // Refresh the list
     } catch (err) {
-      console.error("Error submitting transaction:", err);
+      const error = err as Error;
+      toast.error(error.message || "Error processing transaction");
     }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedTransaction(undefined);
   };
 
   const handleFilterChange = (filters: FilterCriteria) => {
@@ -77,19 +87,23 @@ export const Transactions: React.FC = () => {
   if (error) {
     return (
       <div className="p-4 text-center">
-        <div className="text-red-600 mb-4">{error}</div>
-        <button
-          onClick={() => fetchTransactions()}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >
-          Retry
-        </button>
+        <div className="text-red-600 bg-red-50 p-4 rounded-lg">
+          <h3 className="font-semibold">Error loading transactions</h3>
+          <p>{error}</p>
+          <button
+            onClick={() => fetchTransactions()}
+            className="mt-2 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+          >
+            Try Again
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
+      {/* Header Section */}
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Transactions</h1>
@@ -97,7 +111,7 @@ export const Transactions: React.FC = () => {
         </div>
         <button
           onClick={() => {
-            setSelectedTransaction(null);
+            setSelectedTransaction(undefined);
             setIsModalOpen(true);
           }}
           className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200"
@@ -107,35 +121,39 @@ export const Transactions: React.FC = () => {
         </button>
       </div>
 
+      {/* Filters Section */}
       <TransactionFilters
         onFilterChange={handleFilterChange}
         disabled={loading}
       />
 
-      {loading && !transactions.length ? (
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-        </div>
-      ) : (
-        <TransactionList
-          transactions={filteredTransactions}
-          onEdit={(transaction) => {
-            setSelectedTransaction(transaction);
-            setIsModalOpen(true);
-          }}
-          onDelete={async (id) => {
-            if (
-              window.confirm("Are you sure you want to delete this transaction?")
-            ) {
+      {/* Transactions List */}
+      <TransactionList
+        transactions={filteredTransactions}
+        onEdit={(transaction) => {
+          setSelectedTransaction(transaction);
+          setIsModalOpen(true);
+        }}
+        onDelete={async (id) => {
+          if (
+            window.confirm("Are you sure you want to delete this transaction?")
+          ) {
+            try {
               await deleteTransaction(id);
+              toast.success("Transaction deleted successfully");
+              fetchTransactions(); // Refresh the list
+            } catch (err) {
+              const error = err as Error;
+              toast.error(error.message || "Error deleting transaction");
             }
-          }}
-          isLoading={loading}
-        />
-      )}
+          }
+        }}
+        isLoading={loading && !transactions.length}
+      />
 
+      {/* Transaction Form Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
             <h2 className="text-xl font-bold mb-4">
               {selectedTransaction ? "Edit Transaction" : "Add Transaction"}
@@ -143,10 +161,7 @@ export const Transactions: React.FC = () => {
             <TransactionForm
               initialData={selectedTransaction}
               onSubmit={handleSubmit}
-              onCancel={() => {
-                setIsModalOpen(false);
-                setSelectedTransaction(null);
-              }}
+              onCancel={handleCloseModal}
               isLoading={loading}
             />
           </div>
@@ -155,3 +170,5 @@ export const Transactions: React.FC = () => {
     </div>
   );
 };
+
+export default Transactions;
