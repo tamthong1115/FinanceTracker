@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
-import Header from "../components/Header/Header";
-import Footer from "../components/Footer/Footer";
+import Header from "./public-pages/Header/Header";
+import Footer from "./public-pages/Footer/Footer";
 
 // Define the prop types
 type LayoutProps = {

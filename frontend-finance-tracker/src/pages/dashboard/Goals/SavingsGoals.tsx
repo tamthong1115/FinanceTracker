@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Target } from 'lucide-react';
-import { useGoals } from '../../../hooks/useGoals';
-import GoalFormModal from './GoalFormModal';
-import { Card } from '../../ui/card';
-import { Progress } from '../../ui/progress';
-import LoadingSpinner from '../../LoadingSpinner';
+import { useState, useEffect } from "react";
+import { Plus, Edit2, Trash2, Target } from "lucide-react";
+import { useGoals } from "../../../hooks/useGoals";
+import GoalFormModal from "./GoalFormModal";
+import { Card } from "../../../components/common/ui/card";
+import { Progress } from "../../../components/common/ui/progress";
+import LoadingSpinner from "../../../components/common/LoadingSpinner";
 
 interface Goal {
   id: number;

@@ -1,11 +1,11 @@
 import { FC, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { RegisterType } from "../../types/auth";
-import axiosInstance from "../../config/axiosConfig.ts";
+import { RegisterType } from "../../../types/auth.ts";
+import axiosInstance from "../../../config/axiosConfig.ts";
 import { toast } from "react-toastify";
 import { Eye, EyeOff } from "lucide-react";
-import LoadingSpinner from "../../components/LoadingSpinner.tsx";
+import LoadingSpinner from "../../../components/common/LoadingSpinner.tsx";
 
 const BASE_URL = "/api/auth";
 

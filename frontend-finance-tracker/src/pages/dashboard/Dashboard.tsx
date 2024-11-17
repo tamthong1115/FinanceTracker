@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Sidebar } from "../../components/main/Sidebar";
-import { Header } from "../../components/main/Header";
+import { Sidebar } from "./Sidebar";
+import { Header } from "./Header";
 
 const Dashboard = () => {
   const [activeItem, setActiveItem] = useState("Dashboard");

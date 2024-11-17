@@ -1,6 +1,5 @@
-// src/components/main/Setting/Settings.tsx
 import React, { useState, useEffect } from "react";
-import { Card } from "../../ui/card";
+import { Card } from "../../../components/common/ui/card";
 import { Loader2 } from "lucide-react";
 import { useSettings } from "../../../hooks/useSettings";
 import { toast } from "react-toastify";

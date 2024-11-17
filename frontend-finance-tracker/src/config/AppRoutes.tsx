@@ -1,18 +1,18 @@
-import {Routes, Route} from 'react-router-dom';
-import LoginForm from '../pages/LoginAndRegister/LoginForm';
-import RegisterForm from '../pages/LoginAndRegister/RegisterForm';
-import Dashboard from '../pages/Dashboard/Dashboard';
-import {ProtectedRoute} from '../components/ProtectedRoute';
-import Layout from "../layouts/Layout.tsx";
-import Home from "../pages/Home/Home.tsx";
-import AboutUs from "../pages/AboutUs/AboutUs.tsx";
-import { Budget } from "../components/main/Budget/Budget.tsx";
-import { Transactions } from "../components/main/Transactions/Transactions.tsx";
-import SavingsGoals from "../components/main/Goals/SavingsGoals.tsx";
-import Reports from "../components/main/Reports/Reports.tsx";
-import Settings from '../components/main/Setting/Settings.tsx';
-import DashboardOverview from '../components/main/Dashboard/DashboardOverview.tsx';
-import ContactForm from '../components/ContactForm/ContactForm.tsx';
+import { Routes, Route } from "react-router-dom";
+import LoginForm from "../pages/public/LoginAndRegister/LoginForm.tsx";
+import RegisterForm from "../pages/public/LoginAndRegister/RegisterForm.tsx";
+import Dashboard from "../pages/dashboard/Dashboard.tsx";
+import { ProtectedRoute } from "../components/common/ProtectedRoute.tsx";
+import Layout from "../components/Layout.tsx";
+import Home from "../pages/public/Home/Home.tsx";
+import AboutUs from "../pages/public/AboutUs/AboutUs.tsx";
+import { Budget } from "../pages/dashboard/Budget/Budget.tsx";
+import { Transactions } from "../pages/dashboard/Transactions/Transactions.tsx";
+import SavingsGoals from "../pages/dashboard/Goals/SavingsGoals.tsx";
+import Reports from "../pages/dashboard/Reports/Reports.tsx";
+import Settings from "../pages/dashboard/Setting/Settings.tsx";
+import DashboardOverview from "../pages/dashboard/Dashboard/DashboardOverview.tsx";
+import ContactForm from "../components/public-pages/ContactForm/ContactForm.tsx";
 
 const AppRoutes = () => {
   return (

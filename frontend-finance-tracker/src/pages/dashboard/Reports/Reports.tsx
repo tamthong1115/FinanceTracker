@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Card } from "../../ui/card";
+import { useState } from "react";
+import { Card } from "../../../components/common/ui/card";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { Calendar } from "lucide-react";
 

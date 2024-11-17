@@ -1,5 +1,5 @@
 import { Navigate, useLocation } from "react-router-dom";
-import { useAuth } from "../config/AuthContext";
+import { useAuth } from "../../config/AuthContext";
 
 export const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
   children,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   LineChart,
   Line,
@@ -12,7 +12,7 @@ import {
   Pie,
   Cell,
 } from "recharts";
-import { Card } from "../../ui/card";
+import { Card } from "../../../components/common/ui/card";
 import {
   ArrowUpIcon,
   ArrowDownIcon,

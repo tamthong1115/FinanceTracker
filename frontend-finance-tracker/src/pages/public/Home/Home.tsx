@@ -1,6 +1,6 @@
-import SlideShow from "../../components/SlideShow/SlideShow.js";
+import SlideShow from "../../../components/public-pages/SlideShow/SlideShow.js";
 import PropTypes from "prop-types";
-import CommunitySlider from "../../components/SlideShow/SlickSlide-OurCommunity.js";
+import CommunitySlider from "../../../components/public-pages/SlideShow/SlickSlide-OurCommunity.js";
 
 type FeatureCardProps = {
   imageSrc: string;
@@ -72,9 +72,9 @@ const Home = () => {
               Professional Consultants
             </h3>
             <p className="text-gray-600 group-hover:text-white ">
-              The team of professional consultants provides in-depth and
-              tailored advice based on your financial situation, helping you
-              make smart and secure investment decisions.
+              The team of professional consultants provides in-depth and tailored
+              advice based on your financial situation, helping you make smart
+              and secure investment decisions.
             </p>
           </div>
 
@@ -97,9 +97,9 @@ const Home = () => {
               Comprehensive Services
             </h3>
             <p className="text-gray-600 group-hover:text-white ">
-              With comprehensive services, you can automate financial
-              management, optimize savings, and receive detailed reports on your
-              financial situation anytime, anywhere.
+              With comprehensive services, you can automate financial management,
+              optimize savings, and receive detailed reports on your financial
+              situation anytime, anywhere.
             </p>
           </div>
 
@@ -122,9 +122,9 @@ const Home = () => {
               A Culture that Delivers
             </h3>
             <p className="text-gray-600 group-hover:text-white ">
-              A culture committed to delivering financial results in our
-              services helps customers feel secure and confident in their
-              personal financial management process.
+              A culture committed to delivering financial results in our services
+              helps customers feel secure and confident in their personal
+              financial management process.
             </p>
           </div>
 
@@ -161,10 +161,10 @@ const Home = () => {
             More than 40M+ Trusted Our Financial & Consultation Institution
           </h1>
           <p className="text-gray-600 mb-4">
-            At Our Corporation, we pride ourselves on over a decade of
-            experience in the financial and consultation industry. Our dedicated
-            team of experts is committed to providing personalized solutions
-            tailored to meet the unique needs of each client.
+            At Our Corporation, we pride ourselves on over a decade of experience
+            in the financial and consultation industry. Our dedicated team of
+            experts is committed to providing personalized solutions tailored to
+            meet the unique needs of each client.
           </p>
           <p className="text-gray-600 mb-4">
             With a focus on integrity and transparency, we have earned the trust

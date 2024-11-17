@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Plus, Edit2, Trash2, AlertCircle } from "lucide-react";
 import { useBudgets } from "../../../hooks/useBudgets";
 import { BudgetForm } from "./BudgetForm";
-import LoadingSpinner from "../../LoadingSpinner";
+import LoadingSpinner from "../../../components/common/LoadingSpinner";
+import { BudgetFormData } from "../../../types/budget";
 
 export const Budget = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedBudget, setSelectedBudget] = useState(null);
+  const [selectedBudget, setSelectedBudget] = useState<
+    (BudgetFormData & { id?: number }) | undefined
+  >(undefined);
   const {
     budgets,
     loading,
@@ -21,21 +24,21 @@ export const Budget = () => {
     fetchBudgets();
   }, [fetchBudgets]);
 
-  const handleSubmit = async (data) => {
+  const handleSubmit = async (data: BudgetFormData) => {
     try {
-      if (selectedBudget) {
+      if (selectedBudget?.id) {
         await updateBudget(selectedBudget.id, data);
       } else {
         await createBudget(data);
       }
       setIsModalOpen(false);
-      setSelectedBudget(null);
+      setSelectedBudget(undefined);
     } catch (err) {
       console.error("Error submitting budget:", err);
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: number) => {
     if (window.confirm("Are you sure you want to delete this budget?")) {
       try {
         await deleteBudget(id);
@@ -70,7 +73,7 @@ export const Budget = () => {
         </div>
         <button
           onClick={() => {
-            setSelectedBudget(null);
+            setSelectedBudget(undefined);
             setIsModalOpen(true);
           }}
           className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
@@ -193,7 +196,7 @@ export const Budget = () => {
               onSubmit={handleSubmit}
               onCancel={() => {
                 setIsModalOpen(false);
-                setSelectedBudget(null);
+                setSelectedBudget(undefined);
               }}
               isLoading={loading}
             />
