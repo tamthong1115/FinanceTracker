@@ -22,7 +22,7 @@ export const useSettings = () => {
     try {
       setLoading(true);
       setError(null);
-      const { data } = await axiosInstance.get<UserSettingsResponse>(`${BASE_URL}/current`);
+      const { data } = await axiosInstance.get<UserSettingsResponse>(`${BASE_URL}`);
       console.log("Fetched settings in hook:", data);
       setSettings(data);
     } catch (err: any) {
@@ -44,9 +44,12 @@ export const useSettings = () => {
       );
       console.log("Updated settings after profile update:", updatedSettings);
       setSettings(updatedSettings);
-      return updatedSettings.profile;
-    } catch (err) {
-      throw err;
+      return {
+        name: updatedSettings.name,
+        email: updatedSettings.email,
+        phone: updatedSettings.phone,
+        address: updatedSettings.address
+      };
     } finally {
       setLoading(false);
     }
@@ -56,8 +59,6 @@ export const useSettings = () => {
     try {
       setLoading(true);
       await axiosInstance.put(`${BASE_URL}/password`, data);
-    } catch (err) {
-      throw err;
     } finally {
       setLoading(false);
     }
@@ -75,9 +76,11 @@ export const useSettings = () => {
         updatedSettings
       );
       setSettings(updatedSettings);
-      return updatedSettings.notifications;
-    } catch (err) {
-      throw err;
+      return {
+        emailNotifications: updatedSettings.emailNotifications,
+        budgetAlerts: updatedSettings.budgetAlerts,
+        transactionNotifications: updatedSettings.transactionNotifications
+      };
     } finally {
       setLoading(false);
     }
@@ -92,21 +95,21 @@ export const useSettings = () => {
       );
       console.log("Updated settings after preferences update:", updatedSettings);
       setSettings(updatedSettings);
-      return updatedSettings.preferences;
-    } catch (err) {
-      throw err;
+      return {
+        currency: updatedSettings.currency || "VND",
+        fiscalMonthStartDay: updatedSettings.fiscalMonthStartDay || 1,
+        dateFormat: updatedSettings.dateFormat || "DD/MM/YYYY",
+        darkMode: updatedSettings.darkMode
+      };
     } finally {
       setLoading(false);
     }
   };
 
   const handleProfileChange = (field: keyof UserProfile, value: string) => {
-    setSettings((prev) => ({
+    setSettings((prev: UserSettingsResponse) => ({
       ...prev,
-      profile: {
-        ...prev.profile,
-        [field]: value,
-      },
+      [field]: value,
     }));
   };
 
@@ -114,22 +117,9 @@ export const useSettings = () => {
     field: keyof NotificationSettings,
     value: boolean
   ) => {
-    setSettings((prev) => ({
+    setSettings((prev: UserSettingsResponse) => ({
       ...prev,
-      notifications: {
-        ...prev.notifications,
-        [field]: value,
-      },
-    }));
-  };
-
-  const handlePreferencesChange = (field: keyof Preferences, value: any) => {
-    setSettings((prev) => ({
-      ...prev,
-      preferences: {
-        ...prev.preferences,
-        [field]: value,
-      },
+      [field]: value,
     }));
   };
 
@@ -145,10 +135,23 @@ export const useSettings = () => {
     // Change handlers
     handleProfileChange,
     handleNotificationsChange,
-    handlePreferencesChange,
     // Data getters
-    currentProfile: () => settings.profile,
-    currentNotifications: () => settings.notifications,
-    currentPreferences: () => settings.preferences,
+    currentProfile: () => ({
+      name: settings.name,
+      email: settings.email,
+      phone: settings.phone,
+      address: settings.address
+    }),
+    currentNotifications: () => ({
+      emailNotifications: settings.emailNotifications,
+      budgetAlerts: settings.budgetAlerts,
+      transactionNotifications: settings.transactionNotifications
+    }),
+    currentPreferences: () => ({
+      currency: settings.currency || "VND",
+      fiscalMonthStartDay: settings.fiscalMonthStartDay || 1,
+      dateFormat: settings.dateFormat || "DD/MM/YYYY",
+      darkMode: settings.darkMode
+    }),
   };
 };
