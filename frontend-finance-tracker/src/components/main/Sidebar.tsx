@@ -7,9 +7,10 @@ import {
     LayoutDashboard,
     Settings,
     Tag,
-    Target,
+    Target, User,
     Wallet
 } from "lucide-react";
+import {Category, Money} from "@mui/icons-material";
 
 
 type SidebarProps = {
@@ -25,8 +26,10 @@ export const Sidebar : React.FC<SidebarProps> = ({activeItem, setActiveItem }) =
 
     const navItems = [
         {icon: <LayoutDashboard size={24}/>, text: 'Tổng quan', href: '#'},
+        {icon: <User size={24}/>, text: 'Quản lí người dùng', href: '#'},
+        {icon: <Tag  size={24}/>, text: 'Quản lí danh mục', href: '#'},
         {icon: <DollarSign size={24}/>, text: 'Giao dịch', href: '#'},
-        {icon: <Tag size={24}/>, text: 'Ngân sách', href: '#'},
+        {icon: <Money size={24}/>, text: 'Ngân sách', href: '#'},
         {icon: <Target size={24}/>, text: 'Mục tiêu', href: '#'},
         {icon: <BarChart2 size={24}/>, text: 'Báo cáo', href: '#'},
         {icon: <Wallet size={24}/>, text: 'Tài khoản', href: '#'},

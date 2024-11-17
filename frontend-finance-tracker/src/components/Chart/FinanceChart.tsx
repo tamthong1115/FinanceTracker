@@ -37,7 +37,7 @@ const FinanceChart: React.FC<FinanceChartProps> = ({ category }) => {
         const getTransactions = async () => {
             try {
                 const data = await getAllTransactions();
-                const weeklySums = [0, 0, 0, 0]; // Mảng để lưu tổng tiền cho từng tuần trong tháng
+                const weeklySums = [0, 0, 0, 0];
 
                 data.forEach((transaction: { date: string; amount: number; type: string; }) => {
                     const transactionDate = new Date(transaction.date);
@@ -50,7 +50,6 @@ const FinanceChart: React.FC<FinanceChartProps> = ({ category }) => {
                     }
                 });
 
-                // Cập nhật dữ liệu cho biểu đồ
                 setChartData({
                     labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
                     datasets: [
@@ -67,10 +66,9 @@ const FinanceChart: React.FC<FinanceChartProps> = ({ category }) => {
             }
         };
         getTransactions();
-    }, [category]); // Chỉ gọi lại khi `category` thay đổi
+    }, [category]);
 
     useEffect(() => {
-        // Đảm bảo rằng biểu đồ được tạo ra và cập nhật sau khi `chartData` thay đổi
         if (chartRef.current && chartData.datasets[0].data.length > 0) {
             if (chartInstanceRef.current) {
                 chartInstanceRef.current.destroy();
@@ -112,11 +110,11 @@ const FinanceChart: React.FC<FinanceChartProps> = ({ category }) => {
                 chartInstanceRef.current.destroy();
             }
         };
-    }, [chartData]); // Chạy khi `chartData` thay đổi
+    }, [chartData]);
 
     return (
         <div className="p-6 bg-white w-11/12 h-11/12">
-            <canvas ref={chartRef} width="500" height="300"></canvas>
+            <canvas ref={chartRef} width="auto" height="auto"></canvas>
         </div>
     );
 };
