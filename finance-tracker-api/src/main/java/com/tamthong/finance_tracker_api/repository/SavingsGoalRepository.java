@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface SavingsGoalRepository extends JpaRepository<SavingsGoal, Long> {
     List<SavingsGoal> findByUserIdOrderByCreatedAtDesc(Long userId);
+
+    long countByUserId(Long userId);
 }
