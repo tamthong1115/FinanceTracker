@@ -1,12 +1,16 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
 
   const handleToggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
+
+  // Helper function to determine if link is active
+  const isActive = (path: string) => location.pathname === path;
 
   return (
     <header className="flex border-b bg-white font-sans min-h-[70px] tracking-wide relative z-50">
@@ -48,8 +52,12 @@ const Header = () => {
             </li>
             <li className="max-lg:border-b max-lg:py-3">
               <Link
-                to={"/"}
-                className="hover:text-blue-600 text-[15px] font-bold text-blue-600 block"
+                to="/"
+                className={`text-[15px] font-bold block ${
+                  isActive('/') 
+                    ? 'text-blue-600' 
+                    : 'text-gray-600 hover:text-blue-600'
+                }`}
               >
                 Home
               </Link>
@@ -57,18 +65,26 @@ const Header = () => {
             <li className="max-lg:border-b max-lg:py-3">
               <Link
                 to="/about-us"
-                className="hover:text-[#007bff] text-gray-600 text-[15px] font-bold block"
+                className={`text-[15px] font-bold block ${
+                  isActive('/about-us')
+                    ? 'text-blue-600'
+                    : 'text-gray-600 hover:text-blue-600'
+                }`}
               >
                 About
               </Link>
             </li>
             <li className="max-lg:border-b max-lg:py-3">
-              <a
-                href="/contact"
-                className="hover:text-[#007bff] text-gray-600 text-[15px] font-bold block"
+              <Link
+                to="/contact"
+                className={`text-[15px] font-bold block ${
+                  isActive('/contact')
+                    ? 'text-blue-600'
+                    : 'text-gray-600 hover:text-blue-600'
+                }`}
               >
                 Contact
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
