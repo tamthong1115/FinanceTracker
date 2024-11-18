@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin/users")
@@ -21,14 +22,15 @@ public class UserController {
         return ResponseEntity.ok(userService.findAllUsers());
     }
 
-    @PatchMapping("/{id}/role")
-    public ResponseEntity<User> setRole(@PathVariable Long id, @RequestParam String role) {
+    @PatchMapping("/setrole/{id}")
+    public ResponseEntity<User> setRole(@PathVariable Long id, @RequestBody Map<String, String> request) {
+        String role = request.get("role");
         return ResponseEntity.ok(userService.setRole(id, role));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
-        return ResponseEntity.ok().build();
+    @PatchMapping("/lock/{id}")
+    public ResponseEntity<User> lockUserAccount(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.lockUserAccount(id));
     }
+
 }
