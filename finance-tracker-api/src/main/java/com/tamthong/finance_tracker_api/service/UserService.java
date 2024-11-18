@@ -36,12 +36,12 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public void deleteUser(Long id) {
-        if (!userRepository.existsById(id)) {
-            throw new ResourceNotFoundException("User not found");
+        public User lockUserAccount(Long id) {
+            User user = userRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+            user.setIsActive(false);
+            return userRepository.save(user);
         }
-        userRepository.deleteById(id);
-    }
 
     public Long getCurrentUserId() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
