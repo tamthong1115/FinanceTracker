@@ -1,28 +1,31 @@
-import {useState,useEffect} from 'react';
-import {getAllCategories} from '../../services/api/AdminAPI.ts';
+import {useState, useEffect} from 'react';
+import {deleteCategory, getAllCategories} from '../../services/api/AdminAPI.ts';
+import {AddNewCategory} from "../../components/Modal/AddNewCategory.tsx";
 
 interface Category {
     id: number;
     name: string;
     type: string;
 }
+
 export const CategoryManager = () => {
     const [categories, setCategories] = useState<Category[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const userPerPages = 10;
-
-    const getAllCategories = async () => {
-        try{
-            const data = await getAllCategories();
-            setCategories(data);
-        }catch (error){
-            console.log(error);
-        }
-    }
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const userPerPages = 20;
 
     useEffect(() => {
-        getAllCategories().then(r => r);
+        const fetchData = async () => {
+            try {
+                const data = await getAllCategories();
+                setCategories(data);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        fetchData();
     }, []);
+
 
     const totalPages = Math.ceil(categories.length / userPerPages);
     const indexOfLastUser = currentPage * userPerPages;
@@ -32,41 +35,48 @@ export const CategoryManager = () => {
         setCurrentPage(pageNumber);
     }
 
+    const handdleDeleteCategory = async (id: number) => {
+        if (window.confirm("Bạn có chắc muốn xóa danh mục này?")) {
+            try {
+                await deleteCategory(id);
+                setCategories(prevCategories => prevCategories.filter(category => category.id !== id));
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    }
+
+    const handleAddCategory = (category: { name: string; type: string }) => {
+        setCategories([...categories, {id: categories.length + 1, ...category}]);
+    }
+
     return (
         <div>
-
-            <div>
-                <table className="min-w-full table-fixed divide-y divide-gray-200 overflow-x-auto">
-                    <thead className="bg-gray-50">
-                    <tr>
-                        <th scope="col"
-                            className="px-6 py-3 w-1/5 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"> ID
-                        </th>
-                        <th scope="col"
-                            className="px-6 py-3 w-1/5 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"> Name
-                        </th>
-                        <th scope="col"
-                            className="px-6 py-3 w-1/5 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"> Type
-                        </th>
-                        <th scope="col"
-                            className="px-6 py-3 w-1/5 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
-                    </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200 overflow-auto min-w-full">
-                    {currentData.map(category => (
-                        <tr key={category.id}>
-                            <td className="px-6 py-4 whitespace-nowrap text-center">{category.id}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-center">{category.name}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-center">{category.type}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-center">
-                                <button className="px-4 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-700">Edit</button>
-                                <button className="px-4 py-2 bg-red-500 text-white rounded-full hover:bg-red-700">Delete</button>
-                            </td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
+            <img src="/img/icons8-add-100.png"
+                 className={`w-12 h-12 hover:cursor-pointer hover:scale-110 transition duration-500`}
+                 onClick={() => setIsModalOpen(true)} alt=""/>
+            <AddNewCategory isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSubmit={handleAddCategory}/>
+            <div className={`grid grid-cols-5 gap-5`}>
+                {currentData.map(category => (
+                    <div key={category.id}>
+                        <div className="flex justify-between my-2 flex-col p-4 rounded-2xl shadow-2xl ">
+                            <div className={`flex justify-between items-center`}>
+                                    <span>
+                                        <b>ID:</b> {category.id}
+                                    </span>
+                                <img src="/img/icons8-delete-100.png" className={`w-4 h-4 hover:cursor-pointer`}
+                                     onClick={() =>
+                                         handdleDeleteCategory(category.id)
+                                     } alt=""/>
+                            </div>
+                            <div><b>Tên:</b> {category.name}</div>
+                            <div><b>Loại:</b> {category.type}</div>
+                        </div>
+                        <hr/>
+                    </div>
+                ))}
             </div>
+
             <div className="flex justify-center mt-4">
                 <button disabled={currentPage === 1} onClick={() => handleChangPages(currentPage - 1)}
                         className="px-4 py-2 mx-1 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300">&lt;</button>
