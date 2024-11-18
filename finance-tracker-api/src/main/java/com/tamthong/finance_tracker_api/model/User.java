@@ -46,6 +46,9 @@ public class User implements UserDetails {
     @Column(name = "currency", nullable = false, length = 10)
     private String currency = "USD";
 
+    @Column(name = "is_active",nullable = false, columnDefinition = "boolean default true")
+    private boolean isActive;
+
     @PrePersist
     protected void onCreate() {
         role = "ROLE_USER";
@@ -89,5 +92,9 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         return this.email;
+    }
+
+    public void setIsActive(boolean b) {
+        this.isActive = b;
     }
 }
