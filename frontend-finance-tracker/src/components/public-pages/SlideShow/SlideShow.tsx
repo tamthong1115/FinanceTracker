@@ -38,7 +38,7 @@ const SlideShow : React.FC = () => {
                     </p>
                     <button
                         className="px-6 py-3 bg-white text-blue-600 font-semibold rounded-full hover:bg-gray-200 transition duration-300">
-                        <Link to="/">GET STARTED -&gt; </Link>
+                        <Link to="/login">GET STARTED -&gt; </Link>
                     </button>
                 </div>
             </div>

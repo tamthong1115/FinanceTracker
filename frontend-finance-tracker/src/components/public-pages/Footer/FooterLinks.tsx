@@ -47,7 +47,7 @@ const FooterLinks: React.FC = () => {
     {
       title: "Company",
       links: [
-        { text: "About Us", url: "/about" },
+        { text: "About Us", url: "/about-us" },
         { text: "Blog", url: "/blog" },
         { text: "Careers", url: "/careers" },
       ],
