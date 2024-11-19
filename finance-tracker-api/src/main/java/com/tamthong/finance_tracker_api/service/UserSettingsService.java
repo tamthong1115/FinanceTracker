@@ -118,9 +118,8 @@ public class UserSettingsService {
                 .dateFormat(settings.getDateFormat())
                 .darkMode(settings.getDarkMode())
 
-                .createdAt(settings.getCreatedAt().toString())
-                .updatedAt(settings.getUpdatedAt() != null ? settings.getUpdatedAt().toString()
-                        : LocalDateTime.now().toString())
+                .createdAt(settings.getCreatedAt() != null ? settings.getCreatedAt().toString() : null)
+                .updatedAt(settings.getUpdatedAt() != null ? settings.getUpdatedAt().toString() : null)
 
                 .build();
     }
