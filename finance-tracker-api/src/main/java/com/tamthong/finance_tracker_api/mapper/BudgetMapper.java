@@ -11,10 +11,10 @@ public interface BudgetMapper {
     @Mapping(target = "lastUpdated", source = "updatedAt")
     BudgetDTO toDTO(Budget budget);
 
-    @Mapping(target = "user", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "user.id", source = "userId")
     @Mapping(target = "updatedAt", ignore = true)
-    Budget toEntity(BudgetDTO dto);
+    @Mapping(target = "createdAt", ignore = true)
+    Budget toEntity(BudgetDTO budgetDTO);
 
     @AfterMapping
     default void mapUserReference(@MappingTarget Budget budget, BudgetDTO dto) {
