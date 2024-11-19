@@ -9,7 +9,6 @@ import AboutUs from "../pages/public/AboutUs/AboutUs.tsx";
 import { Budget } from "../pages/dashboard/Budget/Budget.tsx";
 import { Transactions } from "../pages/dashboard/Transactions/Transactions.tsx";
 import SavingsGoals from "../pages/dashboard/Goals/SavingsGoals.tsx";
-import Reports from "../pages/dashboard/Reports/Reports.tsx";
 import Settings from "../pages/dashboard/Setting/Settings.tsx";
 import DashboardOverview from "../pages/dashboard/Dashboard/DashboardOverview.tsx";
 import ContactForm from "../components/public-pages/ContactForm/ContactForm.tsx";
@@ -72,7 +71,6 @@ const AppRoutes = () => {
         <Route path="transactions" element={<Transactions />} />
         <Route path="budget" element={<Budget />} />
         <Route path="goals" element={<SavingsGoals />} />
-        <Route path="reports" element={<Reports />} />
         <Route path="settings" element={<Settings />} />
       </Route>
     </Routes>

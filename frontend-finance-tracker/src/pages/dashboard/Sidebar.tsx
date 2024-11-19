@@ -46,12 +46,6 @@ export const Sidebar: FC<SidebarProps> = ({
       href: "/dashboard/goals",
       description: "Track your savings goals",
     },
-    {
-      icon: <BarChart2 size={24} />,
-      text: "Reports",
-      href: "/dashboard/reports",
-      description: "View detailed financial reports",
-    },
   ];
 
   const bottomNavItems: NavItem[] = [
