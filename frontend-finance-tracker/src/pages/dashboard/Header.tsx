@@ -26,18 +26,17 @@ export const Header: FC<HeaderProps> = ({ isSidebarExpanded }) => {
     >
       <div className="w-1/4"></div>
       <div className="w-1/4 flex items-center justify-end space-x-4">
-        <button className="p-2 rounded-full hover:bg-gray-200 transition-colors duration-200">
+        {/* <button className="p-2 rounded-full hover:bg-gray-200 transition-colors duration-200">
           <Bell size={24} className="text-gray-600" />
-        </button>
+        </button> */}
         <div className="relative">
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             className="relative focus:outline-none"
           >
-            <img
-              src="/avatar.png"
-              alt="Avatar"
-              className="w-10 h-10 rounded-full cursor-pointer hover:ring-2 hover:ring-blue-500 transition-all duration-200"
+            <User
+              size={40}
+              className="p-2 rounded-full cursor-pointer hover:bg-gray-200 text-gray-600 transition-all duration-200"
             />
           </button>
 
