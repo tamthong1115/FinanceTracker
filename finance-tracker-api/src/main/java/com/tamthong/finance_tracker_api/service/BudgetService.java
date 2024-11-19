@@ -62,7 +62,7 @@ public class BudgetService {
             updatedBudget.setSpent(existingBudget.getSpent());
             Budget savedBudget = budgetRepository.save(updatedBudget);
             return budgetMapper.toDTO(savedBudget);
-        } catch (EntityNotFoundException e) {
+        } catch (ResourceNotFoundException e) {
             throw new ResourceNotFoundException("Budget not found");
         } catch (Exception e) {
             logger.error("Error updating budget", e);
