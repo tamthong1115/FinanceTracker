@@ -1,0 +1,41 @@
+name: Backend CI/CD
+
+on:
+  push:
+    paths:
+      - 'finance-tracker-api/**'
+    branches:
+      - main
+  pull_request:
+    paths:
+      - 'finance-tracker-api/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v3
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: maven
+
+    - name: Build and Test
+      working-directory: ./finance-tracker-api
+      run: mvn -B clean verify
+
+    - name: Build Docker image
+      if: github.ref == 'refs/heads/main'
+      working-directory: ./finance-tracker-api
+      run: docker build -t finance-tracker-api:latest .
+
+    - name: Upload Test Results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results
+        path: finance-tracker-api/target/surefire-reports/
