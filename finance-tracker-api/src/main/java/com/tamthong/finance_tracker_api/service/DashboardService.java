@@ -12,6 +12,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,64 +21,75 @@ public class DashboardService {
     private final TransactionRepository transactionRepository;
     private final UserService userService;
 
-    public DashboardOverviewDTO getOverview() {
+    public List<SpendingTrendDTO> getSpendingTrends(LocalDate startDate, LocalDate endDate) {
         Long userId = userService.getCurrentUserId();
-        LocalDate startOfMonth = YearMonth.now().atDay(1);
-        LocalDate endOfMonth = YearMonth.now().atEndOfMonth();
+        List<SpendingTrendDTO> trends = new ArrayList<>();
 
-        List<Transaction> monthlyTransactions = transactionRepository
-                .findByUserIdAndDateBetweenOrderByDateDesc(userId, startOfMonth, endOfMonth);
+        // Lấy tất cả transactions trong khoảng thời gian
+        List<Transaction> transactions = transactionRepository
+                .findByUserIdAndDateBetweenOrderByDateDesc(userId, startDate, endDate);
 
-        BigDecimal monthlyIncome = calculateTotalByType(monthlyTransactions, TransactionType.INCOME);
-        BigDecimal monthlyExpenses = calculateTotalByType(monthlyTransactions, TransactionType.EXPENSE);
-        BigDecimal totalBalance = monthlyIncome.subtract(monthlyExpenses);
+        // Nhóm transactions theo tháng
+        Map<YearMonth, SpendingTrendDTO> trendMap = new TreeMap<>();
+
+        // Khởi tạo tất cả các tháng trong khoảng thời gian
+        YearMonth start = YearMonth.from(startDate);
+        YearMonth end = YearMonth.from(endDate);
+        while (!start.isAfter(end)) {
+            trendMap.put(start, SpendingTrendDTO.builder()
+                    .month(start.toString())
+                    .income(BigDecimal.ZERO)
+                    .expenses(BigDecimal.ZERO)
+                    .build());
+            start = start.plusMonths(1);
+        }
+
+        // Tính toán income và expenses cho mỗi tháng
+        for (Transaction transaction : transactions) {
+            YearMonth yearMonth = YearMonth.from(transaction.getDate());
+            SpendingTrendDTO monthTrend = trendMap.get(yearMonth);
+
+            if (monthTrend != null) {
+                if (transaction.getType() == TransactionType.INCOME) {
+                    monthTrend.setIncome(monthTrend.getIncome().add(transaction.getAmount()));
+                } else {
+                    monthTrend.setExpenses(monthTrend.getExpenses().add(transaction.getAmount()));
+                }
+            }
+        }
+
+        return new ArrayList<>(trendMap.values());
+    }
+
+    public DashboardOverviewDTO getOverview(LocalDate startDate, LocalDate endDate) {
+        Long userId = userService.getCurrentUserId();
+        List<Transaction> transactions = transactionRepository
+                .findByUserIdAndDateBetweenOrderByDateDesc(userId, startDate, endDate);
+
+        BigDecimal income = calculateTotalByType(transactions, TransactionType.INCOME);
+        BigDecimal expenses = calculateTotalByType(transactions, TransactionType.EXPENSE);
+        BigDecimal balance = income.subtract(expenses);
 
         double savingsRate = 0.0;
-        if (monthlyIncome.compareTo(BigDecimal.ZERO) > 0) {
-            savingsRate = totalBalance
-                    .divide(monthlyIncome, 4, RoundingMode.HALF_UP)
+        if (income.compareTo(BigDecimal.ZERO) > 0) {
+            savingsRate = balance
+                    .divide(income, 4, RoundingMode.HALF_UP)
                     .multiply(BigDecimal.valueOf(100))
                     .doubleValue();
         }
 
         return DashboardOverviewDTO.builder()
-                .totalBalance(totalBalance)
-                .monthlyIncome(monthlyIncome)
-                .monthlyExpenses(monthlyExpenses)
+                .totalBalance(balance)
+                .monthlyIncome(income)
+                .monthlyExpenses(expenses)
                 .savingsRate(savingsRate)
                 .build();
     }
 
-    public List<SpendingTrendDTO> getSpendingTrends() {
+    public List<ExpenseByCategoryDTO> getExpensesByCategory(LocalDate startDate, LocalDate endDate) {
         Long userId = userService.getCurrentUserId();
-        List<SpendingTrendDTO> trends = new ArrayList<>();
-
-        // Get last 6 months of data
-        for (int i = 5; i >= 0; i--) {
-            YearMonth yearMonth = YearMonth.now().minusMonths(i);
-            LocalDate startOfMonth = yearMonth.atDay(1);
-            LocalDate endOfMonth = yearMonth.atEndOfMonth();
-
-            List<Transaction> monthTransactions = transactionRepository
-                    .findByUserIdAndDateBetweenOrderByDateDesc(userId, startOfMonth, endOfMonth);
-
-            trends.add(SpendingTrendDTO.builder()
-                    .month(yearMonth.getMonth().toString().substring(0, 3))
-                    .income(calculateTotalByType(monthTransactions, TransactionType.INCOME))
-                    .expenses(calculateTotalByType(monthTransactions, TransactionType.EXPENSE))
-                    .build());
-        }
-
-        return trends;
-    }
-
-    public List<ExpenseByCategoryDTO> getExpensesByCategory() {
-        Long userId = userService.getCurrentUserId();
-        LocalDate startOfMonth = YearMonth.now().atDay(1);
-        LocalDate endOfMonth = YearMonth.now().atEndOfMonth();
-
         List<Transaction> expenses = transactionRepository
-                .findByUserIdAndDateBetweenOrderByDateDesc(userId, startOfMonth, endOfMonth)
+                .findByUserIdAndDateBetweenOrderByDateDesc(userId, startDate, endDate)
                 .stream()
                 .filter(t -> t.getType() == TransactionType.EXPENSE)
                 .collect(Collectors.toList());
@@ -90,41 +102,35 @@ public class DashboardService {
                                 Transaction::getAmount,
                                 BigDecimal::add)));
 
-        // Assign colors to categories
         String[] colors = { "#FF8042", "#00C49F", "#FFBB28", "#0088FE", "#FF6B6B", "#4ECDC4" };
-        int colorIndex = 0;
+        AtomicInteger colorIndex = new AtomicInteger(0);
 
-        List<ExpenseByCategoryDTO> result = new ArrayList<>();
-        for (Map.Entry<String, BigDecimal> entry : categoryTotals.entrySet()) {
-            result.add(ExpenseByCategoryDTO.builder()
-                    .category(entry.getKey())
-                    .amount(entry.getValue())
-                    .color(colors[colorIndex % colors.length])
-                    .build());
-            colorIndex++;
-        }
-
-        return result;
+        return categoryTotals.entrySet().stream()
+                .map(entry -> ExpenseByCategoryDTO.builder()
+                        .category(entry.getKey())
+                        .amount(entry.getValue())
+                        .color(colors[colorIndex.getAndIncrement() % colors.length])
+                        .build())
+                .sorted((a, b) -> b.getAmount().compareTo(a.getAmount()))
+                .collect(Collectors.toList());
     }
 
-    public List<AlertDTO> getAlerts() {
+    public List<AlertDTO> getAlerts(LocalDate startDate, LocalDate endDate) {
         List<AlertDTO> alerts = new ArrayList<>();
-        DashboardOverviewDTO overview = getOverview();
+        DashboardOverviewDTO overview = getOverview(startDate, endDate);
 
-        // Check spending rate
         if (overview.getMonthlyExpenses().compareTo(overview.getMonthlyIncome()) > 0) {
             alerts.add(AlertDTO.builder()
                     .type("SPENDING")
-                    .message("Your expenses exceed your income this month")
+                    .message("Chi tiêu vượt quá thu nhập trong khoảng thời gian này")
                     .severity("ERROR")
                     .build());
         }
 
-        // Check savings rate
         if (overview.getSavingsRate() < 20) {
             alerts.add(AlertDTO.builder()
                     .type("SAVINGS")
-                    .message("Your savings rate is below 20%. Consider reducing expenses.")
+                    .message("Tỷ lệ tiết kiệm dưới 20%. Cân nhắc giảm chi tiêu.")
                     .severity("WARNING")
                     .build());
         }
