@@ -8,6 +8,9 @@ import com.tamthong.finance_tracker_api.model.User;
 import com.tamthong.finance_tracker_api.repository.TransactionRepository;
 import com.tamthong.finance_tracker_api.mapper.TransactionMapper;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -97,5 +100,31 @@ public class TransactionService {
         }
 
         return transaction;
+    }
+
+    public Page<TransactionDTO> getAllTransactionsByUser(Pageable pageable) {
+        Long userId = userService.getCurrentUserId();
+        Page<Transaction> transactionsPage = transactionRepository
+                .findByUserIdOrderByDateDesc(userId, pageable);
+        return transactionsPage.map(transactionMapper::toDTO);
+    }
+
+    @Transactional
+    public List<TransactionDTO> createBulkTransactions(List<TransactionDTO> transactionsDTO) {
+        User currentUser = userService.getCurrentUser();
+        List<Transaction> transactions = transactionsDTO.stream()
+                .map(transactionMapper::toEntity)
+                .peek(transaction -> {
+                    transaction.setUser(currentUser);
+                    if (transaction.getStatus() == null) {
+                        transaction.setStatus(TransactionStatus.COMPLETED);
+                    }
+                })
+                .collect(Collectors.toList());
+
+        List<Transaction> savedTransactions = transactionRepository.saveAll(transactions);
+        return savedTransactions.stream()
+                .map(transactionMapper::toDTO)
+                .collect(Collectors.toList());
     }
 }

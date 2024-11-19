@@ -3,9 +3,15 @@ package com.tamthong.finance_tracker_api.controller;
 import com.tamthong.finance_tracker_api.dto.TransactionDTO;
 import com.tamthong.finance_tracker_api.service.TransactionService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -15,14 +21,26 @@ import java.util.List;
 public class TransactionController {
     private final TransactionService transactionService;
 
+    @GetMapping
+    public ResponseEntity<Page<TransactionDTO>> getAllTransactions(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "desc") String direction) {
+        Sort sort = Sort.by(Sort.Direction.fromString(direction), sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return ResponseEntity.ok(transactionService.getAllTransactionsByUser(pageable));
+    }
+
+    @PostMapping("/bulk")
+    public ResponseEntity<List<TransactionDTO>> importTransactions(
+            @RequestBody List<TransactionDTO> transactions) {
+        return ResponseEntity.ok(transactionService.createBulkTransactions(transactions));
+    }
+
     @PostMapping
     public ResponseEntity<TransactionDTO> createTransaction(@RequestBody TransactionDTO transactionDTO) {
         return ResponseEntity.ok(transactionService.createTransaction(transactionDTO));
-    }
-
-    @GetMapping
-    public ResponseEntity<List<TransactionDTO>> getAllTransactions() {
-        return ResponseEntity.ok(transactionService.getAllTransactionsByUser());
     }
 
     @GetMapping("/{id}")
