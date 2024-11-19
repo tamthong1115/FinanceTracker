@@ -6,12 +6,13 @@ import CategoryAnalysis from "./components/CategoryAnalysis";
 import InsightsAlerts from "./components/InsightsAlerts";
 import DateRangePicker from "./components/DateRangePicker";
 import ReportExporter from "./components/ReportExporter";
+import { DashboardData, Period } from "./types";
 
 const DashboardOverview = () => {
-  const dashboardRef = useRef(null);
+  const dashboardRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState(null);
-  const [period, setPeriod] = useState({
+  const [data, setData] = useState<DashboardData | null>(null);
+  const [period, setPeriod] = useState<Period>({
     startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
     endDate: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
   });

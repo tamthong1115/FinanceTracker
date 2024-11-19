@@ -3,8 +3,16 @@ import { Download, FileText, FileSpreadsheet, Loader2 } from "lucide-react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import * as XLSX from "xlsx";
+import { RefObject } from "react";
+import { DashboardData, Period } from "../types";
 
-const ReportExporter = ({ dashboardRef, data, period }) => {
+interface ReportExporterProps {
+  dashboardRef: RefObject<HTMLDivElement>;
+  data: DashboardData;
+  period: Period;
+}
+
+const ReportExporter = ({ dashboardRef, data, period }: ReportExporterProps) => {
   const [isExporting, setIsExporting] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
 

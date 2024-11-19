@@ -10,8 +10,14 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const ExpenseTrends = ({ data }) => {
-  const formatCurrency = (value) => {
+interface TrendData {
+  month: string;
+  income: number;
+  expenses: number;
+}
+
+const ExpenseTrends = ({ data }: { data: TrendData[] }) => {
+  const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
@@ -51,7 +57,7 @@ const ExpenseTrends = ({ data }) => {
               }}
             />
             <Tooltip
-              formatter={(value) => formatCurrency(value)}
+              formatter={(value) => formatCurrency(Number(value))}
               labelFormatter={(label) => {
                 const date = new Date(label);
                 return date.toLocaleDateString("vi-VN", {

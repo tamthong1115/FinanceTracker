@@ -8,8 +8,13 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
+import { CategoryData } from "../types";
 
-const CategoryAnalysis = ({ data }) => {
+interface CategoryAnalysisProps {
+  data: CategoryData[];
+}
+
+const CategoryAnalysis = ({ data }: CategoryAnalysisProps) => {
   const [selectedView, setSelectedView] = useState("chart"); // 'chart' or 'list'
 
   const formatCurrency = (value) => {

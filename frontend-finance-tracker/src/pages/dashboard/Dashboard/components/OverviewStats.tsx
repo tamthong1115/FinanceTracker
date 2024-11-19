@@ -1,5 +1,6 @@
 import { Card } from "../../../../components/common/ui/card";
 import { ArrowUp, ArrowDown, TrendingUp, DollarSign } from "lucide-react";
+import { OverviewData, Period } from "../types";
 
 const formatCurrency = (value) => {
   return new Intl.NumberFormat("vi-VN", {
@@ -8,7 +9,12 @@ const formatCurrency = (value) => {
   }).format(value);
 };
 
-const OverviewStats = ({ data, period }) => {
+interface OverviewStatsProps {
+  data: OverviewData;
+  period: Period;
+}
+
+const OverviewStats = ({ data, period }: OverviewStatsProps) => {
   const periodText = getPeriodText(period.startDate, period.endDate);
 
   return (

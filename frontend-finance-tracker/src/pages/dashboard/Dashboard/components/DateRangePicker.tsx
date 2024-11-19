@@ -1,8 +1,13 @@
 import { useState } from "react";
 import { Card } from "../../../../components/common/ui/card";
 import { Calendar } from "lucide-react";
+import { Period } from "../types";
 
-const DateRangePicker = ({ onDateChange }) => {
+interface DateRangePickerProps {
+  onDateChange: (period: Period) => void;
+}
+
+const DateRangePicker = ({ onDateChange }: DateRangePickerProps) => {
   const [showQuickPicks, setShowQuickPicks] = useState(false);
 
   const quickPicks = [
