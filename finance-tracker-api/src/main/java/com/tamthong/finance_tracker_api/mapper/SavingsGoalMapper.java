@@ -13,14 +13,15 @@ public interface SavingsGoalMapper {
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "id", ignore = true)
     SavingsGoal toEntity(SavingsGoalDTO dto);
 
     @AfterMapping
-    default void mapUserReference(@MappingTarget SavingsGoal goal, SavingsGoalDTO dto) {
+    default void mapUserReference(@MappingTarget SavingsGoal.SavingsGoalBuilder goal, SavingsGoalDTO dto) {
         if (dto.getUserId() != null) {
             User user = new User();
             user.setId(dto.getUserId());
-            goal.setUser(user);
+            goal.user(user);
         }
     }
 }

@@ -14,14 +14,15 @@ public interface BudgetMapper {
     @Mapping(target = "user.id", source = "userId")
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "id", ignore = true)
     Budget toEntity(BudgetDTO budgetDTO);
 
     @AfterMapping
-    default void mapUserReference(@MappingTarget Budget budget, BudgetDTO dto) {
+    default void mapUserReference(@MappingTarget Budget.BudgetBuilder budget, BudgetDTO dto) {
         if (dto.getUserId() != null) {
             User user = new User();
             user.setId(dto.getUserId());
-            budget.setUser(user);
+            budget.user(user);
         }
     }
 }

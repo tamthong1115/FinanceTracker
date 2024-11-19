@@ -13,14 +13,15 @@ public interface TransactionMapper {
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "id", ignore = true)
     Transaction toEntity(TransactionDTO dto);
 
     @AfterMapping
-    default void mapUserReference(@MappingTarget Transaction transaction, TransactionDTO dto) {
+    default void mapUserReference(@MappingTarget Transaction.TransactionBuilder transaction, TransactionDTO dto) {
         if (dto.getUserId() != null) {
             User user = new User();
             user.setId(dto.getUserId());
-            transaction.setUser(user);
+            transaction.user(user);
         }
     }
 }
