@@ -7,7 +7,7 @@ import Layout from "../components/Layout.tsx";
 import Home from "../pages/public/Home/Home.tsx";
 import AboutUs from "../pages/public/AboutUs/AboutUs.tsx";
 import { Budget } from "../pages/dashboard/Budget/Budget.tsx";
-import { Transactions } from "../pages/dashboard/Transactions/Transactions.tsx";
+import Transactions  from "../pages/dashboard/Transactions/Transactions.tsx";
 import SavingsGoals from "../pages/dashboard/Goals/SavingsGoals.tsx";
 import Settings from "../pages/dashboard/Setting/Settings.tsx";
 import DashboardOverview from "../pages/dashboard/Dashboard/DashboardOverview.tsx";
