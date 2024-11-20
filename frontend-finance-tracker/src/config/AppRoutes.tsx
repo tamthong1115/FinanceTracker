@@ -16,7 +16,6 @@ import ContactForm from "../components/public-pages/ContactForm/ContactForm.tsx"
 const AppRoutes = () => {
   return (
     <Routes>
-      {/*<Route path="/" element={<Navigate to="/dashboard" replace/>}/>*/}
       <Route
         path="/"
         element={

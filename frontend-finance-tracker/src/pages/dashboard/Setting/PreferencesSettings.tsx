@@ -11,7 +11,7 @@ interface PreferencesSettingsProps {
   preferences?: Preferences;
   onUpdate: (data: Preferences) => Promise<void>;
   isSaving: boolean;
-  onChange: (field: keyof Preferences, value: any) => void;
+  onChange: (field: keyof Preferences, value: Preferences[keyof Preferences]) => void;
 }
 
 const defaultPreferences: Preferences = {

@@ -32,7 +32,7 @@ const SavingsGoals = () => {
     fetchGoals();
   }, [fetchGoals]);
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: Omit<Goal, 'id'>) => {
     try {
       if (selectedGoal) {
         await updateGoal(selectedGoal.id, data);

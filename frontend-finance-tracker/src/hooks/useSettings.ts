@@ -152,6 +152,13 @@ export const useSettings = () => {
     }));
   };
 
+  const handlePreferencesChange = (field: keyof Preferences, value: Preferences[keyof Preferences]) => {
+    setSettings((prev: UserSettingsResponse) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
   return {
     settings,
     loading,
@@ -164,6 +171,7 @@ export const useSettings = () => {
     // Change handlers
     handleProfileChange,
     handleNotificationsChange,
+    handlePreferencesChange,
     // Data getters
     currentProfile: () => ({
       name: settings.name,

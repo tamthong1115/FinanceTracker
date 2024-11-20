@@ -54,6 +54,7 @@ const Settings: React.FC = () => {
       await updateProfile(profileData);
       toast.success("Profile updated successfully");
     } catch (err) {
+      console.error("Failed to update profile:", err);
       toast.error("Failed to update profile");
     } finally {
       setIsSaving(false);
@@ -66,6 +67,7 @@ const Settings: React.FC = () => {
       await updatePassword(data);
       toast.success("Password updated successfully");
     } catch (err) {
+      console.error("Failed to update password:", err);
       toast.error("Failed to update password");
     } finally {
       setIsSaving(false);
@@ -78,6 +80,7 @@ const Settings: React.FC = () => {
       await updateNotifications(data);
       toast.success("Notifications updated successfully");
     } catch (err) {
+      console.error("Failed to update notifications:", err);
       toast.error("Failed to update notifications");
     } finally {
       setIsSaving(false);
@@ -90,6 +93,7 @@ const Settings: React.FC = () => {
       await updatePreferences(data);
       toast.success("Preferences updated successfully");
     } catch (err) {
+      console.error("Failed to update preferences:", err);
       toast.error("Failed to update preferences");
     } finally {
       setIsSaving(false);
