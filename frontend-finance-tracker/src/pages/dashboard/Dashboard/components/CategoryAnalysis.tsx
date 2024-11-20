@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Card } from "../../../../components/common/ui/card";
-import { Progress } from "../../../../components/common/ui/progress";
 import {
   PieChart,
   Pie,
@@ -30,7 +29,7 @@ interface PieLabelProps {
 }
 
 const CategoryAnalysis = ({ data }: CategoryAnalysisProps) => {
-  const [selectedView, setSelectedView] = useState<"chart" | "list">("chart");
+  const [selectedView, setSelectedView] = useState<"chart" | "analysis">("chart");
 
   const formatCurrency = (value: number): string => {
     return new Intl.NumberFormat("vi-VN", {
@@ -40,6 +39,8 @@ const CategoryAnalysis = ({ data }: CategoryAnalysisProps) => {
   };
 
   const totalExpenses = data.reduce((sum, item) => sum + item.amount, 0);
+  const sortedData = [...data].sort((a, b) => b.amount - a.amount);
+  const topSpenders = sortedData.slice(0, 3);
 
   const renderCustomLabel = ({
     cx,
@@ -88,14 +89,14 @@ const CategoryAnalysis = ({ data }: CategoryAnalysisProps) => {
             Biểu đồ
           </button>
           <button
-            onClick={() => setSelectedView("list")}
+            onClick={() => setSelectedView("analysis")}
             className={`px-3 py-1 rounded-md ${
-              selectedView === "list"
+              selectedView === "analysis"
                 ? "bg-blue-100 text-blue-700"
                 : "hover:bg-gray-100"
             }`}
           >
-            Danh sách
+            Chi tiết
           </button>
         </div>
       </div>
@@ -127,34 +128,46 @@ const CategoryAnalysis = ({ data }: CategoryAnalysisProps) => {
           </ResponsiveContainer>
         </div>
       ) : (
-        <div className="space-y-4">
-          {data.map((category, index) => (
-            <div key={index} className="border-b pb-4">
-              <div className="flex justify-between items-center mb-2">
+        <div className="space-y-6">
+          <div className="bg-blue-50 p-4 rounded-lg">
+            <h4 className="font-semibold mb-2">Top 3 Danh mục chi tiêu cao nhất</h4>
+            {topSpenders.map((category, index) => (
+              <div key={index} className="flex items-center justify-between py-2">
                 <div className="flex items-center gap-2">
+                  <span className="text-lg font-bold text-blue-600">{index + 1}</span>
                   <div
                     className="w-3 h-3 rounded-full"
                     style={{ backgroundColor: category.color }}
                   />
-                  <span className="font-medium">{category.category}</span>
+                  <span>{category.category}</span>
+                </div>
+                <div className="flex flex-col items-end">
+                  <span className="font-semibold">{formatCurrency(category.amount)}</span>
                   <span className="text-sm text-gray-500">
-                    ({((category.amount / totalExpenses) * 100).toFixed(1)}%)
+                    {((category.amount / totalExpenses) * 100).toFixed(1)}%
                   </span>
                 </div>
-                <span className="font-medium">
-                  {formatCurrency(category.amount)}
-                </span>
               </div>
-              <Progress
-                value={(category.amount / totalExpenses) * 100}
-                className={`h-2 transition-all`}
-                style={{ 
-                  "--bg-color": category.color + "40",
-                  "--indicator-color": category.color
-                } as React.CSSProperties}
-              />
+            ))}
+          </div>
+
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h4 className="font-semibold mb-2">Thông tin tổng quan</h4>
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span>Tổng chi tiêu:</span>
+                <span className="font-semibold">{formatCurrency(totalExpenses)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Số danh mục:</span>
+                <span className="font-semibold">{data.length}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Chi tiêu trung bình/danh mục:</span>
+                <span className="font-semibold">{formatCurrency(totalExpenses / data.length)}</span>
+              </div>
             </div>
-          ))}
+          </div>
         </div>
       )}
     </Card>
