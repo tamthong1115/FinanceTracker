@@ -18,7 +18,9 @@ const Header = () => {
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center">
             <img src="icon.png" alt="logo" className="w-10 h-10" />
-            <span className="ml-2 text-xl font-bold text-gray-800">Quản Lý Tài Chính</span>
+            <span className="ml-2 text-xl font-bold text-gray-800">
+              FinanceTracker
+            </span>
           </Link>
 
           <nav className="hidden md:flex items-center space-x-8">
@@ -80,7 +82,10 @@ const Header = () => {
           menuOpen ? "block" : "hidden"
         } fixed inset-0 z-50`}
       >
-        <div className="fixed inset-0 bg-black/50" onClick={() => setMenuOpen(false)} />
+        <div
+          className="fixed inset-0 bg-black/50"
+          onClick={() => setMenuOpen(false)}
+        />
         <nav className="fixed top-0 right-0 bottom-0 w-64 bg-white p-6 overflow-y-auto">
           <div className="flex items-center justify-between mb-8">
             <img src="icon.png" alt="logo" className="w-8 h-8" />
