@@ -1,5 +1,5 @@
-import { FC, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import { LoginType } from "../../../types/auth";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../../../config/AuthContext";
@@ -27,9 +27,11 @@ const LoginForm = () => {
       const response = await axiosInstance.post(`${BASE_URL}/login`, data);
       toast.success("Login successful!");
       login(response.data.token, response.data.user);
-    } catch (error: any) {
+    } catch (error: unknown) {
       const errorMessage =
-        error.response?.data?.message || "Login failed. Please try again.";
+        error instanceof Error
+          ? error.message
+          : "Login failed. Please try again.";
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);

@@ -48,9 +48,9 @@ const RegisterForm: FC = () => {
       // Small delay before redirect
       await new Promise((resolve) => setTimeout(resolve, 1000));
       navigate("/login");
-    } catch (error: any) {
+    } catch (error: unknown) {
       const errorMessage =
-        error.response?.data?.message ||
+        (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
         "Registration failed. Please try again.";
       toast.error(errorMessage, {
         position: "top-right",
