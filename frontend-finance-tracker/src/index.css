@@ -64,3 +64,11 @@
   border-bottom-color: transparent;
   border-left-color: transparent;
 }
+
+.h-2[role="progressbar"] {
+  background-color: var(--bg-color);
+}
+
+.h-2[role="progressbar"] > div {
+  background-color: var(--indicator-color);
+}

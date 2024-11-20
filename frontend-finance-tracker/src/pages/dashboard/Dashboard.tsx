@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
 
@@ -7,10 +7,8 @@ const Dashboard = () => {
   const [activeItem, setActiveItem] = useState("Dashboard");
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
   const location = useLocation();
-  const navigate = useNavigate();
 
    useEffect(() => {
-     // Redirect to dashboard overview if at /dashboard
      if (location.pathname === "/dashboard") {
        setActiveItem("Dashboard");
      }

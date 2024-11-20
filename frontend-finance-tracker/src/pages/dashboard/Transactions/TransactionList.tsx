@@ -1,8 +1,22 @@
 import React from "react";
 import { Edit2, Trash2, ArrowUp, ArrowDown } from "lucide-react";
 import { format } from "date-fns";
+import { Transaction, TransactionStatus } from "../../../types/transaction";
 
-const TransactionList = ({
+interface TransactionListProps {
+  transactions: Transaction[];
+  onEdit: (transaction: Transaction) => void;
+  onDelete: (id: number) => void;
+  isLoading: boolean;
+  currentPage: number;
+  totalPages: number;
+  pageSize: number;
+  totalItems: number;
+  onPageChange: (page: number) => void;
+  onPageSizeChange: (size: number) => void;
+}
+
+const TransactionList: React.FC<TransactionListProps> = ({
   transactions,
   onEdit,
   onDelete,
@@ -14,14 +28,14 @@ const TransactionList = ({
   onPageSizeChange,
   totalItems,
 }) => {
-  const formatCurrency = (amount) => {
+  const formatCurrency = (amount: number): string => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
     }).format(amount);
   };
 
-  const getStatusStyle = (status) => {
+  const getStatusStyle = (status: TransactionStatus): string => {
     switch (status) {
       case "COMPLETED":
         return "bg-green-100 text-green-800";
@@ -34,8 +48,8 @@ const TransactionList = ({
     }
   };
 
-  const getCategoryStyle = (category) => {
-    const colors = {
+  const getCategoryStyle = (category: string): string => {
+    const colors: { [key: string]: string } = {
       "Food & Dining": "bg-orange-100 text-orange-800",
       Shopping: "bg-blue-100 text-blue-800",
       Housing: "bg-purple-100 text-purple-800",

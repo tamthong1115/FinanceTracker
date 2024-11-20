@@ -92,7 +92,7 @@ const DashboardOverview = () => {
       </div>
 
       {/* Insights and Alerts */}
-      <InsightsAlerts alerts={data.alerts} data={data.overview} />
+      <InsightsAlerts alerts={data.alerts} />
     </div>
   );
 };

@@ -8,16 +8,31 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
-import { CategoryData } from "../types";
+
+interface CategoryData {
+  category: string;
+  amount: number;
+  color: string;
+}
 
 interface CategoryAnalysisProps {
   data: CategoryData[];
 }
 
-const CategoryAnalysis = ({ data }: CategoryAnalysisProps) => {
-  const [selectedView, setSelectedView] = useState("chart"); // 'chart' or 'list'
+interface PieLabelProps {
+  cx: number;
+  cy: number;
+  midAngle: number;
+  innerRadius: number;
+  outerRadius: number;
+  value: number;
+  name: string;
+}
 
-  const formatCurrency = (value) => {
+const CategoryAnalysis = ({ data }: CategoryAnalysisProps) => {
+  const [selectedView, setSelectedView] = useState<"chart" | "list">("chart");
+
+  const formatCurrency = (value: number): string => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
@@ -25,6 +40,35 @@ const CategoryAnalysis = ({ data }: CategoryAnalysisProps) => {
   };
 
   const totalExpenses = data.reduce((sum, item) => sum + item.amount, 0);
+
+  const renderCustomLabel = ({
+    cx,
+    cy,
+    midAngle,
+    innerRadius,
+    outerRadius,
+    value,
+    name,
+  }: PieLabelProps) => {
+    const RADIAN = Math.PI / 180;
+    const radius = innerRadius + (outerRadius - innerRadius) * 1.2;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+    const percent = ((value / totalExpenses) * 100).toFixed(0);
+
+    return (
+      <text
+        x={x}
+        y={y}
+        fill="#374151"
+        textAnchor={x > cx ? "start" : "end"}
+        dominantBaseline="central"
+        fontSize="smaller"
+      >
+        {`${name} (${percent}%)`}
+      </text>
+    );
+  };
 
   return (
     <Card className="p-6">
@@ -69,41 +113,14 @@ const CategoryAnalysis = ({ data }: CategoryAnalysisProps) => {
                 paddingAngle={5}
                 dataKey="amount"
                 nameKey="category"
-                label={({
-                  cx,
-                  cy,
-                  midAngle,
-                  innerRadius,
-                  outerRadius,
-                  value,
-                  name,
-                }) => {
-                  const RADIAN = Math.PI / 180;
-                  const radius = innerRadius + (outerRadius - innerRadius) * 1.2;
-                  const x = cx + radius * Math.cos(-midAngle * RADIAN);
-                  const y = cy + radius * Math.sin(-midAngle * RADIAN);
-                  const percent = ((value / totalExpenses) * 100).toFixed(0);
-
-                  return (
-                    <text
-                      x={x}
-                      y={y}
-                      fill="#374151"
-                      textAnchor={x > cx ? "start" : "end"}
-                      dominantBaseline="central"
-                      fontSize="smaller"
-                    >
-                      {`${name} (${percent}%)`}
-                    </text>
-                  );
-                }}
+                label={renderCustomLabel}
               >
                 {data.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
               </Pie>
               <Tooltip
-                formatter={(value) => formatCurrency(value)}
+                formatter={(value: number) => formatCurrency(value)}
                 contentStyle={{ background: "white", border: "1px solid #ccc" }}
               />
             </PieChart>
@@ -130,10 +147,11 @@ const CategoryAnalysis = ({ data }: CategoryAnalysisProps) => {
               </div>
               <Progress
                 value={(category.amount / totalExpenses) * 100}
-                className="h-2"
-                indicatorClassName="transition-all"
-                style={{ backgroundColor: category.color + "40" }}
-                indicatorStyle={{ backgroundColor: category.color }}
+                className={`h-2 transition-all`}
+                style={{ 
+                  "--bg-color": category.color + "40",
+                  "--indicator-color": category.color
+                } as React.CSSProperties}
               />
             </div>
           ))}

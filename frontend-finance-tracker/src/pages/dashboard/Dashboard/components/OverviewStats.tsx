@@ -2,7 +2,7 @@ import { Card } from "../../../../components/common/ui/card";
 import { ArrowUp, ArrowDown, TrendingUp, DollarSign } from "lucide-react";
 import { OverviewData, Period } from "../types";
 
-const formatCurrency = (value) => {
+const formatCurrency = (value: number) => {
   return new Intl.NumberFormat("vi-VN", {
     style: "currency",
     currency: "VND",
@@ -99,10 +99,10 @@ const OverviewStats = ({ data, period }: OverviewStatsProps) => {
   );
 };
 
-const getPeriodText = (startDate, endDate) => {
+const getPeriodText = (startDate: string | Date, endDate: string | Date) => {
   const start = new Date(startDate);
   const end = new Date(endDate);
-  const days = Math.round((end - start) / (1000 * 60 * 60 * 24));
+  const days = Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
 
   if (days <= 7) return "7 ngày qua";
   if (days <= 30) return "30 ngày qua";

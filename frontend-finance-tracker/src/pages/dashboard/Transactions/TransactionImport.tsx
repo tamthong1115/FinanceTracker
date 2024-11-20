@@ -1,26 +1,44 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Upload, CheckCircle, AlertCircle, X } from "lucide-react";
 import Papa from "papaparse";
 import { Card } from "../../../components/common/ui/card";
+import { TransactionFormData } from "../../../types/transaction";
 
-const TransactionImport = ({ onImport, onClose }) => {
-  const [file, setFile] = useState(null);
-  const [previewData, setPreviewData] = useState([]);
-  const [error, setError] = useState("");
+interface TransactionImportProps {
+  onImport: (data: TransactionFormData[]) => Promise<void>;
+  onClose: () => void;
+}
+
+interface CSVRow {
+  date: string;
+  amount: string;
+  description: string;
+  category: string;
+  type: string;
+  paymentMethod?: string;
+  notes?: string;
+}
+
+const TransactionImport: React.FC<TransactionImportProps> = ({ onImport, onClose }) => {
+  const [file, setFile] = useState<File | null>(null);
+  const [previewData, setPreviewData] = useState<CSVRow[]>([]);
+  const [error, setError] = useState<string>("");
   const [importing, setImporting] = useState(false);
 
-  const handleFileDrop = (e) => {
+  const handleFileDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const droppedFile = e.dataTransfer.files[0];
     handleFile(droppedFile);
   };
 
-  const handleFileSelect = (e) => {
-    const selectedFile = e.target.files[0];
-    handleFile(selectedFile);
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      handleFile(selectedFile);
+    }
   };
 
-  const handleFile = (file) => {
+  const handleFile = (file: File) => {
     if (!file) return;
 
     if (!file.name.endsWith(".csv")) {
@@ -31,7 +49,7 @@ const TransactionImport = ({ onImport, onClose }) => {
     setFile(file);
     setError("");
 
-    Papa.parse(file, {
+    Papa.parse<CSVRow>(file, {
       header: true,
       skipEmptyLines: true,
       preview: 5, // Preview first 5 rows
@@ -45,7 +63,7 @@ const TransactionImport = ({ onImport, onClose }) => {
           "type",
         ];
         const hasRequiredColumns = requiredColumns.every((col) =>
-          results.meta.fields.includes(col)
+          results.meta.fields?.includes(col)
         );
 
         if (!hasRequiredColumns) {
@@ -57,19 +75,21 @@ const TransactionImport = ({ onImport, onClose }) => {
 
         setPreviewData(results.data);
       },
-      error: function (error) {
+      error: function (error: Error) {
         setError("Error parsing CSV file: " + error.message);
       },
     });
   };
 
   const handleImport = async () => {
+    if (!file) return;
+
     try {
       setImporting(true);
 
       // Parse full file
-      const parsePromise = new Promise((resolve, reject) => {
-        Papa.parse(file, {
+      const parsePromise = new Promise<Papa.ParseResult<CSVRow>>((resolve, reject) => {
+        Papa.parse<CSVRow>(file, {
           header: true,
           skipEmptyLines: true,
           complete: resolve,
@@ -80,20 +100,21 @@ const TransactionImport = ({ onImport, onClose }) => {
       const results = await parsePromise;
 
       // Transform data to match your transaction format
-      const transformedData = results.data.map((row) => ({
+      const transformedData: TransactionFormData[] = results.data.map((row) => ({
         date: row.date,
         amount: parseFloat(row.amount),
         description: row.description,
         category: row.category,
-        type: row.type.toUpperCase(),
+        type: row.type.toUpperCase() as 'INCOME' | 'EXPENSE',
         paymentMethod: row.paymentMethod || "CASH",
+        status: 'COMPLETED',
         notes: row.notes || "",
       }));
 
       await onImport(transformedData);
       onClose();
     } catch (error) {
-      setError("Error importing transactions: " + error.message);
+      setError(`Error importing transactions: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setImporting(false);
     }
@@ -188,7 +209,7 @@ const TransactionImport = ({ onImport, onClose }) => {
         </button>
         <button
           onClick={handleImport}
-          disabled={!file || error || importing}
+          disabled={!file || !!error || importing}
           className={`flex items-center gap-2 px-4 py-2 text-sm font-medium text-white rounded-md
             ${
               !file || error || importing

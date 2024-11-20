@@ -9,12 +9,12 @@ import { X } from "lucide-react";
 
 interface TransactionFormProps {
   initialData?: Partial<Transaction>;
-  onSubmit: (data: TransactionFormData) => Promise<void>;
+  onSubmit: (data: Omit<Transaction, 'id'>) => Promise<void>;
   onCancel: () => void;
-  isLoading?: boolean;
+  isLoading: boolean;
 }
 
-export const TransactionForm: React.FC<TransactionFormProps> = ({
+const TransactionForm: React.FC<TransactionFormProps> = ({
   initialData,
   onSubmit,
   onCancel,

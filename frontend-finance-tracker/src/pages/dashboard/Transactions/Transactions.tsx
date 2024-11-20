@@ -6,25 +6,59 @@ import TransactionList from "./TransactionList";
 import TransactionForm from "./TransactionForm";
 import TransactionImport from "./TransactionImport";
 
-const Transactions = () => {
+type TransactionType = 'EXPENSE' | 'INCOME';
+type TransactionStatus = 'COMPLETED' | 'PENDING' | 'CANCELLED';  // Add this line
+
+interface Transaction {
+  id: number;
+  date: string;
+  amount: number;
+  description: string;
+  category: string;
+  type: TransactionType;
+  paymentMethod: string;
+  status: TransactionStatus;  // Add this line
+  notes?: string;
+}
+
+interface PaginatedResponse {
+  content: Transaction[];
+  totalElements: number;
+  totalPages: number;
+}
+
+export interface TransactionListProps {
+  transactions: Transaction[];
+  onEdit: (transaction: Transaction) => void;
+  onDelete: (id: number) => void;
+  isLoading: boolean;
+  currentPage: number;
+  totalPages: number;
+  pageSize: number;
+  totalItems: number;
+  onPageChange: (page: number) => void;
+  onPageSizeChange: (size: number) => void;
+}
+
+const Transactions: React.FC = () => {
   // State Management
-  const [transactions, setTransactions] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isImportOpen, setIsImportOpen] = useState(false);
-  const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isImportOpen, setIsImportOpen] = useState<boolean>(false);
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
 
   // Pagination State
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-  const [totalItems, setTotalItems] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [totalItems, setTotalItems] = useState<number>(0);
+  const [totalPages, setTotalPages] = useState<number>(0);
 
   // Fetch transactions with pagination
   const fetchTransactions = async (page = currentPage, size = pageSize) => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get("/api/transactions", {
+      const response = await axiosInstance.get<PaginatedResponse>("/api/transactions", {
         params: {
           page: page - 1, // Backend uses 0-based pagination
           size,
@@ -43,14 +77,14 @@ const Transactions = () => {
   };
 
   useEffect(() => {
-    fetchTransactions();
-  }, [currentPage, pageSize]);
+    void fetchTransactions();
+  }, [currentPage, pageSize]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Handle Transactions
-  const handleCreateTransaction = async (data) => {
+  const handleCreateTransaction = async (data: Omit<Transaction, 'id'>) => {
     try {
       setLoading(true);
-      const response = await axiosInstance.post("/api/transactions", data);
+      await axiosInstance.post("/api/transactions", data);
       toast.success("Transaction created successfully");
       handleCloseModal();
       fetchTransactions(); // Refresh list
@@ -62,7 +96,7 @@ const Transactions = () => {
     }
   };
 
-  const handleUpdateTransaction = async (id, data) => {
+  const handleUpdateTransaction = async (id: number, data: Partial<Transaction>) => {
     try {
       setLoading(true);
       await axiosInstance.put(`/api/transactions/${id}`, data);
@@ -77,7 +111,7 @@ const Transactions = () => {
     }
   };
 
-  const handleDeleteTransaction = async (id) => {
+  const handleDeleteTransaction = async (id: number) => {
     if (!window.confirm("Are you sure you want to delete this transaction?")) {
       return;
     }
@@ -95,14 +129,20 @@ const Transactions = () => {
   };
 
   // Handle Import
-  const handleImportTransactions = async (importedData) => {
+  const handleImportTransactions = async (importedData: Omit<Transaction, 'id'>[]) => {
     try {
       setLoading(true);
-      await axiosInstance.post("/api/transactions/bulk", importedData);
-      toast.success("Transactions imported successfully");
-      fetchTransactions(); // Refresh list
+      const response = await axiosInstance.post<{ success: boolean }>("/api/transactions/bulk", importedData);
+      if (response.data.success) {
+        toast.success("Transactions imported successfully");
+        void fetchTransactions();
+      }
     } catch (error) {
-      toast.error("Failed to import transactions");
+      if (error instanceof Error) {
+        toast.error(`Failed to import transactions: ${error.message}`);
+      } else {
+        toast.error("Failed to import transactions");
+      }
       console.error("Error importing transactions:", error);
     } finally {
       setLoading(false);
@@ -116,11 +156,11 @@ const Transactions = () => {
   };
 
   // Pagination Handlers
-  const handlePageChange = (newPage) => {
+  const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
   };
 
-  const handlePageSizeChange = (newSize) => {
+  const handlePageSizeChange = (newSize: number) => {
     setPageSize(newSize);
     setCurrentPage(1); // Reset to first page when changing page size
   };
@@ -159,7 +199,7 @@ const Transactions = () => {
       {/* Transaction List with Pagination */}
       <TransactionList
         transactions={transactions}
-        onEdit={(transaction) => {
+        onEdit={(transaction: Transaction) => {
           setSelectedTransaction(transaction);
           setIsModalOpen(true);
         }}
@@ -183,12 +223,12 @@ const Transactions = () => {
                 : "Thêm giao dịch mới"}
             </h2>
             <TransactionForm
-              initialData={selectedTransaction}
-              onSubmit={(data) => {
+              initialData={selectedTransaction ? { ...selectedTransaction } : undefined}
+              onSubmit={async (data) => {
                 if (selectedTransaction) {
-                  handleUpdateTransaction(selectedTransaction.id, data);
+                  await handleUpdateTransaction(selectedTransaction.id, data);
                 } else {
-                  handleCreateTransaction(data);
+                  await handleCreateTransaction(data);
                 }
               }}
               onCancel={handleCloseModal}

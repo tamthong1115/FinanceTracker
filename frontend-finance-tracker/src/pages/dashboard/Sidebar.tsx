@@ -4,7 +4,6 @@ import {
   LayoutDashboard,
   DollarSign,
   Target,
-  BarChart2,
   Wallet,
   Settings,
   ChevronLeft,
@@ -14,7 +13,6 @@ import {
 import { SidebarProps, NavItem } from "../../types/props";
 
 export const Sidebar: FC<SidebarProps> = ({
-  activeItem,
   setActiveItem,
   isExpanded,
   setIsExpanded,
@@ -60,7 +58,7 @@ export const Sidebar: FC<SidebarProps> = ({
   const NavItemComponent: FC<{
     item: NavItem;
     index: number;
-  }> = ({ item, index }) => (
+  }> = ({ item }) => (
     <div className="relative group">
       <Link
         to={item.href}

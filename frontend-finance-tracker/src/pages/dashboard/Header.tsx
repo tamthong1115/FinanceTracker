@@ -1,12 +1,11 @@
 import { FC, useState } from "react";
-import { Bell, LogOut, User } from "lucide-react";
+import { LogOut, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../config/AuthContext";
 import { HeaderProps } from "../../types/props";
 
 export const Header: FC<HeaderProps> = ({ isSidebarExpanded }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
-  const [isProfileModalOpen, setIsProfileModalOpen] = useState<boolean>(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -70,7 +69,6 @@ export const Header: FC<HeaderProps> = ({ isSidebarExpanded }) => {
                   <button
                     onClick={() => {
                       setIsDropdownOpen(false);
-                      setIsProfileModalOpen(true);
                     }}
                     className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-2"
                   >

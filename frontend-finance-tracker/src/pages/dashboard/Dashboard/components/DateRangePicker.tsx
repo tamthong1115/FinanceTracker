@@ -1,7 +1,16 @@
 import { useState } from "react";
 import { Card } from "../../../../components/common/ui/card";
 import { Calendar } from "lucide-react";
-import { Period } from "../types";
+
+interface Period {
+  startDate: Date;
+  endDate: Date;
+}
+
+interface QuickPick {
+  label: string;
+  getValue: () => Period;
+}
 
 interface DateRangePickerProps {
   onDateChange: (period: Period) => void;
@@ -9,8 +18,12 @@ interface DateRangePickerProps {
 
 const DateRangePicker = ({ onDateChange }: DateRangePickerProps) => {
   const [showQuickPicks, setShowQuickPicks] = useState(false);
+  const [selectedPeriod, setSelectedPeriod] = useState<Period>({
+    startDate: new Date(),
+    endDate: new Date()
+  });
 
-  const quickPicks = [
+  const quickPicks: QuickPick[] = [
     {
       label: "7 ngày qua",
       getValue: () => {
@@ -57,10 +70,23 @@ const DateRangePicker = ({ onDateChange }: DateRangePickerProps) => {
     },
   ];
 
-  const handleQuickPickSelect = (quickPick) => {
+  const handleQuickPickSelect = (quickPick: QuickPick) => {
     const dateRange = quickPick.getValue();
+    setSelectedPeriod(dateRange);
     onDateChange(dateRange);
     setShowQuickPicks(false);
+  };
+
+  const handleCustomDateChange = (date: string, type: 'start' | 'end') => {
+    const newDate = new Date(date);
+    if (!isNaN(newDate.getTime())) {
+      const newPeriod = {
+        ...selectedPeriod,
+        [type === 'start' ? 'startDate' : 'endDate']: newDate
+      };
+      setSelectedPeriod(newPeriod);
+      onDateChange(newPeriod);
+    }
   };
 
   return (
@@ -93,22 +119,14 @@ const DateRangePicker = ({ onDateChange }: DateRangePickerProps) => {
             <div className="space-y-2">
               <input
                 type="date"
-                onChange={(e) =>
-                  onDateChange((prev) => ({
-                    ...prev,
-                    startDate: new Date(e.target.value),
-                  }))
-                }
+                value={selectedPeriod.startDate.toISOString().split('T')[0]}
+                onChange={(e) => handleCustomDateChange(e.target.value, 'start')}
                 className="w-full p-2 border rounded-md text-sm"
               />
               <input
                 type="date"
-                onChange={(e) =>
-                  onDateChange((prev) => ({
-                    ...prev,
-                    endDate: new Date(e.target.value),
-                  }))
-                }
+                value={selectedPeriod.endDate.toISOString().split('T')[0]}
+                onChange={(e) => handleCustomDateChange(e.target.value, 'end')}
                 className="w-full p-2 border rounded-md text-sm"
               />
             </div>
