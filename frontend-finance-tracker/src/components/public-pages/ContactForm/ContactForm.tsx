@@ -1,78 +1,74 @@
 const ContactForm = () => {
   return (
-    <div className="contact-form bg-gray-100 p-8 rounded-lg mt-8">
-      <h2 className="contact-form__title text-2xl font-bold mb-4">
-        Get in touch with us
-      </h2>
-      <form name="get_in_touch" method="post" noValidate>
-        <div className="form-group mb-4">
-          <div className="form-control">
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Name
-            </label>
-            <input
-              type="text"
-              id="get_in_touch_name"
-              name="get_in_touch[name]"
-              required
-              className="form-control__input mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              aria-describedby="name"
-              placeholder="Your name"
-            />
-          </div>
+    <div className="max-w-2xl mx-auto px-4 py-12">
+      <div className="bg-white rounded-2xl shadow-xl p-8 space-y-8">
+        <div className="text-center space-y-2">
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+            Liên hệ với chúng tôi
+          </h2>
+          <p className="text-gray-500">Chúng tôi rất mong nhận được phản hồi từ bạn</p>
         </div>
 
-        <div className="form-group mb-4">
-          <div className="form-control">
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Email address
-            </label>
-            <input
-              type="email"
-              id="get_in_touch_email"
-              name="get_in_touch[email]"
-              required
-              className="form-control__input mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              placeholder="Your email address"
-            />
-          </div>
-        </div>
+        <form className="space-y-6">
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm font-medium text-gray-700 block mb-2">
+                Họ và tên
+              </label>
+              <input
+                type="text"
+                required
+                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 transition-colors duration-200"
+                placeholder="Nhập họ và tên của bạn"
+              />
+            </div>
 
-        <div className="form-group mb-4">
-          <div className="form-control">
-            <label
-              htmlFor="message"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Message
-            </label>
-            <textarea
-              id="get_in_touch_message"
-              name="get_in_touch[message]"
-              required
-              className="form-control__textarea mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              placeholder="Your message"
-            ></textarea>
-          </div>
-        </div>
+            <div>
+              <label className="text-sm font-medium text-gray-700 block mb-2">
+                Email
+              </label>
+              <input
+                type="email"
+                required
+                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 transition-colors duration-200"
+                placeholder="Nhập địa chỉ email của bạn"
+              />
+            </div>
 
-        <div className="d-flex w-100 justify-content-center">
+            <div>
+              <label className="text-sm font-medium text-gray-700 block mb-2">
+                Nội dung
+              </label>
+              <textarea
+                required
+                rows={4}
+                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 transition-colors duration-200 resize-none"
+                placeholder="Nhập nội dung tin nhắn..."
+              ></textarea>
+            </div>
+          </div>
+
           <button
             type="submit"
-            id="get_in_touch_send"
-            name="get_in_touch[send]"
-            className="button button--primary bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
           >
-            Send message
+            <span>Gửi tin nhắn</span>
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M14 5l7 7m0 0l-7 7m7-7H3"
+              />
+            </svg>
           </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 };
