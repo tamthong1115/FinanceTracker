@@ -13,7 +13,7 @@ const Header = () => {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md border-b border-gray-200 z-50">
+    <header className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md border-b border-gray-200 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center">
@@ -76,65 +76,59 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Mobile menu */}
-      <div
-        className={`md:hidden ${
-          menuOpen ? "block" : "hidden"
-        } fixed inset-0 z-50`}
-      >
-        <div
-          className="fixed inset-0 bg-black/50"
-          onClick={() => setMenuOpen(false)}
-        />
-        <nav className="fixed top-0 right-0 bottom-0 w-64 bg-white p-6 overflow-y-auto">
-          <div className="flex items-center justify-between mb-8">
-            <img src="icon.png" alt="logo" className="w-8 h-8" />
-            <button
-              onClick={() => setMenuOpen(false)}
-              className="p-2 rounded-lg hover:bg-gray-100"
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </div>
-
-          <div className="space-y-4">
-            {navItems.map(({ path, label }) => (
-              <Link
-                key={path}
-                to={path}
+      {/* Mobile menu - Updated styling */}
+      {menuOpen && (
+        <div className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-50">
+          <div className="fixed top-0 right-0 h-full w-64 bg-white shadow-lg">
+            <div className="flex items-center justify-between p-4 border-b">
+              <img src="icon.png" alt="logo" className="w-8 h-8" />
+              <button
                 onClick={() => setMenuOpen(false)}
-                className={`block py-2 font-medium ${
-                  isActive(path)
-                    ? "text-blue-600"
-                    : "text-gray-600 hover:text-blue-600"
-                }`}
+                className="p-2 rounded-lg hover:bg-gray-100"
               >
-                {label}
-              </Link>
-            ))}
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
 
-            <Link
-              to="/login"
-              onClick={() => setMenuOpen(false)}
-              className="block w-full px-4 py-2 text-center rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors duration-200"
-            >
-              Đăng nhập
-            </Link>
+            <div className="p-4">
+              {navItems.map(({ path, label }) => (
+                <Link
+                  key={path}
+                  to={path}
+                  onClick={() => setMenuOpen(false)}
+                  className={`block py-3 px-4 rounded-lg font-medium ${
+                    isActive(path)
+                      ? "text-blue-600 bg-blue-50"
+                      : "text-gray-600 hover:bg-gray-50 hover:text-blue-600"
+                  }`}
+                >
+                  {label}
+                </Link>
+              ))}
+
+              <Link
+                to="/login"
+                onClick={() => setMenuOpen(false)}
+                className="block w-full mt-4 px-4 py-3 text-center rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors duration-200"
+              >
+                Đăng nhập
+              </Link>
+            </div>
           </div>
-        </nav>
-      </div>
+        </div>
+      )}
     </header>
   );
 };
