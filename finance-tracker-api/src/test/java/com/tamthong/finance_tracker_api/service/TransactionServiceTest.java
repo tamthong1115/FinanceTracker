@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -48,8 +49,7 @@ public class TransactionServiceTest {
 
         transaction = new Transaction();
         transaction.setId(1L);
-        transaction.setUser(user);
-        transaction.setDate(LocalDate.now().atStartOfDay());
+        transaction.setDateTime(LocalDateTime.now());
         transaction.setStatus(TransactionStatus.COMPLETED);
 
         transactionDTO = new TransactionDTO();
@@ -59,7 +59,7 @@ public class TransactionServiceTest {
     @Test
     void testGetAllTransactionsByUser() {
         when(userService.getCurrentUserId()).thenReturn(1L);
-        when(transactionRepository.findByUserIdOrderByDateDesc(1L)).thenReturn(Collections.singletonList(transaction));
+        when(transactionRepository.findByUserIdOrderByDateTimeDesc(1L)).thenReturn(Collections.singletonList(transaction));
         when(transactionMapper.toDTO(transaction)).thenReturn(transactionDTO);
 
         List<TransactionDTO> result = transactionService.getAllTransactionsByUser();

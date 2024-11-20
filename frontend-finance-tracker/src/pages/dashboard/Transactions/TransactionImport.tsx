@@ -102,6 +102,7 @@ const TransactionImport: React.FC<TransactionImportProps> = ({ onImport, onClose
       // Transform data to match your transaction format
       const transformedData: TransactionFormData[] = results.data.map((row) => ({
         date: row.date,
+        time: "00:00", // Default time for imported transactions
         amount: parseFloat(row.amount),
         description: row.description,
         category: row.category,
