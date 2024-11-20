@@ -133,26 +133,12 @@ const LoginForm = () => {
               </div>
             </div>
 
-            <div className="flex items-center justify-between mt-6">
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  type="checkbox"
-                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 transition-colors duration-200"
-                />
-                <label
-                  htmlFor="remember-me"
-                  className="ml-2 text-sm text-gray-600 hover:text-gray-800 transition-colors duration-200"
-                >
-                  Remember me
-                </label>
-              </div>
-
+            <div className="flex items-center justify-end mt-6">
               <Link
-                to="/forgot-password"
-                className="text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200"
+              to="/forgot-password"
+              className="text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200"
               >
-                Forgot password?
+              Forgot password?
               </Link>
             </div>
 
