@@ -9,6 +9,11 @@ const formatCurrency = (value: number) => {
   }).format(value);
 };
 
+const formatPercentageChange = (value: number) => {
+  const formatted = Math.abs(value).toFixed(1);
+  return value >= 0 ? `+${formatted}` : `-${formatted}`;
+};
+
 interface OverviewStatsProps {
   data: OverviewData;
   period: Period;
@@ -16,6 +21,7 @@ interface OverviewStatsProps {
 
 const OverviewStats = ({ data, period }: OverviewStatsProps) => {
   const periodText = getPeriodText(period.startDate, period.endDate);
+  const incomeVsExpensePercentage = ((data.monthlyIncome / data.monthlyExpenses - 1) * 100);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -41,14 +47,16 @@ const OverviewStats = ({ data, period }: OverviewStatsProps) => {
             <p className="text-2xl font-bold">
               {formatCurrency(data.monthlyIncome)}
             </p>
-            <div className="flex items-center gap-1 text-green-600 text-sm mt-1">
-              <ArrowUp className="w-4 h-4" />
+            <div className={`flex items-center gap-1 ${
+              incomeVsExpensePercentage >= 0 ? 'text-green-600' : 'text-red-600'
+            } text-sm mt-1`}>
+              {incomeVsExpensePercentage >= 0 ? (
+                <ArrowUp className="w-4 h-4" />
+              ) : (
+                <ArrowDown className="w-4 h-4" />
+              )}
               <span>
-                +
-                {((data.monthlyIncome / data.monthlyExpenses - 1) * 100).toFixed(
-                  1
-                )}
-                % so với chi tiêu
+                {formatPercentageChange(incomeVsExpensePercentage)}% so với chi tiêu
               </span>
             </div>
           </div>
