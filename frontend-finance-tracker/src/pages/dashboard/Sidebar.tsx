@@ -24,36 +24,36 @@ export const Sidebar: FC<SidebarProps> = ({
   const navItems: NavItem[] = [
     {
       icon: <LayoutDashboard size={24} />,
-      text: "Overview",
+      text: "Tổng quan",
       href: "/dashboard",
-      description: "View your financial summary and insights",
+      description: "Xem tóm tắt và thông tin tài chính của bạn",
     },
     {
       icon: <DollarSign size={24} />,
-      text: "Transactions",
+      text: "Giao dịch",
       href: "/dashboard/transactions",
-      description: "Track your income and expenses",
+      description: "Theo dõi thu nhập và chi tiêu",
     },
     {
       icon: <Wallet size={24} />,
-      text: "Budget",
+      text: "Ngân sách",
       href: "/dashboard/budget",
-      description: "Set and monitor spending limits",
+      description: "Thiết lập và giám sát hạn mức chi tiêu",
     },
     {
       icon: <Target size={24} />,
-      text: "Goals",
+      text: "Mục tiêu",
       href: "/dashboard/goals",
-      description: "Track your savings goals",
+      description: "Theo dõi mục tiêu tiết kiệm",
     },
   ];
 
   const bottomNavItems: NavItem[] = [
     {
       icon: <Settings size={24} />,
-      text: "Settings",
+      text: "Cài đặt",
       href: "/dashboard/settings",
-      description: "Customize your preferences",
+      description: "Tùy chỉnh theo sở thích của bạn",
     },
   ];
 
@@ -119,7 +119,7 @@ export const Sidebar: FC<SidebarProps> = ({
             <div className="relative">
               <input
                 type="text"
-                placeholder="Quick search..."
+                placeholder="Tìm kiếm nhanh..."
                 className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 
                 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
               />
@@ -157,7 +157,7 @@ export const Sidebar: FC<SidebarProps> = ({
           className="absolute -right-3 top-1/2 transform -translate-y-1/2 
           bg-white rounded-full p-1.5 border shadow-md hover:shadow-lg 
           transition-shadow duration-200"
-          title={isExpanded ? "Collapse sidebar" : "Expand sidebar"}
+          title={isExpanded ? "Thu gọn thanh bên" : "Mở rộng thanh bên"}
         >
           {isExpanded ? (
             <ChevronLeft size={16} className="text-gray-600" />

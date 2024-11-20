@@ -66,9 +66,9 @@ export const Budget = () => {
     <div className="p-6 max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Budget Management</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Quản lý ngân sách</h1>
           <p className="mt-1 text-sm text-gray-500">
-            Manage and track your spending limits
+            Quản lý và theo dõi hạn mức chi tiêu của bạn
           </p>
         </div>
         <button
@@ -80,7 +80,7 @@ export const Budget = () => {
           disabled={loading}
         >
           <Plus className="mr-2" size={20} />
-          Add Budget
+          Thêm ngân sách
         </button>
       </div>
 
@@ -126,7 +126,7 @@ export const Budget = () => {
 
                   <div className="mt-4">
                     <div className="flex justify-between text-sm text-gray-500 mb-1">
-                      <span>Spent</span>
+                      <span>Đã chi</span>
                       <span>{`${percentage.toFixed(1)}%`}</span>
                     </div>
 
@@ -148,7 +148,7 @@ export const Budget = () => {
                         {budget.spent.toLocaleString("vi-VN")} ₫
                       </span>
                       <span className="text-gray-500">
-                        of {budget.limit.toLocaleString("vi-VN")} ₫
+                        trong {budget.limit.toLocaleString("vi-VN")} ₫
                       </span>
                     </div>
 
@@ -160,7 +160,7 @@ export const Budget = () => {
                       >
                         <AlertCircle size={16} className="mr-1" />
                         <span>
-                          {isOverBudget ? "Over budget!" : "Approaching limit"}
+                          {isOverBudget ? "Vượt quá ngân sách!" : "Sắp đến hạn mức"}
                         </span>
                       </div>
                     )}
@@ -168,11 +168,11 @@ export const Budget = () => {
 
                   <div className="mt-4 pt-4 border-t border-gray-100 text-sm text-gray-500">
                     <div className="flex justify-between">
-                      <span>Period</span>
+                      <span>Kỳ hạn</span>
                       <span>{budget.period}</span>
                     </div>
                     <div className="flex justify-between mt-1">
-                      <span>Last Updated</span>
+                      <span>Cập nhật lần cuối</span>
                       <span>
                         {new Date(budget.lastUpdated).toLocaleDateString()}
                       </span>
@@ -189,7 +189,7 @@ export const Budget = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
             <h2 className="text-xl font-bold mb-4">
-              {selectedBudget ? "Edit Budget" : "Add Budget"}
+              {selectedBudget ? "Sửa ngân sách" : "Thêm ngân sách"}
             </h2>
             <BudgetForm
               initialData={selectedBudget}

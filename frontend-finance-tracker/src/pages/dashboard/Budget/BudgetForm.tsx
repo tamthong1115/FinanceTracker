@@ -53,7 +53,7 @@ export const BudgetForm: React.FC<BudgetFormProps> = ({
       {/* Category */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          Category
+          Danh mục
         </label>
         <select
           {...register("category", budgetValidationSchema.category)}
@@ -61,7 +61,7 @@ export const BudgetForm: React.FC<BudgetFormProps> = ({
             errors.category ? "border-red-500" : "border-gray-300"
           } focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
         >
-          <option value="">Select category</option>
+          <option value="">Chọn danh mục</option>
           {BUDGET_CATEGORIES.map((category) => (
             <option key={category} value={category}>
               {category}
@@ -76,7 +76,7 @@ export const BudgetForm: React.FC<BudgetFormProps> = ({
       {/* Limit Amount */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          Budget Limit
+          Hạn mức ngân sách
         </label>
         <div className="relative">
           <input
@@ -99,7 +99,7 @@ export const BudgetForm: React.FC<BudgetFormProps> = ({
       {/* Period */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          Period
+          Kỳ hạn
         </label>
         <select
           {...register("period", budgetValidationSchema.period)}
@@ -107,9 +107,9 @@ export const BudgetForm: React.FC<BudgetFormProps> = ({
             errors.period ? "border-red-500" : "border-gray-300"
           } focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
         >
-          <option value="WEEKLY">Weekly</option>
-          <option value="MONTHLY">Monthly</option>
-          <option value="YEARLY">Yearly</option>
+          <option value="WEEKLY">Hàng tuần</option>
+          <option value="MONTHLY">Hàng tháng</option>
+          <option value="YEARLY">Hàng năm</option>
         </select>
         {errors.period && (
           <p className="mt-1 text-xs text-red-500">{errors.period.message}</p>
@@ -120,7 +120,7 @@ export const BudgetForm: React.FC<BudgetFormProps> = ({
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Start Date
+            Ngày bắt đầu
           </label>
           <input
             type="date"
@@ -138,7 +138,7 @@ export const BudgetForm: React.FC<BudgetFormProps> = ({
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            End Date
+            Ngày kết thúc
           </label>
           <input
             type="date"
@@ -161,7 +161,7 @@ export const BudgetForm: React.FC<BudgetFormProps> = ({
           className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
           disabled={isLoading}
         >
-          Cancel
+          Hủy
         </button>
         <button
           type="submit"
@@ -196,10 +196,10 @@ export const BudgetForm: React.FC<BudgetFormProps> = ({
                   d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                 ></path>
               </svg>
-              Saving...
+              Đang lưu...
             </div>
           ) : (
-            "Save Budget"
+            "Lưu ngân sách"
           )}
         </button>
       </div>
