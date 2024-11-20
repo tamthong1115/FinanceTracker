@@ -92,7 +92,7 @@
 
 ```bash
 # Frontend
-git clone https://github.com/tamthong01593/personal-finance-web.git
+git clone https://github.com/TH-NDang/PersonalFinanceWeb
 cd frontend-finance-tracker
 npm install && npm run dev
 
