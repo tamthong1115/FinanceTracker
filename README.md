@@ -57,6 +57,18 @@
 
 </details>
 
+<details>
+<summary><h3>🔗 API Documentation Files</h3></summary>
+
+|                                   API Collection & Environment                                    |
+| :-----------------------------------------------------------------------------------------------: |
+|  [Postman Collection](./finance-tracker-api/api/Finance%20Tracker%20API.postman_collection.json)  |
+| [Environment Setup](./finance-tracker-api/api/Finance%20Tracker%20Local.postman_environment.json) |
+
+> Import these files into Postman to test the API endpoints
+
+</details>
+
 </div>
 
 ## ✨ Tính năng nổi bật
