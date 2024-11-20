@@ -15,8 +15,10 @@ import ProfileSettings from "./ProfileSettings";
 import SecuritySettings from "./SecuritySettings";
 import NotificationSettings from "./NotificationSettings";
 import PreferencesSettings from "./PreferencesSettings";
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 
 const Settings: React.FC = () => {
+  useDocumentTitle('Settings');
   const [activeTab, setActiveTab] = useState<string>("profile");
   const [isSaving, setIsSaving] = useState<boolean>(false);
 

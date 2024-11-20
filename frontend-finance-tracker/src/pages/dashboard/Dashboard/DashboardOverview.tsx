@@ -7,8 +7,10 @@ import InsightsAlerts from "./components/InsightsAlerts";
 import DateRangePicker from "./components/DateRangePicker";
 import ReportExporter from "./components/ReportExporter";
 import { DashboardData, Period } from "./types";
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 
 const DashboardOverview = () => {
+  useDocumentTitle('Dashboard');
   const dashboardRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<DashboardData | null>(null);

@@ -1,6 +1,7 @@
 import SlideShow from "../../../components/public-pages/SlideShow/SlideShow.js";
 import PropTypes from "prop-types";
 import CommunitySlider from "../../../components/public-pages/SlideShow/SlickSlide-OurCommunity.js";
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 
 type FeatureCardProps = {
   imageSrc: string;
@@ -35,6 +36,7 @@ const OurFeature = ({ imgSrc, ourTitle, ourDescription }: OurFeatureProps) => (
 );
 
 const Home = () => {
+  useDocumentTitle('Home');
   return (
     <div className="text-center min-h-screen bg-gradient-to-b from-white via-blue-50 to-white">
       <div className="text-center h-screen">

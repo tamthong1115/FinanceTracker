@@ -5,6 +5,7 @@ import axiosInstance from "../../../config/axiosConfig";
 import TransactionList from "./TransactionList";
 import TransactionForm from "./TransactionForm";
 import TransactionImport from "./TransactionImport";
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 
 type TransactionType = 'EXPENSE' | 'INCOME';
 type TransactionStatus = 'COMPLETED' | 'PENDING' | 'CANCELLED';  // Add this line
@@ -41,6 +42,7 @@ export interface TransactionListProps {
 }
 
 const Transactions: React.FC = () => {
+  useDocumentTitle('Transactions');
   // State Management
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState<boolean>(false);

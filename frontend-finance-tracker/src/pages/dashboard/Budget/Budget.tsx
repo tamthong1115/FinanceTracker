@@ -4,8 +4,10 @@ import { useBudgets } from "../../../hooks/useBudgets";
 import { BudgetForm } from "./BudgetForm";
 import LoadingSpinner from "../../../components/common/LoadingSpinner";
 import { BudgetFormData } from "../../../types/budget";
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 
 export const Budget = () => {
+  useDocumentTitle('Budget');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBudget, setSelectedBudget] = useState<
     (BudgetFormData & { id?: number }) | undefined
