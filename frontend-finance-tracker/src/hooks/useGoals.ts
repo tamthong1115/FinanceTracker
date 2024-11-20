@@ -1,6 +1,11 @@
 import { useState, useCallback } from "react";
 import { toast } from "react-toastify";
+import { AxiosError } from "axios";
 import axiosInstance from "../config/axiosConfig";
+
+interface ApiError {
+  message: string;
+}
 
 interface Goal {
   id: number;
@@ -24,9 +29,10 @@ export const useGoals = () => {
       setError(null);
       const response = await axiosInstance.get<Goal[]>(BASE_URL);
       setGoals(response.data);
-    } catch (err: any) {
+    } catch (err) {
+      const error = err as AxiosError<ApiError>;
       const errorMessage =
-        err.response?.data?.message || "Failed to fetch goals";
+        error.response?.data?.message || "Failed to fetch goals";
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
@@ -41,11 +47,12 @@ export const useGoals = () => {
       setGoals((prev) => [...prev, response.data]);
       toast.success("Goal created successfully");
       return response.data;
-    } catch (err: any) {
+    } catch (err) {
+      const error = err as AxiosError<ApiError>;
       const errorMessage =
-        err.response?.data?.message || "Failed to create goal";
+        error.response?.data?.message || "Failed to create goal";
       toast.error(errorMessage);
-      throw err;
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -60,11 +67,12 @@ export const useGoals = () => {
       );
       toast.success("Goal updated successfully");
       return response.data;
-    } catch (err: any) {
+    } catch (err) {
+      const error = err as AxiosError<ApiError>;
       const errorMessage =
-        err.response?.data?.message || "Failed to update goal";
+        error.response?.data?.message || "Failed to update goal";
       toast.error(errorMessage);
-      throw err;
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -76,11 +84,12 @@ export const useGoals = () => {
       await axiosInstance.delete(`${BASE_URL}/${id}`);
       setGoals((prev) => prev.filter((goal) => goal.id !== id));
       toast.success("Goal deleted successfully");
-    } catch (err: any) {
+    } catch (err) {
+      const error = err as AxiosError<ApiError>;
       const errorMessage =
-        err.response?.data?.message || "Failed to delete goal";
+        error.response?.data?.message || "Failed to delete goal";
       toast.error(errorMessage);
-      throw err;
+      throw error;
     } finally {
       setLoading(false);
     }

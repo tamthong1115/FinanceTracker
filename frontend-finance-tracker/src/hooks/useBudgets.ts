@@ -1,7 +1,12 @@
 import { useState, useCallback } from "react";
 import { toast } from "react-toastify";
+import { AxiosError } from "axios";
 import axiosInstance from "../config/axiosConfig";
 import { Budget, BudgetFormData } from "../types/budget";
+
+interface ApiError {
+  message: string;
+}
 
 const BASE_URL = "/api/budgets";
 
@@ -16,9 +21,10 @@ export const useBudgets = () => {
       setError(null);
       const response = await axiosInstance.get<Budget[]>(BASE_URL);
       setBudgets(response.data);
-    } catch (err: any) {
+    } catch (err) {
+      const error = err as AxiosError<ApiError>;
       const errorMessage =
-        err.response?.data?.message || "Failed to fetch budgets";
+        error.response?.data?.message || "Failed to fetch budgets";
       setError(errorMessage);
       toast.error(errorMessage, {
         toastId: "fetch-budgets-error",
@@ -35,11 +41,12 @@ export const useBudgets = () => {
       setBudgets((prev) => [...prev, response.data]);
       toast.success("Budget created successfully");
       return response.data;
-    } catch (err: any) {
+    } catch (err) {
+      const error = err as AxiosError<ApiError>;
       const errorMessage =
-        err.response?.data?.message || "Failed to create budget";
+        error.response?.data?.message || "Failed to create budget";
       toast.error(errorMessage);
-      throw err;
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -54,11 +61,12 @@ export const useBudgets = () => {
       );
       toast.success("Budget updated successfully");
       return response.data;
-    } catch (err: any) {
+    } catch (err) {
+      const error = err as AxiosError<ApiError>;
       const errorMessage =
-        err.response?.data?.message || "Failed to update budget";
+        error.response?.data?.message || "Failed to update budget";
       toast.error(errorMessage);
-      throw err;
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -70,11 +78,12 @@ export const useBudgets = () => {
       await axiosInstance.delete(`${BASE_URL}/${id}`);
       setBudgets((prev) => prev.filter((budget) => budget.id !== id));
       toast.success("Budget deleted successfully");
-    } catch (err: any) {
+    } catch (err) {
+      const error = err as AxiosError<ApiError>;
       const errorMessage =
-        err.response?.data?.message || "Failed to delete budget";
+        error.response?.data?.message || "Failed to delete budget";
       toast.error(errorMessage);
-      throw err;
+      throw error;
     } finally {
       setLoading(false);
     }

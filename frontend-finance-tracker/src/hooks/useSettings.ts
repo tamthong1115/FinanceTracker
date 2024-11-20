@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { settingsApi } from "../services/settingsService";
+import { AxiosError } from "axios";
 import axiosInstance from "../config/axiosConfig";
 import {
   UserSettingsResponse,
@@ -9,6 +9,10 @@ import {
   Preferences,
   UpdatePasswordRequest,
 } from "../types/settings";
+
+interface ApiError {
+  message: string;
+}
 
 const BASE_URL = "/api/settings";
 
@@ -25,11 +29,12 @@ export const useSettings = () => {
       const { data } = await axiosInstance.get<UserSettingsResponse>(`${BASE_URL}`);
       console.log("Fetched settings in hook:", data);
       setSettings(data);
-    } catch (err: any) {
+    } catch (err) {
+      const error = err as AxiosError<ApiError>;
       const errorMessage =
-        err.response?.data?.message || "Failed to fetch settings";
+        error.response?.data?.message || "Failed to fetch settings";
       setError(errorMessage);
-      throw err;
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -50,6 +55,12 @@ export const useSettings = () => {
         phone: updatedSettings.phone,
         address: updatedSettings.address
       };
+    } catch (err) {
+      const error = err as AxiosError<ApiError>;
+      const errorMessage =
+        error.response?.data?.message || "Failed to update profile";
+      setError(errorMessage);
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -59,6 +70,12 @@ export const useSettings = () => {
     try {
       setLoading(true);
       await axiosInstance.put(`${BASE_URL}/password`, data);
+    } catch (err) {
+      const error = err as AxiosError<ApiError>;
+      const errorMessage =
+        error.response?.data?.message || "Failed to update password";
+      setError(errorMessage);
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -81,6 +98,12 @@ export const useSettings = () => {
         budgetAlerts: updatedSettings.budgetAlerts,
         transactionNotifications: updatedSettings.transactionNotifications
       };
+    } catch (err) {
+      const error = err as AxiosError<ApiError>;
+      const errorMessage =
+        error.response?.data?.message || "Failed to update notifications";
+      setError(errorMessage);
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -101,6 +124,12 @@ export const useSettings = () => {
         dateFormat: updatedSettings.dateFormat || "DD/MM/YYYY",
         darkMode: updatedSettings.darkMode
       };
+    } catch (err) {
+      const error = err as AxiosError<ApiError>;
+      const errorMessage =
+        error.response?.data?.message || "Failed to update preferences";
+      setError(errorMessage);
+      throw error;
     } finally {
       setLoading(false);
     }
