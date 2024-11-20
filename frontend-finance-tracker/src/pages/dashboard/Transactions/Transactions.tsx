@@ -41,7 +41,7 @@ export interface TransactionListProps {
   onPageSizeChange: (size: number) => void;
 }
 
-const Transactions: React.FC = () => {
+const Transactions = () => {
   useDocumentTitle('Transactions');
   // State Management
   const [transactions, setTransactions] = useState<Transaction[]>([]);

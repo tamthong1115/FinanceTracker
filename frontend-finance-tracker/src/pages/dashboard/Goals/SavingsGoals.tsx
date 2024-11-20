@@ -5,6 +5,7 @@ import GoalFormModal from "./GoalFormModal";
 import { Card } from "../../../components/common/ui/card";
 import { Progress } from "../../../components/common/ui/progress";
 import LoadingSpinner from "../../../components/common/LoadingSpinner";
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 
 interface Goal {
   id: number;
@@ -16,6 +17,7 @@ interface Goal {
 }
 
 const SavingsGoals = () => {
+  useDocumentTitle('Savings Goals');
   const {
     goals,
     loading,

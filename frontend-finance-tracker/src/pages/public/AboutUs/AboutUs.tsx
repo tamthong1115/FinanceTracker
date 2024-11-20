@@ -1,4 +1,7 @@
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
+
 const AboutUs = () => {
+  useDocumentTitle('About Us');
   return (
     <div className="bg-gradient-to-b from-white via-blue-50 to-white">
       {/* Hero Section */}

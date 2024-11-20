@@ -6,10 +6,12 @@ import axiosInstance from "../../../config/axiosConfig.ts";
 import { toast } from "react-toastify";
 import { Eye, EyeOff } from "lucide-react";
 import LoadingSpinner from "../../../components/common/LoadingSpinner.tsx";
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 
 const BASE_URL = "/api/auth";
 
 const RegisterForm: FC = () => {
+  useDocumentTitle('Register');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

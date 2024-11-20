@@ -7,10 +7,12 @@ import axiosInstance from "../../../config/axiosConfig";
 import { toast } from "react-toastify";
 import { Eye, EyeOff } from "lucide-react";
 import LoadingSpinner from "../../../components/common/LoadingSpinner";
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 
 const BASE_URL = "/api/auth";
 
 const LoginForm = () => {
+  useDocumentTitle('Sign In');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
