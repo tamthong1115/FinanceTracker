@@ -9,35 +9,34 @@ interface Testimonial {
 
 const CommunityData: Testimonial[] = [
   {
-    name: `John Smith`,
+    name: `Minh Anh`,
     img: `dd6.jpg`,
-    review: `I am using this app for more than two years and I could not be happier with the service I got.`,
+    review: `Tôi đã sử dụng ứng dụng này hơn hai năm và tôi rất hài lòng với dịch vụ mà tôi nhận được.`,
   },
   {
-    name: `Emily Tran`,
+    name: `Ngọc Trân`,
     img: `dd5.jpg`,
-    review: `This app has transformed the way I manage my finances! The budgeting tools are intuitive and
-         have helped me save more than I ever thought possible.`,
+    review: `Ứng dụng này đã thay đổi hoàn toàn cách tôi quản lý tài chính! Các công cụ lập ngân sách rất trực quan và giúp tôi tiết kiệm nhiều hơn những gì tôi nghĩ là có thể.`,
   },
   {
-    name: `David Nguyen`,
+    name: `Đức Nguyễn`,
     img: `dd4.jpg`,
-    review: `I love the clean interface and the ease of use. It's made tracking my spending so much simpler. I can't imagine going back to my old methods!`,
+    review: `Tôi thích giao diện đơn giản và dễ sử dụng. Nó giúp việc theo dõi chi tiêu của tôi dễ dàng hơn rất nhiều. Tôi không thể tưởng tượng quay lại phương pháp cũ!`,
   },
   {
-    name: `Sophia Le`,
+    name: `Thu Lê`,
     img: `dd3.jpg`,
-    review: `The personalized financial insights are incredible! I've learned so much about my spending habits, and I'm on my way to reaching my financial goals!`,
+    review: `Những phân tích tài chính cá nhân thật tuyệt vời! Tôi đã học được rất nhiều về thói quen chi tiêu của mình, và tôi đang trên đường đạt được mục tiêu tài chính!`,
   },
   {
-    name: `Michael Pham`,
+    name: `Minh Phạm`,
     img: `dd1.jpg`,
-    review: `This app is a game-changer! The shared wallet feature is perfect for managing expenses with my partner. It keeps us both on the same page!`,
+    review: `Ứng dụng này thực sự là một bước đột phá! Tính năng ví chung rất hoàn hảo để quản lý chi tiêu với bạn đời. Nó giúp chúng tôi luôn đồng bộ với nhau!`,
   },
   {
-    name: `Anna Vu`,
+    name: `Ánh Vũ`,
     img: `dd2.jpg`,
-    review: `I appreciate the robust reporting features. I can easily see where my money goes each month, and it motivates me to stick to my budget!`,
+    review: `Tôi đánh giá cao các tính năng báo cáo chi tiết. Tôi có thể dễ dàng theo dõi tiền của mình đã chi tiêu như thế nào mỗi tháng, và nó thúc đẩy tôi tuân thủ ngân sách!`,
   },
 ];
 
@@ -77,43 +76,64 @@ const CommunitySlider: React.FC = () => {
   };
 
   return (
-      <div className="w-3/4 m-auto mt-20">
-        <Slider {...settings}>
-          {CommunityData.map((testimonial, index) => (
-              <div
-                  key={index}
-                  className={`p-6 rounded-lg shadow-lg bg-gray-200 mx-auto`}
-              >
-                <div className="flex items-center mb-4">
-                  <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white">
-                    <img
-                        src="/img/icons8-get-quote-100-colorWhite.png"
-                        className="w-8 h-8"
-                        alt=""
-                    />
-                  </div>
-                </div>
-
-                <p className="mb-4 text-gray-600">{testimonial.review}</p>
-                <div className="flex items-center">
+    <div className="w-11/12 md:w-4/5 lg:w-3/4 mx-auto mt-16">
+      <Slider {...settings}>
+        {CommunityData.map((testimonial, index) => (
+          <div key={index} className="px-3">
+            <div
+              className="bg-white rounded-2xl shadow-lg p-8 mx-2 my-4 
+                          transform hover:scale-105 transition-all duration-300 
+                          hover:shadow-xl border border-gray-100"
+            >
+              {/* Quote Icon */}
+              <div className="mb-6">
+                <div
+                  className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 
+                              flex items-center justify-center shadow-md"
+                >
                   <img
-                      src={`/img/${testimonial.img}`}
-                      alt={`Profile picture of ${testimonial.name}`}
-                      className="w-12 h-12 rounded-full mr-4"
+                    src="/img/icons8-get-quote-100-colorWhite.png"
+                    className="w-8 h-8 opacity-90"
+                    alt="Quote icon"
                   />
-                  {/*Name*/}
-                  <div>
-                    <h3 className="font-bold text-gray-800">{testimonial.name}</h3>
-                    <p className="text-sm text-gray-500">User</p>
-                  </div>
-
                 </div>
               </div>
-          ))}
-        </Slider>
-      </div>
+
+              {/* Review Text */}
+              <p
+                className="text-gray-700 text-lg leading-relaxed mb-8 
+                          font-normal italic"
+              >
+                "{testimonial.review}"
+              </p>
+
+              {/* User Info */}
+              <div className="flex items-center border-t pt-6 mt-6">
+                <div className="relative">
+                  <img
+                    src={`/img/${testimonial.img}`}
+                    alt={`Profile picture of ${testimonial.name}`}
+                    className="w-14 h-14 rounded-full object-cover border-2 
+                              border-blue-100 shadow-sm"
+                  />
+                  <div
+                    className="absolute -bottom-1 -right-1 w-5 h-5 
+                                bg-blue-500 rounded-full border-2 border-white"
+                  />
+                </div>
+                <div className="ml-4">
+                  <h3 className="font-semibold text-gray-800 text-lg mb-1">
+                    {testimonial.name}
+                  </h3>
+                  <p className="text-blue-600 text-sm font-medium">Người dùng</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </Slider>
+    </div>
   );
 };
 
 export default CommunitySlider;
-
