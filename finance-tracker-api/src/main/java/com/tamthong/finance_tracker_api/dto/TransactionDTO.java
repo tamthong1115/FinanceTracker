@@ -4,7 +4,7 @@ import com.tamthong.finance_tracker_api.model.TransactionType;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 public class TransactionDTO {
@@ -14,7 +14,7 @@ public class TransactionDTO {
     private String description;
     private String category;
     private TransactionType type;
-    private LocalDate date;
+    private LocalDateTime date;
     private String paymentMethod;
     private String notes;
     // private TransactionStatus status;

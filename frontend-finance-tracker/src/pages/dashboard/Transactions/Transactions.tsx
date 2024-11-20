@@ -217,13 +217,8 @@ const Transactions = () => {
 
       {/* Transaction Form Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <h2 className="text-xl font-bold mb-4">
-              {selectedTransaction
-                ? "Chỉnh sửa giao dịch"
-                : "Thêm giao dịch mới"}
-            </h2>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end sm:items-center justify-center z-50">
+          <div className="bg-white w-full sm:w-[600px] h-[92vh] sm:max-h-[700px] rounded-t-2xl sm:rounded-lg flex flex-col">
             <TransactionForm
               initialData={selectedTransaction ? { ...selectedTransaction } : undefined}
               onSubmit={async (data) => {

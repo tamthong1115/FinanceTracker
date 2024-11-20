@@ -1,18 +1,63 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { NumericFormat } from "react-number-format";
 import {
   Transaction,
   TransactionFormData,
   TransactionType,
 } from "../../../types/transaction";
-import { X } from "lucide-react";
+import { CheckCircle, Loader2 } from "lucide-react";
+import { format } from "date-fns";
 
 interface TransactionFormProps {
   initialData?: Partial<Transaction>;
-  onSubmit: (data: Omit<Transaction, 'id'>) => Promise<void>;
+  onSubmit: (data: Omit<Transaction, "id">) => Promise<void>;
   onCancel: () => void;
   isLoading: boolean;
 }
+
+interface FormFieldProps {
+  label: string;
+  error?: string;
+  children: React.ReactNode;
+}
+
+const PAYMENT_METHODS = [
+  { value: "Cash", label: "Tiền mặt" },
+  { value: "Credit Card", label: "Thẻ tín dụng" },
+  { value: "Debit Card", label: "Thẻ ghi nợ" },
+  { value: "Bank Transfer", label: "Chuyển khoản" },
+  { value: "E-Wallet", label: "Ví điện tử" },
+  { value: "Other", label: "Khác" },
+] as const;
+
+const CATEGORIES = [
+  { value: "Food & Dining", label: "Ăn uống" },
+  { value: "Shopping", label: "Mua sắm" },
+  { value: "Housing", label: "Nhà ở" },
+  { value: "Transportation", label: "Di chuyển" },
+  { value: "Utilities", label: "Hóa đơn & Tiện ích" },
+  { value: "Healthcare", label: "Sức khỏe" },
+  { value: "Entertainment", label: "Giải trí" },
+  { value: "Education", label: "Giáo dục" },
+  { value: "Income", label: "Thu nhập" },
+  { value: "Other", label: "Khác" },
+] as const;
+
+const STATUS_OPTIONS = [
+  { value: "COMPLETED", label: "Đã hoàn thành" },
+  { value: "PENDING", label: "Chờ xử lý" },
+  { value: "CANCELLED", label: "Đã hủy" },
+] as const;
+
+// Reusable form field component
+const FormField = ({ label, error, children }: FormFieldProps) => (
+  <div className="space-y-1">
+    <label className="block text-sm font-medium text-gray-700">{label}</label>
+    {children}
+    {error && <p className="text-sm text-red-500">{error}</p>}
+  </div>
+);
 
 const TransactionForm: React.FC<TransactionFormProps> = ({
   initialData,
@@ -24,274 +69,332 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
     register,
     handleSubmit,
     watch,
-    formState: { errors },
+    setValue,
+    formState: { errors, isSubmitting },
   } = useForm<TransactionFormData>({
     defaultValues: {
       type: (initialData?.type as TransactionType) || "EXPENSE",
-      date: initialData?.date || new Date().toISOString().split("T")[0],
-      amount: initialData?.amount || 0,
+      date: initialData?.date
+        ? format(new Date(initialData.date), "yyyy-MM-dd")
+        : format(new Date(), "yyyy-MM-dd"),
+      time: initialData?.date
+        ? format(new Date(initialData.date), "HH:mm")
+        : format(new Date(), "HH:mm"),
+      amount: initialData?.amount || undefined,
       description: initialData?.description || "",
       category: initialData?.category || "",
       paymentMethod: initialData?.paymentMethod || "",
       notes: initialData?.notes || "",
       status: initialData?.status || "COMPLETED",
     },
+    mode: "onChange", // Enable real-time validation
   });
 
   const transactionType = watch("type");
 
+  // Prevent form submission while loading
+  const handleFormSubmit = async (data: TransactionFormData) => {
+    if (isLoading || isSubmitting) return;
+
+    try {
+      const combinedDate = new Date(`${data.date}T${data.time}`);
+
+      if (isNaN(combinedDate.getTime())) {
+        throw new Error("Ngày hoặc thời gian không hợp lệ");
+      }
+
+      await onSubmit({
+        ...data,
+        date: combinedDate.toISOString(),
+        amount: Number(data.amount),
+      });
+    } catch (error) {
+      console.error("Form submission error:", error);
+    }
+  };
+
+  // Replace the amount input field with this enhanced version
+  const AmountField = () => (
+    <FormField label="Số tiền" error={errors.amount?.message}>
+      <div className="relative">
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+          ₫
+        </span>
+        <NumericFormat
+          thousandSeparator={true}
+          valueIsNumericString={true}
+          allowNegative={false}
+          decimalScale={0}
+          placeholder="0"
+          onValueChange={(values) => {
+            setValue("amount", values.floatValue || 0);
+          }}
+          defaultValue={initialData?.amount}
+          className={`
+            pl-8 w-full rounded-lg border h-11
+            ${errors.amount ? "border-red-300" : "border-gray-300"}
+            focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+            disabled:bg-gray-50 disabled:text-gray-500
+          `}
+          disabled={isLoading}
+        />
+      </div>
+    </FormField>
+  );
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      {/* Close Button */}
-      <div className="flex justify-end">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+    <div className="flex flex-col h-full">
+      {/* Header - Static */}
+      <div className="flex-none px-4 py-3 sm:p-6 border-b bg-white">
+        <h3 className="text-lg font-semibold">
+          {initialData ? "Chỉnh sửa giao dịch" : "Thêm giao dịch mới"}
+        </h3>
+      </div>
+
+      {/* Form Content - Scrollable */}
+      <div className="flex-1 overflow-y-auto">
+        <form
+          id="transaction-form"
+          onSubmit={handleSubmit(handleFormSubmit)}
+          className="p-4 sm:p-6 space-y-5"
+          autoComplete="off"
         >
-          <X size={20} className="text-gray-500" />
-        </button>
-      </div>
-
-      {/* Type Selection */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Type
-        </label>
-        <div className="grid grid-cols-2 gap-4">
-          <label
-            className={`
-            flex items-center justify-center p-2 rounded-md cursor-pointer
-            ${
-              transactionType === "INCOME"
-                ? "bg-green-100 text-green-800 ring-2 ring-green-500"
-                : "bg-gray-100 text-gray-800"
-            }
-          `}
-          >
-            <input
-              type="radio"
-              {...register("type")}
-              value="INCOME"
-              className="sr-only"
-            />
-            <span>Income</span>
-          </label>
-          <label
-            className={`
-            flex items-center justify-center p-2 rounded-md cursor-pointer
-            ${
-              transactionType === "EXPENSE"
-                ? "bg-red-100 text-red-800 ring-2 ring-red-500"
-                : "bg-gray-100 text-gray-800"
-            }
-          `}
-          >
-            <input
-              type="radio"
-              {...register("type")}
-              value="EXPENSE"
-              className="sr-only"
-            />
-            <span>Expense</span>
-          </label>
-        </div>
-      </div>
-
-      {/* Amount */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Amount
-        </label>
-        <div className="relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-            ₫
-          </span>
-          <input
-            type="number"
-            {...register("amount", { required: "Amount is required", min: 0 })}
-            className={`
-              pl-8 w-full rounded-md border ${
-                errors.amount ? "border-red-500" : "border-gray-300"
-              }
-              focus:ring-2 focus:ring-indigo-500 focus:border-transparent
-            `}
-          />
-        </div>
-        {errors.amount && (
-          <p className="mt-1 text-xs text-red-500">{errors.amount.message}</p>
-        )}
-      </div>
-
-      {/* Description */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Description
-        </label>
-        <input
-          type="text"
-          {...register("description", { required: "Description is required" })}
-          className={`
-            w-full rounded-md border ${
-              errors.description ? "border-red-500" : "border-gray-300"
-            }
-            focus:ring-2 focus:ring-indigo-500 focus:border-transparent
-          `}
-        />
-        {errors.description && (
-          <p className="mt-1 text-xs text-red-500">
-            {errors.description.message}
-          </p>
-        )}
-      </div>
-
-      {/* Category */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Category
-        </label>
-        <select
-          {...register("category", { required: "Category is required" })}
-          className={`
-            w-full rounded-md border ${
-              errors.category ? "border-red-500" : "border-gray-300"
-            }
-            focus:ring-2 focus:ring-indigo-500 focus:border-transparent
-          `}
-        >
-          <option value="">Select category</option>
-          <option value="Food & Dining">Food & Dining</option>
-          <option value="Shopping">Shopping</option>
-          <option value="Housing">Housing</option>
-          <option value="Transportation">Transportation</option>
-          <option value="Utilities">Utilities</option>
-          <option value="Healthcare">Healthcare</option>
-          <option value="Entertainment">Entertainment</option>
-          <option value="Education">Education</option>
-          <option value="Income">Income</option>
-          <option value="Other">Other</option>
-        </select>
-        {errors.category && (
-          <p className="mt-1 text-xs text-red-500">{errors.category.message}</p>
-        )}
-      </div>
-
-      {/* Date */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Date
-        </label>
-        <input
-          type="date"
-          {...register("date", { required: "Date is required" })}
-          className={`
-            w-full rounded-md border ${
-              errors.date ? "border-red-500" : "border-gray-300"
-            }
-            focus:ring-2 focus:ring-indigo-500 focus:border-transparent
-          `}
-        />
-        {errors.date && (
-          <p className="mt-1 text-xs text-red-500">{errors.date.message}</p>
-        )}
-      </div>
-
-      {/* Payment Method */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Payment Method
-        </label>
-        <select
-          {...register("paymentMethod", {
-            required: "Payment method is required",
-          })}
-          className={`
-            w-full rounded-md border ${
-              errors.paymentMethod ? "border-red-500" : "border-gray-300"
-            }
-            focus:ring-2 focus:ring-indigo-500 focus:border-transparent
-          `}
-        >
-          <option value="">Select payment method</option>
-          <option value="Cash">Cash</option>
-          <option value="Credit Card">Credit Card</option>
-          <option value="Debit Card">Debit Card</option>
-          <option value="Bank Transfer">Bank Transfer</option>
-          <option value="E-Wallet">E-Wallet</option>
-          <option value="Other">Other</option>
-        </select>
-        {errors.paymentMethod && (
-          <p className="mt-1 text-xs text-red-500">
-            {errors.paymentMethod.message}
-          </p>
-        )}
-      </div>
-
-      {/* Notes */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Notes
-        </label>
-        <textarea
-          {...register("notes")}
-          rows={3}
-          className="w-full rounded-md border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-        />
-      </div>
-
-      {/* Action Buttons */}
-      <div className="flex justify-end space-x-3 pt-4">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-          disabled={isLoading}
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          disabled={isLoading}
-          className={`
-            px-4 py-2 text-sm font-medium text-white rounded-md
-            ${
-              isLoading
-                ? "bg-indigo-400 cursor-not-allowed"
-                : "bg-indigo-600 hover:bg-indigo-700"
-            }
-            transition-colors duration-200
-          `}
-        >
-          {isLoading ? (
-            <div className="flex items-center">
-              <svg
-                className="animate-spin -ml-1 mr-2 h-4 w-4"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
-              </svg>
-              Processing...
+          {/* Transaction Type */}
+          <FormField label="Loại giao dịch">
+            <div className="grid grid-cols-2 gap-3">
+              {["INCOME", "EXPENSE"].map((type) => (
+                <label
+                  key={type}
+                  className={`
+                      flex items-center justify-center p-4 sm:p-3 rounded-lg cursor-pointer
+                      border-2 transition-all duration-200 touch-manipulation
+                      ${
+                        transactionType === type
+                          ? type === "INCOME"
+                            ? "border-green-500 bg-green-50 text-green-700"
+                            : "border-red-500 bg-red-50 text-red-700"
+                          : "border-gray-200 hover:border-gray-300"
+                      }
+                    `}
+                >
+                  <input
+                    type="radio"
+                    {...register("type")}
+                    value={type}
+                    className="sr-only"
+                  />
+                  <span className="font-medium">
+                    {type === "INCOME" ? "Thu nhập" : "Chi tiêu"}
+                  </span>
+                </label>
+              ))}
             </div>
-          ) : (
-            "Save Transaction"
-          )}
-        </button>
+          </FormField>
+
+          {/* Amount Field */}
+          <AmountField />
+
+          {/* Description */}
+          <FormField label="Mô tả" error={errors.description?.message}>
+            <input
+              type="text"
+              {...register("description", {
+                required: "Vui lòng nhập mô tả",
+                maxLength: {
+                  value: 100,
+                  message: "Mô tả không được quá 100 ký tự",
+                },
+              })}
+              disabled={isLoading}
+              className={`w-full rounded-lg border h-12 sm:h-10 px-3 text-base sm:text-sm ${
+                errors.description ? "border-red-300" : "border-gray-300"
+              } focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:text-gray-500`}
+            />
+          </FormField>
+
+          {/* Category and Payment Method - 2 columns on desktop */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+            <FormField label="Danh mục" error={errors.category?.message}>
+              <select
+                {...register("category", {
+                  required: "Vui lòng chọn danh mục",
+                })}
+                disabled={isLoading}
+                className={`
+                    w-full rounded-lg border h-12 sm:h-10 px-3 text-base sm:text-sm
+                    ${errors.category ? "border-red-300" : "border-gray-300"}
+                    focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                    disabled:bg-gray-50 disabled:text-gray-500
+                  `}
+              >
+                <option value="">Chọn danh mục</option>
+                {CATEGORIES.map(({ value, label }) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </FormField>
+
+            <FormField
+              label="Phương thức thanh toán"
+              error={errors.paymentMethod?.message}
+            >
+              <select
+                {...register("paymentMethod", {
+                  required: "Vui lòng chọn phương thức thanh toán",
+                })}
+                disabled={isLoading}
+                className={`
+                    w-full rounded-lg border h-12 sm:h-10 px-3 text-base sm:text-sm
+                    ${
+                      errors.paymentMethod ? "border-red-300" : "border-gray-300"
+                    }
+                    focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                    disabled:bg-gray-50 disabled:text-gray-500
+                  `}
+              >
+                <option value="">Chọn phương thức</option>
+                {PAYMENT_METHODS.map(({ value, label }) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </FormField>
+          </div>
+
+          {/* Date Time Fields - 2 columns */}
+          <div className="grid grid-cols-2 gap-4 sm:gap-6">
+            <FormField label="Ngày" error={errors.date?.message}>
+              <input
+                type="date"
+                {...register("date", {
+                  required: "Vui lòng chọn ngày",
+                  validate: (value) => {
+                    const date = new Date(value);
+                    if (isNaN(date.getTime())) return "Ngày không hợp lệ";
+                    if (date > new Date())
+                      return "Ngày không thể trong tương lai";
+                    return true;
+                  },
+                })}
+                max={format(new Date(), "yyyy-MM-dd")}
+                disabled={isLoading}
+                className={`
+                    w-full rounded-lg border h-12 sm:h-10 px-3 text-base sm:text-sm
+                    ${errors.date ? "border-red-300" : "border-gray-300"}
+                    focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                    disabled:bg-gray-50 disabled:text-gray-500
+                  `}
+              />
+            </FormField>
+
+            <FormField label="Thời gian" error={errors.time?.message}>
+              <input
+                type="time"
+                {...register("time", {
+                  required: "Vui lòng chọn thời gian",
+                  validate: (value) => {
+                    const [hours, minutes] = value.split(":");
+                    if (parseInt(hours) < 0 || parseInt(hours) > 23)
+                      return "Giờ không hợp lệ";
+                    if (parseInt(minutes) < 0 || parseInt(minutes) > 59)
+                      return "Phút không hợp lệ";
+                    return true;
+                  },
+                })}
+                disabled={isLoading}
+                className={`
+                    w-full rounded-lg border h-12 sm:h-10 px-3 text-base sm:text-sm
+                    ${errors.time ? "border-red-300" : "border-gray-300"}
+                    focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                    disabled:bg-gray-50 disabled:text-gray-500
+                  `}
+              />
+            </FormField>
+          </div>
+
+          {/* Status Field */}
+          <FormField label="Trạng thái" error={errors.status?.message}>
+            <select
+              {...register("status", {
+                required: "Vui lòng chọn trạng thái",
+              })}
+              disabled={isLoading}
+              className={`
+                w-full rounded-lg border h-12 sm:h-10 px-3 text-base sm:text-sm
+                ${errors.status ? "border-red-300" : "border-gray-300"}
+                focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                disabled:bg-gray-50 disabled:text-gray-500
+              `}
+            >
+              {STATUS_OPTIONS.map(({ value, label }) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </FormField>
+
+          {/* Notes */}
+          <FormField label="Ghi chú">
+            <textarea
+              {...register("notes")}
+              rows={3}
+              disabled={isLoading}
+              className="w-full rounded-lg border border-gray-300 p-3 text-base sm:text-sm 
+                    focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+                    disabled:bg-gray-50 disabled:text-gray-500 resize-none"
+              placeholder="Thêm ghi chú (không bắt buộc)"
+            />
+          </FormField>
+        </form>
       </div>
-    </form>
+
+      {/* Footer - Static */}
+      <div className="flex-none p-4 sm:p-6 border-t bg-white">
+        <div className="flex flex-col sm:flex-row gap-3 sm:justify-end">
+          <button
+            type="button"
+            onClick={onCancel}
+            disabled={isLoading || isSubmitting}
+            className="w-full sm:w-auto order-1 sm:order-none h-12 sm:h-10 px-4
+              text-sm font-medium text-gray-700 bg-white border border-gray-300 
+              rounded-lg hover:bg-gray-50 disabled:opacity-50"
+          >
+            Hủy
+          </button>
+          <button
+            type="submit"
+            form="transaction-form"
+            disabled={isLoading || isSubmitting}
+            className={`
+              w-full sm:w-auto h-12 sm:h-10 inline-flex items-center justify-center px-4
+              text-sm font-medium text-white rounded-lg 
+              disabled:opacity-50 disabled:cursor-not-allowed
+              ${
+                isLoading || isSubmitting
+                  ? "bg-blue-400"
+                  : "bg-blue-600 hover:bg-blue-700"
+              }
+            `}
+          >
+            {isLoading || isSubmitting ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Đang xử lý...
+              </>
+            ) : (
+              <>
+                <CheckCircle className="w-4 h-4 mr-2" />
+                {initialData ? "Cập nhật" : "Tạo giao dịch"}
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 

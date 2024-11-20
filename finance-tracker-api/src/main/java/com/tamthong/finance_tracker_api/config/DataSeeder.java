@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -24,9 +25,9 @@ public class DataSeeder {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        LocalDate lastTransactionDate = transactionRepository.findTopByUserIdOrderByDateDesc(userId)
+        LocalDateTime lastTransactionDate = transactionRepository.findTopByUserIdOrderByDateDesc(userId)
                 .map(Transaction::getDate)
-                .orElse(LocalDate.now().minusMonths(6));
+                .orElse(LocalDateTime.now().minusMonths(6));
 
         List<String> categories = Arrays.asList(
                 "Food & Dining", "Transportation", "Shopping", "Entertainment",
@@ -36,10 +37,10 @@ public class DataSeeder {
                 "Cash", "Credit Card", "Bank Transfer", "E-Wallet");
 
         // Create transactions from the last transaction date to now
-        LocalDate now = LocalDate.now();
-        LocalDate startDate = lastTransactionDate.plusDays(1);
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startDate = lastTransactionDate.plusDays(1);
 
-        for (LocalDate date = startDate; date.isBefore(now.plusDays(1)); date = date.plusDays(1)) {
+        for (LocalDateTime date = startDate; date.isBefore(now.plusDays(1)); date = date.plusDays(1)) {
             // Create 1-3 transactions per day
             int transactionsPerDay = random.nextInt(3) + 1;
             for (int j = 0; j < transactionsPerDay; j++) {
@@ -72,8 +73,9 @@ public class DataSeeder {
         // Update or create budgets for the current month
         for (String category : categories) {
             // Check if budget exists for this category and month
-            LocalDate monthStart = now.withDayOfMonth(1);
-            LocalDate monthEnd = now.withDayOfMonth(now.lengthOfMonth());
+            LocalDate nowDate = now.toLocalDate();
+            LocalDate monthStart = nowDate.withDayOfMonth(1);
+            LocalDate monthEnd = nowDate.withDayOfMonth(nowDate.lengthOfMonth());
 
             Budget existingBudget = budgetRepository
                     .findByUserIdAndCategoryAndStartDateAndEndDate(
@@ -111,7 +113,7 @@ public class DataSeeder {
                         .name(goalName)
                         .targetAmount(targetAmount)
                         .currentAmount(currentAmount)
-                        .deadline(now.plusMonths(random.nextInt(12) + 6))
+                        .deadline(now.toLocalDate().plusMonths(random.nextInt(12) + 6))
                         .color(generateRandomColor())
                         .build();
                 savingsGoalRepository.save(goal);

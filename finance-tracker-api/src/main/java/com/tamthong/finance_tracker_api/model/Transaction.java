@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -40,7 +39,7 @@ public class Transaction {
     private TransactionType type;
 
     @Column(nullable = false)
-    private LocalDate date;
+    private LocalDateTime date;  // Change from LocalDate to LocalDateTime
 
     @Column(name = "payment_method")
     private String paymentMethod;

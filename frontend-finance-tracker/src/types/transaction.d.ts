@@ -1,0 +1,6 @@
+export interface TransactionFormData {
+  // ...existing fields...
+  date: string;
+  time: string;
+  // ...other fields...
+}

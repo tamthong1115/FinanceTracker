@@ -49,7 +49,7 @@ public class TransactionServiceTest {
         transaction = new Transaction();
         transaction.setId(1L);
         transaction.setUser(user);
-        transaction.setDate(LocalDate.now());
+        transaction.setDate(LocalDate.now().atStartOfDay());
         transaction.setStatus(TransactionStatus.COMPLETED);
 
         transactionDTO = new TransactionDTO();

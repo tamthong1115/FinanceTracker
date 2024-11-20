@@ -13,4 +13,6 @@ export interface Transaction {
   notes?: string;
 }
 
-export interface TransactionFormData extends Omit<Transaction, 'id'> {}
+export interface TransactionFormData extends Omit<Transaction, 'id'> {
+  time: string; // Add this field
+}

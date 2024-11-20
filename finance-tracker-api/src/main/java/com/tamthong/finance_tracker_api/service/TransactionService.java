@@ -14,7 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,9 +48,9 @@ public class TransactionService {
             Transaction transaction = transactionMapper.toEntity(transactionDTO);
             transaction.setUser(currentUser);
 
-            // Set default values if not provided
+            // Set default date-time if not provided
             if (transaction.getDate() == null) {
-                transaction.setDate(LocalDate.now());
+                transaction.setDate(LocalDateTime.now());
             }
             if (transaction.getStatus() == null) {
                 transaction.setStatus(TransactionStatus.COMPLETED);
