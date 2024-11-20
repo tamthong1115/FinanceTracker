@@ -64,7 +64,7 @@ const RegisterForm: FC = () => {
   return (
     <div className="font-sans min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <div className="grid lg:grid-cols-3 md:grid-cols-2 items-center gap-8 p-4 h-full max-w-7xl mx-auto">
-        <div className="max-md:order-1 lg:col-span-2 w-full bg-[#000842] md:rounded-2xl lg:p-12 p-8 shadow-2xl transition-transform duration-300 hover:scale-[1.02]">
+        <div className="hidden md:block max-md:order-1 lg:col-span-2 w-full bg-[#000842] md:rounded-2xl lg:p-12 p-8 shadow-2xl transition-transform duration-300 hover:scale-[1.02]">
           <img
             src="header/sign-in.png"
             className="lg:w-[70%] w-full h-full object-contain block mx-auto filter drop-shadow-xl"

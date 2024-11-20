@@ -76,12 +76,18 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Mobile menu - Updated styling */}
+      {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-50">
-          <div className="fixed top-0 right-0 h-full w-64 bg-white shadow-lg">
-            <div className="flex items-center justify-between p-4 border-b">
-              <img src="icon.png" alt="logo" className="w-8 h-8" />
+        <>
+          <div
+            className="md:hidden fixed inset-0 bg-black/60"
+            style={{ zIndex: 1000 }}
+          />
+          <div
+            className="md:hidden fixed top-0 right-0 h-screen w-64 bg-white shadow-lg overflow-y-auto"
+            style={{ zIndex: 1001 }}
+          >
+            <div className="sticky top-0 flex justify-end p-4 border-b bg-white">
               <button
                 onClick={() => setMenuOpen(false)}
                 className="p-2 rounded-lg hover:bg-gray-100"
@@ -102,7 +108,7 @@ const Header = () => {
               </button>
             </div>
 
-            <div className="p-4">
+            <div className="p-4 bg-white">
               {navItems.map(({ path, label }) => (
                 <Link
                   key={path}
@@ -127,7 +133,7 @@ const Header = () => {
               </Link>
             </div>
           </div>
-        </div>
+        </>
       )}
     </header>
   );
