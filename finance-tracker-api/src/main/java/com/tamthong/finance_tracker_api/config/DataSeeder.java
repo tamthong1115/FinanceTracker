@@ -25,8 +25,8 @@ public class DataSeeder {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        LocalDateTime lastTransactionDate = transactionRepository.findTopByUserIdOrderByDateDesc(userId)
-                .map(Transaction::getDate)
+        LocalDateTime lastTransactionDate = transactionRepository.findTopByUserIdOrderByDateTimeDesc(userId)
+                .map(Transaction::getDateTime)
                 .orElse(LocalDateTime.now().minusMonths(6));
 
         List<String> categories = Arrays.asList(
@@ -61,7 +61,7 @@ public class DataSeeder {
                         .amount(amount)
                         .type(type)
                         .category(category)
-                        .date(date)
+                        .dateTime(date)
                         .description(generateDescription(type, category))
                         .paymentMethod(paymentMethods.get(random.nextInt(paymentMethods.size())))
                         .status(TransactionStatus.COMPLETED)

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -21,20 +22,19 @@ public class DashboardService {
     private final TransactionRepository transactionRepository;
     private final UserService userService;
 
-    public List<SpendingTrendDTO> getSpendingTrends(LocalDate startDate, LocalDate endDate) {
+    public List<SpendingTrendDTO> getSpendingTrends(LocalDateTime startDateTime, LocalDateTime endDateTime) {
         Long userId = userService.getCurrentUserId();
         List<SpendingTrendDTO> trends = new ArrayList<>();
 
-        // Lấy tất cả transactions trong khoảng thời gian
         List<Transaction> transactions = transactionRepository
-                .findByUserIdAndDateBetweenOrderByDateDesc(userId, startDate, endDate);
+                .findByUserIdAndDateTimeBetweenOrderByDateTimeDesc(userId, startDateTime, endDateTime);
 
-        // Nhóm transactions theo tháng
+        // Nhóm transactions theo tháng và giờ
         Map<YearMonth, SpendingTrendDTO> trendMap = new TreeMap<>();
 
         // Khởi tạo tất cả các tháng trong khoảng thời gian
-        YearMonth start = YearMonth.from(startDate);
-        YearMonth end = YearMonth.from(endDate);
+        YearMonth start = YearMonth.from(startDateTime);
+        YearMonth end = YearMonth.from(endDateTime);
         while (!start.isAfter(end)) {
             trendMap.put(start, SpendingTrendDTO.builder()
                     .month(start.toString())
@@ -46,7 +46,7 @@ public class DashboardService {
 
         // Tính toán income và expenses cho mỗi tháng
         for (Transaction transaction : transactions) {
-            YearMonth yearMonth = YearMonth.from(transaction.getDate());
+            YearMonth yearMonth = YearMonth.from(transaction.getDateTime());
             SpendingTrendDTO monthTrend = trendMap.get(yearMonth);
 
             if (monthTrend != null) {
@@ -61,10 +61,10 @@ public class DashboardService {
         return new ArrayList<>(trendMap.values());
     }
 
-    public DashboardOverviewDTO getOverview(LocalDate startDate, LocalDate endDate) {
+    public DashboardOverviewDTO getOverview(LocalDateTime startDateTime, LocalDateTime endDateTime) {
         Long userId = userService.getCurrentUserId();
         List<Transaction> transactions = transactionRepository
-                .findByUserIdAndDateBetweenOrderByDateDesc(userId, startDate, endDate);
+                .findByUserIdAndDateTimeBetweenOrderByDateTimeDesc(userId, startDateTime, endDateTime);
 
         BigDecimal income = calculateTotalByType(transactions, TransactionType.INCOME);
         BigDecimal expenses = calculateTotalByType(transactions, TransactionType.EXPENSE);
@@ -86,10 +86,10 @@ public class DashboardService {
                 .build();
     }
 
-    public List<ExpenseByCategoryDTO> getExpensesByCategory(LocalDate startDate, LocalDate endDate) {
+    public List<ExpenseByCategoryDTO> getExpensesByCategory(LocalDateTime startDateTime, LocalDateTime endDateTime) {
         Long userId = userService.getCurrentUserId();
         List<Transaction> expenses = transactionRepository
-                .findByUserIdAndDateBetweenOrderByDateDesc(userId, startDate, endDate)
+                .findByUserIdAndDateTimeBetweenOrderByDateTimeDesc(userId, startDateTime, endDateTime)
                 .stream()
                 .filter(t -> t.getType() == TransactionType.EXPENSE)
                 .collect(Collectors.toList());
@@ -117,7 +117,7 @@ public class DashboardService {
 
     public List<AlertDTO> getAlerts(LocalDate startDate, LocalDate endDate) {
         List<AlertDTO> alerts = new ArrayList<>();
-        DashboardOverviewDTO overview = getOverview(startDate, endDate);
+        DashboardOverviewDTO overview = getOverview(startDate.atStartOfDay(), endDate.atTime(23, 59, 59));
 
         if (overview.getMonthlyExpenses().compareTo(overview.getMonthlyIncome()) > 0) {
             alerts.add(AlertDTO.builder()

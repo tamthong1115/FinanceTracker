@@ -39,7 +39,7 @@ public class Transaction {
     private TransactionType type;
 
     @Column(nullable = false)
-    private LocalDateTime date;  // Change from LocalDate to LocalDateTime
+    private LocalDateTime dateTime;  // Changed from LocalDate date
 
     @Column(name = "payment_method")
     private String paymentMethod;

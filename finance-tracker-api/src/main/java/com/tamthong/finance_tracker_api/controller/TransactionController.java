@@ -25,11 +25,13 @@ public class TransactionController {
     public ResponseEntity<Page<TransactionDTO>> getAllTransactions(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "dateTime") String sortBy,
             @RequestParam(defaultValue = "desc") String direction) {
-        Sort sort = Sort.by(Sort.Direction.fromString(direction), sortBy);
-        Pageable pageable = PageRequest.of(page, size, sort);
-        return ResponseEntity.ok(transactionService.getAllTransactionsByUser(pageable));
+        
+        Sort.Direction sortDirection = Sort.Direction.fromString(direction);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
+        
+        return ResponseEntity.ok(transactionService.getAllTransactions(pageable));
     }
 
     @PostMapping("/bulk")

@@ -28,7 +28,7 @@ public class TransactionService {
     @Transactional(readOnly = true)
     public List<TransactionDTO> getAllTransactionsByUser() {
         Long userId = userService.getCurrentUserId();
-        return transactionRepository.findByUserIdOrderByDateDesc(userId)
+        return transactionRepository.findByUserIdOrderByDateTimeDesc(userId)
                 .stream()
                 .map(transactionMapper::toDTO)
                 .collect(Collectors.toList());
@@ -49,8 +49,8 @@ public class TransactionService {
             transaction.setUser(currentUser);
 
             // Set default date-time if not provided
-            if (transaction.getDate() == null) {
-                transaction.setDate(LocalDateTime.now());
+            if (transaction.getDateTime() == null) {
+                transaction.setDateTime(LocalDateTime.now());
             }
             if (transaction.getStatus() == null) {
                 transaction.setStatus(TransactionStatus.COMPLETED);
@@ -76,8 +76,8 @@ public class TransactionService {
         if (updatedTransaction.getStatus() == null) {
             updatedTransaction.setStatus(existingTransaction.getStatus());
         }
-        if (updatedTransaction.getDate() == null) {
-            updatedTransaction.setDate(existingTransaction.getDate());
+        if (updatedTransaction.getDateTime() == null) {
+            updatedTransaction.setDateTime(existingTransaction.getDateTime());
         }
 
         Transaction savedTransaction = transactionRepository.save(updatedTransaction);
@@ -105,7 +105,7 @@ public class TransactionService {
     public Page<TransactionDTO> getAllTransactionsByUser(Pageable pageable) {
         Long userId = userService.getCurrentUserId();
         Page<Transaction> transactionsPage = transactionRepository
-                .findByUserIdOrderByDateDesc(userId, pageable);
+                .findByUserIdOrderByDateTimeDesc(userId, pageable);
         return transactionsPage.map(transactionMapper::toDTO);
     }
 
@@ -126,5 +126,11 @@ public class TransactionService {
         return savedTransactions.stream()
                 .map(transactionMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    public Page<TransactionDTO> getAllTransactions(Pageable pageable) {
+        Long userId = userService.getCurrentUserId();
+        return transactionRepository.findByUserIdOrderByDateTimeDesc(userId, pageable)
+                .map(transactionMapper::toDTO);
     }
 }

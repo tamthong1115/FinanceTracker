@@ -8,18 +8,23 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
-    List<Transaction> findByUserIdOrderByDateDesc(Long userId);
+    List<Transaction> findByUserIdOrderByDateTimeDesc(Long userId);
 
-    List<Transaction> findByUserIdAndDateBetweenOrderByDateDesc(Long userId, LocalDate startDate, LocalDate endDate);
+    List<Transaction> findByUserIdAndDateTimeBetweenOrderByDateTimeDesc(
+        Long userId, 
+        LocalDateTime startDateTime, 
+        LocalDateTime endDateTime
+    );
 
-    List<Transaction> findByUserIdAndCategoryOrderByDateDesc(Long userId, String category);
+    List<Transaction> findByUserIdAndCategoryOrderByDateTimeDesc(Long userId, String category);
 
-    Optional<Transaction> findTopByUserIdOrderByDateDesc(Long userId);
+    Optional<Transaction> findTopByUserIdOrderByDateTimeDesc(Long userId);
 
-    Page<Transaction> findByUserIdOrderByDateDesc(Long userId, Pageable pageable);
+    Page<Transaction> findByUserIdOrderByDateTimeDesc(Long userId, Pageable pageable);
 }

@@ -23,18 +23,16 @@ const DashboardOverview = () => {
     try {
       setLoading(true);
       const params = {
-        startDate: period.startDate.toISOString().split("T")[0],
-        endDate: period.endDate.toISOString().split("T")[0],
+        startDateTime: `${period.startDate.toISOString().split('.')[0]}Z`,
+        endDateTime: `${period.endDate.toISOString().split('.')[0]}Z`,
       };
 
-      const [overviewRes, trendsRes, expensesRes, alertsRes] = await Promise.all(
-        [
-          axiosInstance.get("/api/dashboard/overview", { params }),
-          axiosInstance.get("/api/dashboard/trends", { params }),
-          axiosInstance.get("/api/dashboard/expenses-by-category", { params }),
-          axiosInstance.get("/api/dashboard/alerts", { params }),
-        ]
-      );
+      const [overviewRes, trendsRes, expensesRes, alertsRes] = await Promise.all([
+        axiosInstance.get("/api/dashboard/overview", { params }),
+        axiosInstance.get("/api/dashboard/trends", { params }),
+        axiosInstance.get("/api/dashboard/expenses-by-category", { params }),
+        axiosInstance.get("/api/dashboard/alerts", { params }),
+      ]);
 
       setData({
         overview: overviewRes.data,

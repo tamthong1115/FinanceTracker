@@ -8,7 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -20,29 +20,29 @@ public class DashboardController {
 
     @GetMapping("/overview")
     public ResponseEntity<DashboardOverviewDTO> getOverview(
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
-        return ResponseEntity.ok(dashboardService.getOverview(startDate, endDate));
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDateTime,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDateTime) {
+        return ResponseEntity.ok(dashboardService.getOverview(startDateTime, endDateTime));
     }
 
     @GetMapping("/trends")
     public ResponseEntity<List<SpendingTrendDTO>> getSpendingTrends(
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
-        return ResponseEntity.ok(dashboardService.getSpendingTrends(startDate, endDate));
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDateTime,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDateTime) {
+        return ResponseEntity.ok(dashboardService.getSpendingTrends(startDateTime, endDateTime));
     }
 
     @GetMapping("/expenses-by-category")
     public ResponseEntity<List<ExpenseByCategoryDTO>> getExpensesByCategory(
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
-        return ResponseEntity.ok(dashboardService.getExpensesByCategory(startDate, endDate));
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDateTime,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDateTime) {
+        return ResponseEntity.ok(dashboardService.getExpensesByCategory(startDateTime, endDateTime));
     }
 
     @GetMapping("/alerts")
     public ResponseEntity<List<AlertDTO>> getAlerts(
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
-        return ResponseEntity.ok(dashboardService.getAlerts(startDate, endDate));
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDateTime,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDateTime) {
+        return ResponseEntity.ok(dashboardService.getAlerts(startDateTime.toLocalDate(), endDateTime.toLocalDate()));
     }
 }
