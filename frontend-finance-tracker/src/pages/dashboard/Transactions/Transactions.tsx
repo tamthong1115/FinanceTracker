@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Plus, Upload } from "lucide-react";
 import axiosInstance from "../../../config/axiosConfig";
