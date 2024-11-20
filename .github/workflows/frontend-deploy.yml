@@ -1,0 +1,50 @@
+# .github/workflows/frontend-deploy.yml
+name: Frontend Deploy
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'frontend-finance-tracker/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'frontend-finance-tracker/**'
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend-finance-tracker
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: '**/package-lock.json'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Create env file
+      run: |
+        echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" > .env.production
+
+    - name: Build
+      run: npm run build
+
+    - name: Deploy to Netlify
+      uses: nwtgck/actions-netlify@v2
+      with:
+        publish-dir: './frontend-finance-tracker/dist'
+        production-branch: main
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        deploy-message: "Deploy from GitHub Actions"
+      env:
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
